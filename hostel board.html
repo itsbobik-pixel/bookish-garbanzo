@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sanGiorgio · recepce</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c-bg:#f8f7f4;
+  --c-surface:#ffffff;
+  --c-border:#e8e6e1;
+  --c-text:#1a1a18;
+  --c-muted:#888780;
+  --c-checkin:#f5e642;
+  --c-unpaid:#e8453c;
+  --c-change:#2dd4bf;
+  --c-paid-noci:#3b6dd4;
+  --c-free:#eaf3de;
+  --c-room-label:#f0ede8;
+  --cell-w:110px;
+  --cell-h:34px;
+  --label-w:115px;
+  --head-h:50px;
+}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--c-bg);color:var(--c-text);font-size:13px}
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+.topbar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--c-surface);border-bottom:0.5px solid var(--c-border);flex-shrink:0;flex-wrap:wrap}
+.topbar h1{font-size:14px;font-weight:600;letter-spacing:.01em}
+.tabs{display:flex;gap:4px}
+.tab{padding:5px 13px;font-size:12px;border:0.5px solid var(--c-border);border-radius:6px;cursor:pointer;background:none;color:var(--c-muted);font-weight:500}
+.tab.active{background:var(--c-text);color:#fff;border-color:var(--c-text)}
+.week-nav{display:flex;align-items:center;gap:6px;margin-left:auto}
+.week-nav button{border:0.5px solid var(--c-border);background:none;border-radius:6px;padding:4px 12px;cursor:pointer;color:var(--c-text);font-size:12px}
+.week-nav button:hover{background:var(--c-room-label)}
+.week-label{font-size:12px;color:var(--c-muted);min-width:170px;text-align:center}
+
+.legend{display:flex;gap:12px;padding:7px 16px;background:var(--c-surface);border-bottom:0.5px solid var(--c-border);flex-shrink:0;flex-wrap:wrap;align-items:center}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)}
+.leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;border:0.5px solid rgba(0,0,0,.08)}
+
+.main{flex:1;overflow:auto}
+.grid-wrap{display:inline-block;min-width:100%}
+
+.grid-header{display:flex;position:sticky;top:0;z-index:20;background:var(--c-surface);border-bottom:1px solid var(--c-border)}
+.gh-label{width:var(--label-w);min-width:var(--label-w);flex-shrink:0;border-right:0.5px solid var(--c-border)}
+.gh-day{width:var(--cell-w);min-width:var(--cell-w);flex-shrink:0;padding:0 8px;display:flex;flex-direction:column;justify-content:center;border-right:0.5px solid var(--c-border);height:var(--head-h)}
+.gh-day.today{background:#f0ede8}
+.gh-weekday{font-size:10px;color:var(--c-muted);text-transform:lowercase}
+.gh-date{font-size:13px;font-weight:600}
+
+.room-section{}
+.room-header{display:flex;align-items:stretch;background:var(--c-room-label);border-bottom:0.5px solid var(--c-border);border-top:2px solid var(--c-border)}
+.room-title{width:var(--label-w);min-width:var(--label-w);padding:5px 10px;font-size:10px;font-weight:600;color:var(--c-muted);text-transform:uppercase;letter-spacing:.06em;border-right:0.5px solid var(--c-border);display:flex;flex-direction:column;justify-content:center}
+.room-title span{font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;color:#aaa}
+.room-day-filler{width:var(--cell-w);min-width:var(--cell-w);flex-shrink:0;border-right:0.5px solid var(--c-border)}
+
+.bed-row{display:flex;align-items:stretch;border-bottom:0.5px solid var(--c-border);min-height:var(--cell-h)}
+.bed-label{width:var(--label-w);min-width:var(--label-w);padding:0 10px;display:flex;align-items:center;font-size:11px;color:var(--c-muted);border-right:0.5px solid var(--c-border);position:sticky;left:0;background:var(--c-surface);z-index:5;flex-shrink:0}
+.bed-cell{width:var(--cell-w);min-width:var(--cell-w);flex-shrink:0;border-right:0.5px solid var(--c-border);cursor:pointer;min-height:var(--cell-h)}
+.bed-cell:hover{filter:brightness(.93)}
+.cell-free{background:var(--c-free)}
+.cell-checkin{background:var(--c-checkin)}
+.cell-unpaid{background:var(--c-unpaid)}
+.cell-change{background:var(--c-change)}
+.cell-paid-noci{background:var(--c-paid-noci)}
+.cell-occupied{background:#fff}
+
+.cell-content{padding:3px 6px;height:100%;display:flex;flex-direction:column;justify-content:center;min-height:var(--cell-h)}
+.cell-name{font-size:11px;font-weight:600;line-height:1.2;color:var(--c-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cell-unpaid .cell-name,.cell-paid-noci .cell-name{color:#fff}
+.cell-change .cell-name{color:#0f6e56}
+.cell-note{font-size:10px;color:var(--c-muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cell-unpaid .cell-note,.cell-paid-noci .cell-note{color:rgba(255,255,255,.8)}
+.cell-change .cell-note{color:#0f6e56}
+.cell-checkin .cell-note{color:#555}
+
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--c-surface);border-radius:12px;padding:1.4rem;width:330px;border:0.5px solid var(--c-border);box-shadow:0 8px 32px rgba(0,0,0,.12)}
+.modal h3{font-size:14px;font-weight:600;margin-bottom:1rem}
+.modal label{font-size:11px;color:var(--c-muted);display:block;margin-bottom:3px;margin-top:10px;text-transform:uppercase;letter-spacing:.04em}
+.modal input,.modal select,.modal textarea{width:100%;padding:8px 10px;border:0.5px solid var(--c-border);border-radius:7px;font-size:13px;background:var(--c-bg);color:var(--c-text);font-family:inherit}
+.modal textarea{resize:vertical;min-height:60px}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:1.2rem}
+.btn{padding:7px 15px;font-size:12px;border-radius:7px;border:0.5px solid var(--c-border);cursor:pointer;background:none;color:var(--c-text);font-weight:500}
+.btn:hover{background:var(--c-room-label)}
+.btn-primary{background:var(--c-text);color:#fff;border-color:var(--c-text)}
+.btn-primary:hover{background:#333}
+.btn-danger{color:#e8453c;border-color:#e8453c}
+.btn-danger:hover{background:#fff0f0}
+
+.inner-wrap{padding:1.2rem}
+.shift-list,.task-list{display:flex;flex-direction:column;gap:7px;margin-bottom:1.2rem}
+.shift-card,.task-card{background:var(--c-surface);border:0.5px solid var(--c-border);border-radius:8px;padding:9px 13px;display:flex;align-items:center;gap:10px}
+.shift-who,.task-text{font-weight:500;font-size:13px;flex:1}
+.shift-time,.task-meta{font-size:12px;color:var(--c-muted)}
+.tag{font-size:11px;background:var(--c-room-label);padding:2px 9px;border-radius:5px;color:var(--c-text)}
+.add-row{display:flex;gap:7px;flex-wrap:wrap}
+.add-row input,.add-row select{padding:7px 10px;border:0.5px solid var(--c-border);border-radius:7px;font-size:13px;background:var(--c-bg);color:var(--c-text);flex:1;min-width:90px;font-family:inherit}
+.clean-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-bottom:1.2rem}
+.clean-card{background:var(--c-surface);border:0.5px solid var(--c-border);border-radius:8px;padding:10px 12px;cursor:pointer;transition:opacity .15s}
+.clean-card.done{opacity:.45}
+.clean-room{font-size:12px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.clean-task{font-size:11px;color:var(--c-muted)}
+.chk{width:16px;height:16px;border-radius:4px;border:0.5px solid var(--c-border);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.chk.checked{background:#639922;border-color:#639922;color:#fff}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <h1>sanGiorgio <span style="color:var(--c-muted);font-weight:400">· recepce</span></h1>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('home')">HOME</button>
+      <button class="tab" onclick="switchTab('shifts')">SHIFTS</button>
+      <button class="tab" onclick="switchTab('cleaning')">CLEANING</button>
+    </div>
+    <div class="week-nav">
+      <button onclick="changeWeek(-1)">‹ předchozí</button>
+      <span class="week-label" id="week-label"></span>
+      <button onclick="changeWeek(1)">následující ›</button>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="leg"><span class="leg-dot" style="background:#f5e642"></span>check-in day (not paid yet)</span>
+    <span class="leg"><span class="leg-dot" style="background:#e8453c"></span>not paid</span>
+    <span class="leg"><span class="leg-dot" style="background:#2dd4bf"></span>change beds/room</span>
+    <span class="leg"><span class="leg-dot" style="background:#3b6dd4"></span>paid, not checked in</span>
+    <span class="leg"><span class="leg-dot" style="background:#fff;border:0.5px solid #ccc"></span>occupied (paid)</span>
+    <span class="leg"><span class="leg-dot" style="background:#eaf3de"></span>volné</span>
+  </div>
+
+  <div class="main" id="main-content"></div>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3 id="modal-title">Upravit buňku</h3>
+    <label>Jméno hosta</label>
+    <input id="m-name" placeholder="např. Anna UK">
+    <label>Status</label>
+    <select id="m-status">
+      <option value="free">Volné</option>
+      <option value="occupied">Occupied (paid)</option>
+      <option value="checkin">Check-in day (not paid yet)</option>
+      <option value="unpaid">Not paid</option>
+      <option value="change">Change beds/room</option>
+      <option value="paid-noci">Paid, not checked in</option>
+    </select>
+    <label>Poznámka / čas příjezdu</label>
+    <textarea id="m-note" placeholder="např. arrives 9:30pm, owes €55 cash..."></textarea>
+    <div class="modal-footer">
+      <button class="btn btn-danger" onclick="clearCell()">Vymazat</button>
+      <button class="btn" onclick="closeModal()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveCell()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DAYS_CZ=['ne','po','út','st','čt','pá','so'];
+const ROOMS=[
+  {id:'r1',name:'Room 1',label:'female only',beds:['Bed 1','Bed 2','Bed 3','Bed 4','Bed 5','Bed 6','Bed 7','Bed 8']},
+  {id:'r2',name:'Room 2',label:'10 bed mixed',beds:['Bed 1','Bed 2','Bed 3','Bed 4','Bed 5','Bed 6','Bed 7','Bed 8','Bed 9','Bed 10']},
+  {id:'r3',name:'Room 3',label:'4 bed deluxe',beds:['Bed 1','Bed 2','Bed 3','Bed 4']},
+  {id:'r4',name:'Room 4',label:'4 bed mixed',beds:['Bed 1','Bed 2','Bed 3','Bed 4']},
+];
+const DEFAULT_SHIFTS=[
+  {id:'s1',who:'Markéta',day:'po',time:'8:00–16:00'},
+  {id:'s2',who:'Jakub',day:'po',time:'16:00–00:00'},
+  {id:'s3',who:'Sára',day:'út',time:'8:00–16:00'},
+  {id:'s4',who:'Markéta',day:'út',time:'16:00–00:00'},
+];
+const DEFAULT_CLEANING=[
+  {id:'c1',room:'Room 1',task:'Uklidit koupelnu',done:false},
+  {id:'c2',room:'Room 2',task:'Vyměnit ložní prádlo bed 3,7',done:false},
+  {id:'c3',room:'Room 3',task:'Kompletní úklid po check-outu',done:true},
+  {id:'c4',room:'Room 4',task:'Doplnit ručníky',done:false},
+  {id:'c5',room:'Společné prostory',task:'Zamést chodby',done:false},
+];
+const SAMPLE={
+  'r1-0-0':'Anna UK|occupied|','r1-1-0':'Amber UK|occupied|','r1-2-0':'Astrid AUS|occupied|','r1-3-0':'Libby UK|occupied|',
+  'r1-0-1':'Shaimae|occupied|','r1-1-1':'Amber UK|occupied|','r1-2-1':'Anna S USA|occupied|','r1-3-1':'Astrid AUS|occupied|','r1-4-1':'Thien VIET|occupied|',
+  'r1-0-2':'Cheryl/Hiu UK|occupied|','r1-1-2':'Marlene OST|occupied|','r1-2-2':'Anna S USA|occupied|',
+  'r1-0-3':'Jonna GER|occupied|','r1-1-3':'Marlene OST|occupied|','r1-2-3':'Emilee USA|occupied|','r1-3-3':'Tan/Tanishq CAN|occupied|','r1-4-3':'Thien VIET|occupied|',
+  'r1-0-4':'Jonna GER|occupied|','r1-1-4':'Marlene OST|occupied|','r1-2-4':'Emilee USA|occupied|','r1-3-4':'Tan/Tanishq CAN|occupied|','r1-4-4':'Veronica BRA|occupied|','r1-5-4':'Eliana GER|occupied|',
+  'r1-0-5':'Jonna GER|occupied|','r1-1-5':'Valeria ARG|occupied|','r1-2-5':'Emilee USA|occupied|','r1-3-5':'Tan/Tanishq CAN|occupied|','r1-4-5':'Veronica BRA|occupied|','r1-5-5':'Yuliana COL|occupied|',
+  'r1-0-6':'Jonna GER|occupied|','r1-1-6':'Valeria ARG|occupied|','r1-2-6':'Emilee USA|occupied|','r1-3-6':'Emily USA|occupied|','r1-4-6':'Brooke USA|occupied|','r1-5-6':'Yuliana COL|occupied|',
+  'r1-0-7':'Ronja|checkin|','r1-1-7':'Valeria ARG|occupied|','r1-2-7':'Constance FRA|unpaid|owes €55 cash','r1-3-7':'Emily USA|occupied|','r1-4-7':'Manon|checkin|arrives 9:30pm','r1-5-7':'Chloe AUS|occupied|',
+  'r2-0-0':'Cody AUS|occupied|','r2-1-0':'Lachlan AUS|occupied|','r2-2-0':'Elizabeth CAN|occupied|','r2-3-0':'Delphine CAN|occupied|','r2-4-0':'Isabell|occupied|','r2-5-0':'Ashlee AUS|occupied|','r2-6-0':'Avanish IND|occupied|','r2-7-0':'Amelie GER|occupied|','r2-8-0':'Martina ARG|occupied|',
+  'r2-0-4':'Kevin USA|occupied|','r2-1-4':'Bruno ARG|occupied|','r2-2-4':'Tahiyah UK|occupied|','r2-3-4':'Marcia ARG|occupied|','r2-4-4':'Sonal|occupied|','r2-5-4':'Chantal USA|occupied|','r2-6-4':'Mollie UK|occupied|','r2-7-4':'Maxence BEL|occupied|',
+  'r2-1-7':'Anna UK|occupied|','r2-2-7':'Imogen AUS|checkin|','r2-3-7':'Mimi|checkin|','r2-4-7':'Laura Sofia COL|occupied|','r2-5-7':'Katharina GER|occupied|','r2-6-7':'Joep NL|unpaid|','r2-7-7':'Abril|paid-noci|arrives 7–8pm','r2-8-7':'Mia|change|','r2-9-7':'Maxence BEL|occupied|',
+  'r3-0-0':'Martyna POL|occupied|','r3-1-0':'Felipe COL|occupied|','r3-2-0':'Holly USA|occupied|','r3-3-0':'Samantha AUS|occupied|',
+  'r3-0-7':'Charlene CAN|occupied|','r3-1-7':'Karine CAN|checkin|','r3-2-7':'Debora*|checkin|','r3-3-7':'Robert|checkin|arrives 18:30',
+  'r4-1-0':'Eileen USA|occupied|','r4-2-0':'Krunal NZL|occupied|','r4-3-0':'Ester BRA|occupied|',
+  'r4-0-7':'Isabella|checkin|','r4-1-7':'Owen|checkin|arrives 3pm','r4-2-7':'Venkata USA|occupied|','r4-3-7':'Bernard|checkin|arrives 11:30am',
+};
+
+let weekOffset=0,cellData={},shifts=[],cleaning=[],editingKey=null,currentTab='home';
+
+function getWeekStart(offset){
+  const now=new Date(),day=now.getDay(),monday=new Date(now);
+  monday.setDate(now.getDate()-(day===0?6:day-1)+offset*7);
+  monday.setHours(0,0,0,0);
+  return monday;
+}
+function getDays(offset){
+  const start=getWeekStart(offset);
+  return Array.from({length:7},(_,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);return d;});
+}
+function fmtDate(d){return`${d.getDate()}/${d.getMonth()+1}`;}
+function isToday(d){const n=new Date();return d.getDate()===n.getDate()&&d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear();}
+function cellKey(r,b,d){return`${r}-${b}-${d}`;}
+function getCell(key){
+  if(cellData[key]!==undefined)return cellData[key];
+  if(SAMPLE[key]){const[name,status,note]=SAMPLE[key].split('|');return{name,status,note};}
+  return{name:'',status:'free',note:''};
+}
+
+function renderHome(){
+  const days=getDays(weekOffset);
+  document.getElementById('week-label').textContent=`${fmtDate(days[0])} – ${fmtDate(days[6])} · ${days[0].getFullYear()}`;
+  let html='<div class="grid-wrap"><div class="grid-header"><div class="gh-label"></div>';
+  days.forEach(d=>{html+=`<div class="gh-day${isToday(d)?' today':''}"><span class="gh-weekday">${DAYS_CZ[d.getDay()]}</span><span class="gh-date">${fmtDate(d)}</span></div>`;});
+  html+='</div>';
+  ROOMS.forEach(room=>{
+    html+=`<div class="room-section"><div class="room-header"><div class="room-title">${room.name}<span>${room.label}</span></div>${days.map(()=>'<div class="room-day-filler"></div>').join('')}</div>`;
+    room.beds.forEach((bed,bi)=>{
+      html+=`<div class="bed-row"><div class="bed-label">${bed}</div>`;
+      days.forEach((_,di)=>{
+        const key=cellKey(room.id,bi,di),c=getCell(key),st=c.status||'free';
+        html+=`<div class="bed-cell cell-${st}" onclick="openModal('${key}','${room.name} · ${bed}')">`;
+        if(st!=='free'&&c.name)html+=`<div class="cell-content"><div class="cell-name">${c.name}</div>${c.note?`<div class="cell-note">${c.note}</div>`:''}</div>`;
+        html+='</div>';
+      });
+      html+='</div>';
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  document.getElementById('main-content').innerHTML=html;
+}
+
+function renderShifts(){
+  const dayNames={po:'pondělí',út:'úterý',st:'středa',čt:'čtvrtek',pá:'pátek',so:'sobota',ne:'neděle'};
+  document.getElementById('main-content').innerHTML=`<div class="inner-wrap">
+    <div class="shift-list">${shifts.map(s=>`<div class="shift-card"><span class="tag">${dayNames[s.day]||s.day}</span><span class="shift-who">${s.who}</span><span class="shift-time">${s.time}</span><button class="btn" onclick="deleteShift('${s.id}')" style="padding:3px 9px">×</button></div>`).join('')}</div>
+    <div class="add-row">
+      <input id="sh-who" placeholder="Jméno">
+      <select id="sh-day">${['po','út','st','čt','pá','so','ne'].map(d=>`<option>${d}</option>`).join('')}</select>
+      <input id="sh-time" placeholder="8:00–16:00">
+      <button class="btn btn-primary" onclick="addShift()">+ Přidat</button>
+    </div>
+  </div>`;
+}
+
+function renderCleaning(){
+  document.getElementById('main-content').innerHTML=`<div class="inner-wrap">
+    <div class="clean-grid">${cleaning.map(c=>`<div class="clean-card${c.done?' done':''}" onclick="toggleClean('${c.id}')"><div class="clean-room"><div class="chk${c.done?' checked':''}">${c.done?'✓':''}</div>${c.room}</div><div class="clean-task">${c.task}</div></div>`).join('')}</div>
+    <div class="add-row">
+      <input id="cl-room" placeholder="Pokoj">
+      <input id="cl-task" placeholder="Úkol" style="flex:2">
+      <button class="btn btn-primary" onclick="addClean()">+ Přidat</button>
+    </div>
+  </div>`;
+}
+
+function switchTab(tab){
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
+}
+function render(){
+  if(currentTab==='home')renderHome();
+  else if(currentTab==='shifts')renderShifts();
+  else if(currentTab==='cleaning')renderCleaning();
+}
+function changeWeek(dir){weekOffset+=dir;if(currentTab==='home')renderHome();}
+function openModal(key,title){
+  editingKey=key;
+  const c=getCell(key);
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('m-name').value=c.name||'';
+  document.getElementById('m-status').value=c.status||'free';
+  document.getElementById('m-note').value=c.note||'';
+  document.getElementById('modal').classList.add('open');
+  setTimeout(()=>document.getElementById('m-name').focus(),50);
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function saveCell(){
+  cellData[editingKey]={name:document.getElementById('m-name').value.trim(),status:document.getElementById('m-status').value,note:document.getElementById('m-note').value.trim()};
+  save();closeModal();if(currentTab==='home')renderHome();
+}
+function clearCell(){cellData[editingKey]={name:'',status:'free',note:''};save();closeModal();if(currentTab==='home')renderHome();}
+function addShift(){
+  const who=document.getElementById('sh-who').value.trim(),day=document.getElementById('sh-day').value,time=document.getElementById('sh-time').value.trim();
+  if(!who)return;shifts.push({id:'s'+Date.now(),who,day,time});save();renderShifts();
+}
+function deleteShift(id){shifts=shifts.filter(s=>s.id!==id);save();renderShifts();}
+function addClean(){
+  const room=document.getElementById('cl-room').value.trim(),task=document.getElementById('cl-task').value.trim();
+  if(!room)return;cleaning.push({id:'c'+Date.now(),room,task,done:false});save();renderCleaning();
+}
+function toggleClean(id){const c=cleaning.find(x=>x.id===id);if(c){c.done=!c.done;save();renderCleaning();}}
+function save(){
+  try{localStorage.setItem('sg_cells',JSON.stringify(cellData));}catch{}
+  try{localStorage.setItem('sg_shifts',JSON.stringify(shifts));}catch{}
+  try{localStorage.setItem('sg_cleaning',JSON.stringify(cleaning));}catch{}
+}
+function loadData(){
+  try{const r=localStorage.getItem('sg_cells');if(r)cellData=JSON.parse(r);}catch{}
+  try{const r=localStorage.getItem('sg_shifts');if(r)shifts=JSON.parse(r);else shifts=[...DEFAULT_SHIFTS];}catch{shifts=[...DEFAULT_SHIFTS];}
+  try{const r=localStorage.getItem('sg_cleaning');if(r)cleaning=JSON.parse(r);else cleaning=DEFAULT_CLEANING.map(x=>({...x}));}catch{cleaning=DEFAULT_CLEANING.map(x=>({...x}));}
+  render();
+}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();if(e.key==='Enter'&&e.ctrlKey&&document.getElementById('modal').classList.contains('open'))saveCell();});
+loadData();
+</script>
+</body>
+</html>
