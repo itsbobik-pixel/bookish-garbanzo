@@ -44,7 +44,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .leg{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
 .leg-dot{width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.1);flex-shrink:0}
 
-.week-title{padding:20px 20px 4px;font-size:22px;font-weight:600;color:var(--text);letter-spacing:-.01em}
+
 
 /* WEEK */
 .week-wrap{padding:16px 20px 80px;display:flex;justify-content:center}
@@ -59,7 +59,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .th-weekday{font-size:11px;color:var(--muted);display:block}
 .th-date{font-size:15px;font-weight:600;display:block}
 
-.room-label-sticky{background:var(--bg);border-top:2px solid var(--border);border-bottom:1px solid var(--border);border-right:1px solid var(--border);padding:5px 12px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;justify-content:space-between;height:34px}
+.room-label-sticky{background:var(--bg);border-top:2px solid var(--border);border-bottom:1px solid var(--border);border-right:1px solid var(--border);padding:5px 12px;font-size:13px;font-weight:700;color:var(--text);letter-spacing:.04em;display:flex;align-items:center;justify-content:center;height:36px;position:relative}
+.room-label-sticky .room-del-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%)}
 .room-label-span{background:var(--bg);border-top:2px solid var(--border);border-bottom:1px solid var(--border);border-right:1px solid var(--border);height:34px}
 .room-del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 2px;line-height:1}
 .room-del-btn:hover{color:#e63c3c}
@@ -234,7 +235,6 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .empty{text-align:center;padding:60px 20px;color:var(--muted)}
 .empty p{font-size:15px;color:var(--text);margin-bottom:6px}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -370,7 +370,6 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 </div>
 
 <div id="view-week">
-  <div class="week-title" id="week-title"></div>
   <div class="week-wrap"><div id="week-table"></div></div>
 </div>
 <div id="view-month" style="display:none">
@@ -412,19 +411,19 @@ const STATUS_LABELS=['— status —','Check-in (not paid)','Not paid','Change r
 const HOURS=['','arrived','00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','custom'];
 
 const NATS=[
-  {v:'',l:'— nat —',flag:''},
-  {v:'gb',l:'UK',flag:'🇬🇧'},
-  {v:'us',l:'USA',flag:'🇺🇸'},
-  {v:'au',l:'AUS',flag:'🇦🇺'},
-  {v:'de',l:'GER',flag:'🇩🇪'},
-  {v:'fr',l:'FRA',flag:'🇫🇷'},
-  {v:'es',l:'ESP',flag:'🇪🇸'},
-  {v:'it',l:'ITA',flag:'🇮🇹'},
-  {v:'nl',l:'NL',flag:'🇳🇱'},
-  {v:'ar',l:'ARG',flag:'🇦🇷'},
-  {v:'br',l:'BRA',flag:'🇧🇷'},
-  {v:'ca',l:'CAN',flag:'🇨🇦'},
-  {v:'custom',l:'+ other…',flag:''},
+  {v:'',l:'— nat —',code:''},
+  {v:'gb',l:'UK',code:'gb'},
+  {v:'us',l:'USA',code:'us'},
+  {v:'au',l:'AUS',code:'au'},
+  {v:'de',l:'GER',code:'de'},
+  {v:'fr',l:'FRA',code:'fr'},
+  {v:'es',l:'ESP',code:'es'},
+  {v:'it',l:'ITA',code:'it'},
+  {v:'nl',l:'NL',code:'nl'},
+  {v:'ar',l:'ARG',code:'ar'},
+  {v:'br',l:'BRA',code:'br'},
+  {v:'ca',l:'CAN',code:'ca'},
+  {v:'custom',l:'+ other…',code:''},
 ];
 let rooms=[], cells={}, notes={}, weekOff=0, monthOff=0, view='week', activeNoteKey=null;
 
@@ -460,10 +459,7 @@ function monthDays(){
   return days;
 }
 
-function renderSummary(days){
-  const el=document.getElementById('week-title');
-  if(el) el.textContent=`${fmt(days[0])} – ${fmt(days[6])} · ${days[0].getFullYear()}`;
-}
+function renderSummary(days){}
 
 function statusClass(s){return s?`s-${s}`:'s-empty';}
 
@@ -481,17 +477,15 @@ function statusOpts(current){
 
 function natFlagHtml(natVal){
   const n=NATS.find(x=>x.v===natVal);
-  if(!n||!n.flag) return '';
-  return n.flag;
+  if(!n||!n.code) return '';
+  return`<img src="https://flagcdn.com/20x15/${n.code}.png" width="20" height="15" alt="${n.l}" style="border-radius:2px;vertical-align:middle">`;
 }
-function parseTwemoji(){
-  if(window.twemoji) twemoji.parse(document.body,{folder:'svg',ext:'.svg'});
-}
+function parseTwemoji(){}
 function natOpts(current){
   return NATS.map(n=>{
     if(n.v==='custom') return`<option value="custom">+ other…</option>`;
     if(n.v==='') return`<option value=""${!current?' selected':''}>— nat —</option>`;
-    return`<option value="${n.v}"${current===n.v?' selected':''}>${n.flag} ${n.l}</option>`;
+    return`<option value="${n.v}"${current===n.v?' selected':''}>${n.l}</option>`;
   }).join('');
 }
 function handleNat(sel){
