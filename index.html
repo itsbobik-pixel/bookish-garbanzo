@@ -22,12 +22,17 @@
 }
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:12px;height:60px;position:sticky;top:0;z-index:50}
-.nav-title{font-size:15px;font-weight:600}
-.nav-tabs{display:flex;gap:2px;background:var(--bg);border-radius:8px;padding:3px}
-.nav-tab{padding:5px 16px;font-size:12px;font-weight:500;border:none;border-radius:6px;cursor:pointer;background:none;color:var(--muted)}
-.nav-tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.hero-header{position:sticky;top:0;z-index:50;height:110px;overflow:hidden;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg svg{width:100%;height:100%;display:block}
+.hero-content{z-index:1;display:flex;flex-direction:column;align-items:center;gap:4px;position:absolute;left:50%;transform:translateX(-50%)}
+.hero-logo{display:flex;align-items:center;gap:10px}
+.hero-name{font-size:28px;font-weight:700;color:white;letter-spacing:.02em;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.hero-sub{font-size:11px;color:rgba(255,255,255,.7);letter-spacing:.12em;text-transform:uppercase}
+.hero-nav{z-index:1;display:flex;align-items:center;gap:10px;margin-left:auto}
+.hero-tabs{display:flex;gap:2px;background:rgba(0,0,0,.2);border-radius:8px;padding:3px}
+.hero-tab{padding:5px 16px;font-size:12px;font-weight:500;border:none;border-radius:6px;cursor:pointer;background:none;color:rgba(255,255,255,.7)}
+.hero-tab.active{background:rgba(255,255,255,.2);color:white}
 .nav-btn{padding:6px 13px;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:7px;cursor:pointer;background:none;color:var(--text)}
 .nav-btn:hover{background:var(--bg)}
 .period-nav{display:flex;align-items:center;gap:6px}
@@ -238,21 +243,127 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20
 </head>
 <body>
 
-<nav>
-  <span class="nav-title">🏨 Hostel Board</span>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="switchView('week')">Week</button>
-    <button class="nav-tab" onclick="switchView('month')">Month</button>
+<div class="hero-header">
+  <div class="hero-bg">
+    <svg viewBox="0 0 1200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Sky -->
+      <rect width="1200" height="200" fill="#87CEEB"/>
+      <!-- Sun -->
+      <circle cx="1050" cy="45" r="28" fill="#FFD700" opacity="0.9"/>
+      <!-- Clouds -->
+      <ellipse cx="150" cy="35" rx="55" ry="18" fill="white" opacity="0.7"/>
+      <ellipse cx="195" cy="28" rx="40" ry="16" fill="white" opacity="0.7"/>
+      <ellipse cx="110" cy="30" rx="35" ry="14" fill="white" opacity="0.6"/>
+      <ellipse cx="700" cy="25" rx="45" ry="14" fill="white" opacity="0.5"/>
+      <ellipse cx="740" cy="18" rx="32" ry="12" fill="white" opacity="0.5"/>
+      <!-- Sea -->
+      <rect y="130" width="1200" height="70" fill="#1a7abf"/>
+      <!-- Sea shimmer -->
+      <rect y="130" width="1200" height="5" fill="#2596d6" opacity="0.5"/>
+      <ellipse cx="300" cy="138" rx="80" ry="4" fill="#6ec6f5" opacity="0.3"/>
+      <ellipse cx="700" cy="142" rx="120" ry="5" fill="#6ec6f5" opacity="0.25"/>
+      <ellipse cx="1000" cy="135" rx="90" ry="4" fill="#6ec6f5" opacity="0.2"/>
+      <!-- Mountains/hills behind buildings -->
+      <path d="M0 120 Q100 60 200 100 Q300 60 400 95 Q500 50 600 90 Q700 55 800 95 Q900 65 1000 100 Q1100 70 1200 105 L1200 200 L0 200Z" fill="#2d5a1b" opacity="0.7"/>
+      <path d="M0 130 Q150 90 300 115 Q450 85 600 110 Q750 80 900 115 Q1050 90 1200 120 L1200 200 L0 200Z" fill="#3a7a25" opacity="0.6"/>
+      <!-- Buildings La Spezia style -->
+      <!-- Building 1 - pink/salmon -->
+      <rect x="30" y="80" width="45" height="60" fill="#E8927C"/>
+      <rect x="35" y="75" width="35" height="10" fill="#D4785F"/>
+      <rect x="38" y="88" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="52" y="88" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="38" y="105" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="52" y="105" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <!-- Building 2 - yellow -->
+      <rect x="80" y="70" width="38" height="70" fill="#F5C842"/>
+      <rect x="84" y="65" width="30" height="10" fill="#E0B030"/>
+      <rect x="86" y="78" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="98" y="78" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="86" y="94" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="98" y="94" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="86" y="110" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="98" y="110" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <!-- Building 3 - terracotta -->
+      <rect x="123" y="85" width="42" height="55" fill="#C17A4A"/>
+      <rect x="127" y="80" width="34" height="10" fill="#A86035"/>
+      <rect x="129" y="92" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="143" y="92" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="129" y="108" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="143" y="108" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <!-- Building 4 - white/cream -->
+      <rect x="170" y="75" width="40" height="65" fill="#F0EAD6"/>
+      <rect x="174" y="70" width="32" height="10" fill="#D9C9A8"/>
+      <rect x="176" y="82" width="7" height="9" fill="#5a3a2a" opacity="0.5"/>
+      <rect x="189" y="82" width="7" height="9" fill="#5a3a2a" opacity="0.5"/>
+      <rect x="176" y="98" width="7" height="9" fill="#5a3a2a" opacity="0.5"/>
+      <rect x="189" y="98" width="7" height="9" fill="#5a3a2a" opacity="0.5"/>
+      <!-- Building 5 - sage green -->
+      <rect x="215" y="82" width="36" height="58" fill="#7DAF6A"/>
+      <rect x="219" y="77" width="28" height="10" fill="#5E9050"/>
+      <rect x="221" y="89" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
+      <rect x="233" y="89" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
+      <rect x="221" y="105" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
+      <rect x="233" y="105" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
+      <!-- RIGHT SIDE buildings -->
+      <rect x="960" y="78" width="44" height="62" fill="#E8927C"/>
+      <rect x="964" y="73" width="36" height="10" fill="#D4785F"/>
+      <rect x="966" y="85" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="980" y="85" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="966" y="102" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="980" y="102" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1009" y="68" width="40" height="72" fill="#F5C842"/>
+      <rect x="1013" y="63" width="32" height="10" fill="#E0B030"/>
+      <rect x="1015" y="76" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1027" y="76" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1015" y="92" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1027" y="92" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1015" y="108" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1027" y="108" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1054" y="82" width="38" height="58" fill="#C17A4A"/>
+      <rect x="1058" y="77" width="30" height="10" fill="#A86035"/>
+      <rect x="1060" y="89" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1073" y="89" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1060" y="105" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1073" y="105" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1097" y="75" width="42" height="65" fill="#7DAF6A"/>
+      <rect x="1101" y="70" width="34" height="10" fill="#5E9050"/>
+      <rect x="1103" y="82" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
+      <rect x="1115" y="82" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
+      <rect x="1103" y="98" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
+      <rect x="1115" y="98" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
+      <!-- Small boat -->
+      <path d="M880 145 Q900 140 920 145 L915 152 L885 152Z" fill="#8B4513"/>
+      <rect x="898" y="130" width="2" height="15" fill="#5a3a1a"/>
+      <path d="M900 130 L920 138 L900 140Z" fill="white" opacity="0.9"/>
+      <!-- Overlay gradient for readability -->
+      <rect width="1200" height="200" fill="rgba(0,30,60,0.35)"/>
+    </svg>
   </div>
-  <div class="nav-right">
-    <div class="period-nav">
-      <button onclick="navPrev()">‹</button>
-      <span id="period-label"></span>
-      <button onclick="navNext()">›</button>
+  <div class="hero-content">
+    <div class="hero-logo">
+      <svg viewBox="0 0 36 36" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="17" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1"/>
+        <path d="M18 6 L18 10 M18 26 L18 30 M6 18 L10 18 M26 18 L30 18" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M12 12 Q18 8 24 12 Q28 18 24 24 Q18 28 12 24 Q8 18 12 12Z" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1"/>
+        <circle cx="18" cy="18" r="3" fill="white" opacity="0.9"/>
+      </svg>
+      <span class="hero-name">Costello</span>
     </div>
-    <button class="nav-btn" onclick="openAddRoom()">+ Room</button>
+    <div class="hero-sub">reception board</div>
   </div>
-</nav>
+  <div class="hero-nav">
+    <div class="hero-tabs">
+      <button class="hero-tab active" onclick="switchView('week')">Week</button>
+      <button class="hero-tab" onclick="switchView('month')">Month</button>
+    </div>
+    <div class="period-nav" style="color:rgba(255,255,255,.85)">
+      <button onclick="navPrev()" style="border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.85);background:rgba(255,255,255,.1)">‹</button>
+      <span id="period-label" style="color:rgba(255,255,255,.9)"></span>
+      <button onclick="navNext()" style="border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.85);background:rgba(255,255,255,.1)">›</button>
+    </div>
+    <button class="nav-btn" onclick="openAddRoom()" style="border-color:rgba(255,255,255,.4);color:white;background:rgba(255,255,255,.15)">+ Room</button>
+  </div>
+</div>
 
 <div class="legend-bar">
   <span class="leg"><span class="leg-dot" style="background:#f0d800"></span>Check-in (not paid)</span>
@@ -619,7 +730,7 @@ function switchView(v){
   view=v;
   document.getElementById('view-week').style.display=v==='week'?'block':'none';
   document.getElementById('view-month').style.display=v==='month'?'block':'none';
-  document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',['week','month'][i]===v));
+  document.querySelectorAll('.hero-tab').forEach((el,i)=>el.classList.toggle('active',['week','month'][i]===v));
   render();
 }
 function navPrev(){if(view==='week')weekOff--;else monthOff--;render();}
