@@ -59,9 +59,10 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .th-weekday{font-size:11px;color:var(--muted);display:block}
 .th-date{font-size:15px;font-weight:600;display:block}
 
-.room-header-row{display:flex;align-items:center;background:var(--bg);border-top:2px solid var(--border);border-right:1px solid var(--border)}
-.room-header-label{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;padding:4px 10px}
-.room-del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;margin-left:auto;padding:4px 8px}
+.room-header-row{display:flex;align-items:center;background:var(--bg);border-top:2px solid var(--border);border-right:1px solid var(--border);height:28px;overflow:visible}
+.room-header-first{position:relative;overflow:visible;z-index:5}
+.room-header-label{font-size:11px;font-weight:700;color:var(--text);letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;white-space:nowrap}
+.room-del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:4px 8px}
 .room-del-btn:hover{color:#e63c3c}
 .room-label-span{display:none}
 .bed-label-cell{display:none}
