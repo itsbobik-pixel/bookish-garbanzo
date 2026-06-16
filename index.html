@@ -12,128 +12,213 @@
   --border:#e5e3de;
   --text:#181816;
   --muted:#9a9891;
+  --radius:10px;
   --s-checkin:#f0d800;
   --s-unpaid:#e63c3c;
   --s-change:#17c4aa;
   --s-paid-noci:#3a6fd4;
-  --s-occupied:#181816;
-  --s-free:#e8f4de;
-  --radius:10px;
+  --s-cancel:#d0cfc9;
+  --s-lower:#f0f0f0;
 }
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-/* NAV */
-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:16px;height:52px;position:sticky;top:0;z-index:50}
-.nav-title{font-size:15px;font-weight:600;letter-spacing:-.01em}
-.nav-tabs{display:flex;gap:2px;margin-left:auto}
-.nav-tab{padding:5px 14px;font-size:12px;font-weight:500;border:none;border-radius:7px;cursor:pointer;background:none;color:var(--muted)}
-.nav-tab.active{background:var(--text);color:#fff}
-.nav-btn{padding:5px 13px;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:7px;cursor:pointer;background:none;color:var(--text);margin-left:8px}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:12px;height:52px;position:sticky;top:0;z-index:50}
+.nav-title{font-size:15px;font-weight:600}
+.nav-tabs{display:flex;gap:2px;background:var(--bg);border-radius:8px;padding:3px}
+.nav-tab{padding:5px 16px;font-size:12px;font-weight:500;border:none;border-radius:6px;cursor:pointer;background:none;color:var(--muted)}
+.nav-tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-btn{padding:6px 13px;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:7px;cursor:pointer;background:none;color:var(--text)}
 .nav-btn:hover{background:var(--bg)}
+.period-nav{display:flex;align-items:center;gap:6px}
+.period-nav button{border:1px solid var(--border);background:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:13px;color:var(--text);line-height:1}
+.period-nav button:hover{background:var(--bg)}
+.period-nav span{font-size:12px;color:var(--muted);min-width:150px;text-align:center}
 
-/* SUMMARY STRIP */
-.summary{display:flex;gap:8px;padding:16px 20px 0;flex-wrap:wrap}
-.sum-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 16px;display:flex;flex-direction:column;gap:2px;min-width:100px}
-.sum-n{font-size:22px;font-weight:600;line-height:1}
+.legend-bar{display:flex;gap:10px;padding:7px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.leg-dot{width:10px;height:10px;border-radius:3px;border:1px solid rgba(0,0,0,.1);flex-shrink:0}
+
+.summary{display:flex;gap:8px;padding:12px 20px 0;flex-wrap:wrap}
+.sum-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 14px}
+.sum-n{font-size:20px;font-weight:600;line-height:1}
 .sum-l{font-size:11px;color:var(--muted);margin-top:2px}
-.sum-checkin .sum-n{color:#b89e00}
-.sum-unpaid .sum-n{color:#e63c3c}
-.sum-free .sum-n{color:#3a7d1e}
+.sum-ci .sum-n{color:#b89e00}
+.sum-up .sum-n{color:#e63c3c}
 
-/* DATE HEADER */
-.date-header{display:flex;gap:12px;padding:16px 20px 0}
-.date-col{flex:1;display:flex;align-items:baseline;gap:8px}
-.date-big{font-size:18px;font-weight:600}
-.date-sub{font-size:13px;color:var(--muted)}
-.date-today{color:var(--text)}
-.date-tomorrow{color:var(--muted)}
+/* WEEK */
+.week-wrap{padding:16px 20px 80px}
+.week-grid-outer{display:flex;overflow-x:auto}
+.week-sticky-col{width:80px;min-width:80px;flex-shrink:0;position:sticky;left:0;z-index:20;background:var(--surface);box-shadow:2px 0 4px rgba(0,0,0,.06)}
+.week-scroll-cols{display:flex}
+.wday-col{min-width:140px;width:140px;flex-shrink:0}
 
-/* ROOMS */
-.rooms{padding:14px 20px 80px;display:flex;flex-direction:column;gap:12px}
-.room-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.room-head{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);gap:10px}
-.room-name{font-size:13px;font-weight:600;flex:1}
-.room-count{font-size:11px;color:var(--muted);background:var(--bg);padding:2px 8px;border-radius:5px}
-.room-del{border:none;background:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:0 4px}
-.room-del:hover{color:#e63c3c}
+.th-corner{height:44px;background:var(--surface);border-bottom:2px solid var(--border);border-right:1px solid var(--border)}
+.th-day{background:var(--surface);padding:7px 8px;border-bottom:2px solid var(--border);border-right:1px solid var(--border);height:44px;display:flex;flex-direction:column;justify-content:center}
+.th-day.today{background:#f0ede8}
+.th-weekday{font-size:10px;color:var(--muted);display:block}
+.th-date{font-size:13px;font-weight:600;display:block}
 
-/* BED GRID */
-.bed-grid{display:grid;grid-template-columns:100px 1fr 1fr;border-bottom:1px solid var(--border)}
-.bed-grid:last-child{border-bottom:none}
-.bed-label-col{padding:8px 12px 8px 16px;display:flex;align-items:center;font-size:11px;color:var(--muted);border-right:1px solid var(--border)}
-.bed-cell{padding:6px 10px;border-right:1px solid var(--border);cursor:pointer;min-height:44px;display:flex;flex-direction:column;justify-content:center;transition:filter .1s}
-.bed-cell:last-child{border-right:none}
-.bed-cell:hover{filter:brightness(.95)}
-.bed-col-header{background:var(--bg);padding:6px 10px;font-size:11px;font-weight:500;color:var(--muted);display:flex;align-items:center;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
-.bed-col-header:last-child{border-right:none}
-.bed-col-header.is-today{color:var(--text)}
+.room-label-sticky{background:var(--bg);border-top:2px solid var(--border);border-bottom:1px solid var(--border);border-right:1px solid var(--border);padding:4px 10px;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;justify-content:space-between;height:28px}
+.room-label-span{background:var(--bg);border-top:2px solid var(--border);border-bottom:1px solid var(--border);border-right:1px solid var(--border);height:28px}
+.room-del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 2px;line-height:1}
+.room-del-btn:hover{color:#e63c3c}
 
-.s-free{background:var(--s-free)}
-.s-checkin{background:var(--s-checkin)}
-.s-unpaid{background:var(--s-unpaid)}
-.s-change{background:var(--s-change)}
-.s-paid-noci{background:var(--s-paid-noci)}
-.s-occupied{background:#fff}
+.bed-label-cell{background:var(--surface);border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:11px;color:var(--muted);padding:0 10px;display:flex;align-items:center;min-height:64px}
+.bed-label-cell.last-bed{border-bottom:2px solid var(--border)}
+.slot-col-cell{border-bottom:1px solid var(--border);border-right:1px solid var(--border);padding:0;min-height:64px}
+.slot-col-cell.last-bed{border-bottom:2px solid var(--border)}
 
-.guest-name{font-size:12px;font-weight:600;line-height:1.2;color:var(--text)}
-.s-unpaid .guest-name,.s-paid-noci .guest-name{color:#fff}
-.s-change .guest-name{color:#0a6b5a}
-.s-checkin .guest-name{color:#6b5800}
-.guest-note{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3}
-.s-unpaid .guest-note,.s-paid-noci .guest-note{color:rgba(255,255,255,.75)}
-.s-change .guest-note{color:#0a6b5a}
-.s-checkin .guest-note{color:#7a6600}
+/* CELL */
+.slot-cell{display:flex;flex-direction:column;min-height:64px}
+.slot-cell.s-checkin{background:var(--s-checkin)}
+.slot-cell.s-unpaid{background:var(--s-unpaid)}
+.slot-cell.s-change{background:var(--s-change)}
+.slot-cell.s-paid-noci{background:var(--s-paid-noci)}
+.slot-cell.s-cancel{background:var(--s-cancel)}
+.slot-cell.s-empty{background:#fff}
 
-/* WEEK VIEW */
-.week-nav{display:flex;align-items:center;gap:10px;padding:16px 20px 0}
-.week-nav button{border:1px solid var(--border);background:none;border-radius:7px;padding:5px 13px;cursor:pointer;font-size:12px;color:var(--text)}
-.week-nav button:hover{background:var(--surface)}
-.week-label{font-size:13px;color:var(--muted)}
-.week-scroll{overflow-x:auto;padding:12px 20px 80px}
-.week-table{border-collapse:collapse;min-width:700px;width:100%}
-.week-table th{background:var(--surface);padding:8px 10px;font-size:11px;font-weight:500;color:var(--muted);border:1px solid var(--border);text-align:left;white-space:nowrap;position:sticky;top:52px}
-.week-table th.is-today{color:var(--text);background:var(--bg)}
-.week-table td{border:1px solid var(--border);padding:0;min-width:100px;vertical-align:top}
-.week-table .td-label{padding:8px 12px;font-size:11px;color:var(--muted);background:var(--surface);white-space:nowrap;font-weight:500}
-.week-table .td-room{padding:6px 10px;font-size:10px;font-weight:600;color:var(--muted);background:var(--bg);text-transform:uppercase;letter-spacing:.05em}
-.week-cell{padding:5px 8px;min-height:36px;cursor:pointer;height:100%;display:flex;flex-direction:column;justify-content:center}
-.week-cell:hover{filter:brightness(.93)}
-.week-cell .guest-name{font-size:11px}
-.week-cell .guest-note{font-size:10px}
+.cell-top{display:flex;flex-direction:column;align-items:center;padding:6px 6px 2px;position:relative;}
+.cell-name{
+  font-size:14px;font-weight:700;width:100%;
+  border:none;outline:none;background:transparent;
+  font-family:inherit;color:var(--text);padding:0;
+  text-align:center;cursor:text;
+}
+.cell-name::placeholder{color:#ccc;font-weight:400;font-size:12px;text-align:center}
+.cell-nat-row{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:1px;}
 
-/* MODAL */
+.slot-cell.s-unpaid .cell-name,.slot-cell.s-paid-noci .cell-name{color:#fff}
+.slot-cell.s-unpaid .cell-name::placeholder,.slot-cell.s-paid-noci .cell-name::placeholder{color:rgba(255,255,255,.35)}
+.slot-cell.s-change .cell-name{color:#0a6b5a}
+.slot-cell.s-checkin .cell-name{color:#6b5800}
+.slot-cell.s-cancel .cell-name{color:#555}
+
+/* NAT SELECT */
+.nat-select{
+  font-size:11px;border:none;outline:none;background:transparent;
+  font-family:inherit;cursor:pointer;padding:1px 2px;
+  appearance:none;-webkit-appearance:none;
+  color:var(--muted);max-width:80px;text-align:center;
+}
+.slot-cell.s-unpaid .nat-select,.slot-cell.s-paid-noci .nat-select{color:rgba(255,255,255,.8)}
+.slot-cell.s-change .nat-select{color:#0a6b5a}
+.slot-cell.s-checkin .nat-select{color:#6b5800}
+.cell-corner{
+  position:absolute;top:3px;right:4px;
+}
+
+/* NOTE ICON */
+.note-btn{
+  background:none;border:none;cursor:pointer;padding:1px;
+  line-height:1;border-radius:3px;
+  font-size:12px;opacity:.2;transition:opacity .15s;
+  position:relative;display:block;
+}
+.note-btn:hover{opacity:.7}
+.note-btn.has-notes{opacity:1;filter:drop-shadow(0 0 3px rgba(250,200,0,.6))}
+.note-dot{
+  width:5px;height:5px;border-radius:50%;background:#e6a800;
+  position:absolute;top:-1px;right:-1px;
+  display:none;border:1px solid #fff;
+}
+.note-btn.has-notes .note-dot{display:block}
+.slot-cell.s-unpaid .note-btn{opacity:.35}
+.slot-cell.s-unpaid .note-btn.has-notes{opacity:1}
+.slot-cell.s-paid-noci .note-btn{opacity:.35}
+.slot-cell.s-paid-noci .note-btn.has-notes{opacity:1}
+
+.cell-bottom{border-top:1px solid rgba(0,0,0,.07);display:flex}
+.slot-cell.s-unpaid .cell-bottom,.slot-cell.s-paid-noci .cell-bottom{border-top-color:rgba(255,255,255,.15)}
+.cell-select{
+  flex:1;font-size:10px;border:none;outline:none;
+  background:transparent;color:var(--text);
+  font-family:inherit;padding:3px 4px;cursor:pointer;
+  appearance:none;-webkit-appearance:none;min-width:0;
+}
+.cell-select:first-child{border-right:1px solid rgba(0,0,0,.1)}
+.slot-cell.s-unpaid .cell-select,.slot-cell.s-paid-noci .cell-select{
+  color:#fff;background:transparent;
+}
+.slot-cell.s-unpaid .cell-select option,.slot-cell.s-paid-noci .cell-select option{
+  color:var(--text);background:#fff;
+}
+.slot-cell.s-unpaid .cell-select:first-child,.slot-cell.s-paid-noci .cell-select:first-child{border-right-color:rgba(255,255,255,.2)}
+.slot-cell.s-change .cell-select{color:#0a6b5a}
+.slot-cell.s-change .cell-select option{color:var(--text);background:#fff}
+.slot-cell.s-checkin .cell-select{color:#6b5800}
+.slot-cell.s-checkin .cell-select option{color:var(--text);background:#fff}
+.slot-cell.s-cancel .cell-select{color:#444}
+.slot-cell.s-lower .cell-select{color:#444}
+
+/* NOTES PANEL */
+.notes-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.3)}
+.notes-overlay.open{display:block}
+.notes-panel{
+  position:fixed;right:-340px;top:0;bottom:0;width:320px;
+  background:var(--surface);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;z-index:301;
+  box-shadow:-4px 0 20px rgba(0,0,0,.1);
+  transition:right .25s ease;
+}
+.notes-panel.open{right:0}
+.notes-header{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.notes-header h3{font-size:14px;font-weight:600;flex:1}
+.notes-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;padding:2px}
+.notes-close:hover{color:var(--text)}
+.notes-list{flex:1;overflow-y:auto;padding:12px}
+.note-item{background:var(--bg);border-radius:8px;padding:10px 12px;margin-bottom:8px;position:relative}
+.note-text{font-size:13px;line-height:1.5;color:var(--text);white-space:pre-wrap}
+.note-time{font-size:10px;color:var(--muted);margin-top:4px}
+.note-del{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;opacity:0}
+.note-item:hover .note-del{opacity:1}
+.note-del:hover{color:#e63c3c}
+.notes-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px}
+.notes-add{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px}
+.notes-add textarea{
+  flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:8px;
+  font-size:13px;font-family:inherit;background:var(--bg);color:var(--text);
+  resize:none;height:60px;outline:none;
+}
+.notes-add textarea:focus{border-color:#3a6fd4}
+.notes-add button{padding:8px 14px;background:var(--text);color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500;align-self:flex-end}
+.notes-add button:hover{background:#333}
+
+/* MONTH */
+.month-wrap{padding:16px 20px 80px;display:flex;flex-direction:column;gap:12px}
+.month-room{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.month-room-head{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.month-room-name{font-size:13px;font-weight:600;flex:1}
+.month-room-sub{font-size:11px;color:var(--muted)}
+.month-cal{overflow-x:auto}
+.month-table{border-collapse:collapse;min-width:100%}
+.month-table th{padding:5px 3px;font-size:10px;color:var(--muted);font-weight:500;text-align:center;border-right:1px solid var(--border);border-bottom:1px solid var(--border);min-width:26px}
+.month-table th.today-col{color:var(--text);font-weight:700;background:#f0ede8}
+.month-table td{padding:0;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.slot-col-sticky{padding:4px 8px;font-size:10px;color:var(--muted);background:var(--surface);white-space:nowrap;position:sticky;left:0;z-index:5;border-right:1px solid var(--border)}
+.month-dot{width:100%;height:22px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.month-dot:hover{filter:brightness(.88)}
+.month-dot span{font-size:9px;font-weight:700;color:rgba(0,0,0,.4);max-width:24px;overflow:hidden;white-space:nowrap}
+.md-checkin{background:var(--s-checkin)}.md-unpaid{background:var(--s-unpaid)}
+.md-change{background:var(--s-change)}.md-paid-noci{background:var(--s-paid-noci)}
+.md-cancel{background:var(--s-cancel)}.md-lower{background:var(--s-lower)}
+.md-empty{background:#fff}.today-bg{background:#f0ede8}
+
+/* ROOM MODAL */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;padding:20px}
 .overlay.open{display:flex}
-.modal{background:var(--surface);border-radius:14px;padding:1.5rem;width:100%;max-width:340px;box-shadow:0 12px 40px rgba(0,0,0,.15)}
-.modal h3{font-size:15px;font-weight:600;margin-bottom:1.2rem}
-.field{margin-bottom:12px}
+.modal{background:var(--surface);border-radius:14px;padding:1.4rem;width:100%;max-width:320px;box-shadow:0 12px 40px rgba(0,0,0,.15)}
+.modal h3{font-size:15px;font-weight:600;margin-bottom:1.1rem}
+.field{margin-bottom:11px}
 .field label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
-.field input,.field select,.field textarea{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text);font-family:inherit}
-.field textarea{resize:vertical;min-height:64px}
-.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:1.2rem}
-.btn{padding:8px 16px;font-size:13px;font-weight:500;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:none;color:var(--text)}
+.field input{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text);font-family:inherit}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:1.1rem}
+.btn{padding:7px 15px;font-size:13px;font-weight:500;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:none;color:var(--text)}
 .btn:hover{background:var(--bg)}
 .btn-primary{background:var(--text);color:#fff;border-color:var(--text)}
 .btn-primary:hover{background:#333}
-.btn-danger{color:#e63c3c;border-color:rgba(230,60,60,.3)}
-.btn-danger:hover{background:#fff0f0}
-
-/* ADD ROOM MODAL */
-.add-room-form{display:flex;flex-direction:column;gap:10px}
-
-/* LEGEND */
-.legend{display:flex;gap:10px;padding:10px 20px;flex-wrap:wrap}
-.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
-.leg-dot{width:11px;height:11px;border-radius:3px;border:1px solid rgba(0,0,0,.08)}
-
-/* FAB */
-.fab{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;border:none;border-radius:50px;padding:12px 20px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:40}
-.fab:hover{background:#333}
-
-/* EMPTY */
 .empty{text-align:center;padding:60px 20px;color:var(--muted)}
-.empty p{font-size:15px;margin-bottom:8px;color:var(--text)}
-.empty span{font-size:13px}
+.empty p{font-size:15px;color:var(--text);margin-bottom:6px}
 </style>
 </head>
 <body>
@@ -141,276 +226,391 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20
 <nav>
   <span class="nav-title">🏨 Hostel Board</span>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="switchView('today')">Dnes / Zítra</button>
-    <button class="nav-tab" onclick="switchView('week')">Týden</button>
+    <button class="nav-tab active" onclick="switchView('week')">Week</button>
+    <button class="nav-tab" onclick="switchView('month')">Month</button>
   </div>
-  <button class="nav-btn" onclick="openAddRoom()">+ Přidat pokoj</button>
+  <div class="nav-right">
+    <div class="period-nav">
+      <button onclick="navPrev()">‹</button>
+      <span id="period-label"></span>
+      <button onclick="navNext()">›</button>
+    </div>
+    <button class="nav-btn" onclick="openAddRoom()">+ Room</button>
+  </div>
 </nav>
 
-<div id="view-today">
+<div class="legend-bar">
+  <span class="leg"><span class="leg-dot" style="background:#f0d800"></span>Check-in (not paid)</span>
+  <span class="leg"><span class="leg-dot" style="background:#e63c3c"></span>Not paid</span>
+  <span class="leg"><span class="leg-dot" style="background:#17c4aa"></span>Change room</span>
+  <span class="leg"><span class="leg-dot" style="background:#3a6fd4"></span>Paid, not checked in</span>
+  <span class="leg"><span class="leg-dot" style="background:#d0cfc9"></span>Cancellation / leaving sooner</span>
+
+</div>
+
+<div id="view-week">
   <div class="summary" id="summary"></div>
-  <div class="legend">
-    <span class="leg"><span class="leg-dot" style="background:#f0d800"></span>check-in (not paid)</span>
-    <span class="leg"><span class="leg-dot" style="background:#e63c3c"></span>not paid</span>
-    <span class="leg"><span class="leg-dot" style="background:#17c4aa"></span>change room</span>
-    <span class="leg"><span class="leg-dot" style="background:#3a6fd4"></span>paid, not checked in</span>
-    <span class="leg"><span class="leg-dot" style="background:#fff;border-color:#ccc"></span>occupied</span>
-    <span class="leg"><span class="leg-dot" style="background:#e8f4de"></span>free</span>
-  </div>
-  <div class="date-header">
-    <div class="date-col"><span class="date-big date-today" id="date-today"></span><span class="date-sub">dnes</span></div>
-    <div class="date-col"><span class="date-big date-tomorrow" id="date-tomorrow"></span><span class="date-sub">zítra</span></div>
-  </div>
-  <div class="rooms" id="rooms-today"></div>
+  <div class="week-wrap"><div id="week-table"></div></div>
+</div>
+<div id="view-month" style="display:none">
+  <div class="month-wrap" id="month-wrap"></div>
 </div>
 
-<div id="view-week" style="display:none">
-  <div class="week-nav">
-    <button onclick="changeWeek(-1)">‹</button>
-    <span class="week-label" id="week-label"></span>
-    <button onclick="changeWeek(1)">›</button>
+<!-- Notes panel -->
+<div class="notes-overlay" id="notes-overlay" onclick="closeNotes()"></div>
+<div class="notes-panel" id="notes-panel">
+  <div class="notes-header">
+    <h3 id="notes-title">Notes</h3>
+    <button class="notes-close" onclick="closeNotes()">×</button>
   </div>
-  <div class="week-scroll">
-    <table class="week-table" id="week-table"></table>
+  <div class="notes-list" id="notes-list"></div>
+  <div class="notes-add">
+    <textarea id="notes-input" placeholder="Add a note…" onkeydown="if(event.key==='Enter'&&event.ctrlKey)addNote()"></textarea>
+    <button onclick="addNote()">Add</button>
   </div>
 </div>
 
-<!-- Cell modal -->
-<div class="overlay" id="cell-modal">
-  <div class="modal">
-    <h3 id="cell-modal-title">Upravit</h3>
-    <div class="field"><label>Jméno hosta</label><input id="cm-name" placeholder="např. Anna UK"></div>
-    <div class="field"><label>Status</label>
-      <select id="cm-status">
-        <option value="free">Volné</option>
-        <option value="occupied">Occupied (paid)</option>
-        <option value="checkin">Check-in day (not paid yet)</option>
-        <option value="unpaid">Not paid</option>
-        <option value="change">Change beds / room</option>
-        <option value="paid-noci">Paid, not checked in</option>
-      </select>
-    </div>
-    <div class="field"><label>Poznámka</label><textarea id="cm-note" placeholder="např. arrives 9:30pm, owes €55..."></textarea></div>
-    <div class="modal-footer">
-      <button class="btn btn-danger" onclick="clearCell()">Vymazat</button>
-      <button class="btn" onclick="closeModal('cell-modal')">Zrušit</button>
-      <button class="btn btn-primary" onclick="saveCell()">Uložit</button>
-    </div>
-  </div>
-</div>
-
-<!-- Add room modal -->
+<!-- Room modal -->
 <div class="overlay" id="room-modal">
   <div class="modal">
-    <h3>Přidat pokoj</h3>
-    <div class="add-room-form">
-      <div class="field"><label>Název pokoje</label><input id="rm-name" placeholder="např. Room 1, Dorm A..."></div>
-      <div class="field"><label>Počet lůžek</label><input id="rm-beds" type="number" min="1" max="30" placeholder="6"></div>
-    </div>
+    <h3>Add room</h3>
+    <div class="field"><label>Room name</label><input id="rm-name" placeholder="e.g. Room 1, Dorm A..."></div>
+    <div class="field"><label>Number of beds</label><input id="rm-beds" type="number" min="1" max="30" placeholder="4"></div>
     <div class="modal-footer">
-      <button class="btn" onclick="closeModal('room-modal')">Zrušit</button>
-      <button class="btn btn-primary" onclick="saveRoom()">Přidat</button>
+      <button class="btn" onclick="closeModal('room-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveRoom()">Add</button>
     </div>
   </div>
 </div>
 
 <script>
-const DAYS=['ne','po','út','st','čt','pá','so'];
-const MONTHS=['ledna','února','března','dubna','května','června','července','srpna','září','října','listopadu','prosince'];
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS_LONG=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const STATUSES=['','checkin','unpaid','change','paid-noci','cancel'];
+const STATUS_LABELS=['— status —','Check-in (not paid)','Not paid','Change room','Paid, not checked in','Cancellation / leaving sooner'];
+const HOURS=['','arrived','00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','custom'];
 
-let rooms=[], cells={}, weekOffset=0, currentView='today', editingKey=null;
+const NATS=[
+  {v:'',l:'— nat —'},
+  {v:'gb',l:'UK'},
+  {v:'us',l:'USA'},
+  {v:'au',l:'AUS'},
+  {v:'de',l:'GER'},
+  {v:'fr',l:'FRA'},
+  {v:'es',l:'ESP'},
+  {v:'it',l:'ITA'},
+  {v:'nl',l:'NL'},
+  {v:'ar',l:'ARG'},
+  {v:'br',l:'BRA'},
+  {v:'ca',l:'CAN'},
+  {v:'custom',l:'+ other…'},
+];
+let rooms=[], cells={}, notes={}, weekOff=0, monthOff=0, view='week', activeNoteKey=null;
 
 function load(){
-  try{const r=localStorage.getItem('hb_rooms');if(r)rooms=JSON.parse(r);}catch{}
-  try{const r=localStorage.getItem('hb_cells');if(r)cells=JSON.parse(r);}catch{}
-  if(!rooms.length){
-    rooms=[
-      {id:'r1',name:'Room 1',beds:8},
-      {id:'r2',name:'Room 2',beds:10},
-      {id:'r3',name:'Room 3',beds:4},
-      {id:'r4',name:'Room 4',beds:4},
-    ];
-  }
+  try{const r=localStorage.getItem('hb7_rooms');if(r)rooms=JSON.parse(r);}catch{}
+  try{const r=localStorage.getItem('hb7_cells');if(r)cells=JSON.parse(r);}catch{}
+  try{const r=localStorage.getItem('hb7_notes');if(r)notes=JSON.parse(r);}catch{}
+  if(!rooms.length) rooms=[{id:'r1',name:'Room 1',beds:4},{id:'r2',name:'Room 2',beds:4}];
 }
 function save(){
-  try{localStorage.setItem('hb_rooms',JSON.stringify(rooms));}catch{}
-  try{localStorage.setItem('hb_cells',JSON.stringify(cells));}catch{}
+  try{localStorage.setItem('hb7_rooms',JSON.stringify(rooms));}catch{}
+  try{localStorage.setItem('hb7_cells',JSON.stringify(cells));}catch{}
+  try{localStorage.setItem('hb7_notes',JSON.stringify(notes));}catch{}
+}
+function p2(n){return String(n).padStart(2,'0');}
+function ds(d){return`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;}
+function fmt(d){return`${p2(d.getDate())}/${p2(d.getMonth()+1)}`;}
+function isToday(d){return ds(d)===ds(new Date());}
+function ck(rid,slot,datestr){return`${rid}-${slot}-${datestr}`;}
+function gc(key){return cells[key]||{name:'',status:'',arrival:''};}
+function gn(key){return notes[key]||[];}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function weekDays(){
+  const n=new Date(),day=n.getDay(),m=new Date(n);
+  m.setDate(n.getDate()-(day===0?6:day-1)+weekOff*7);m.setHours(0,0,0,0);
+  return Array.from({length:7},(_,i)=>{const d=new Date(m);d.setDate(m.getDate()+i);return d;});
+}
+function monthDays(){
+  const n=new Date(),d=new Date(n.getFullYear(),n.getMonth()+monthOff,1),days=[];
+  const mo=d.getMonth();
+  while(d.getMonth()===mo){days.push(new Date(d));d.setDate(d.getDate()+1);}
+  return days;
 }
 
-function cellKey(roomId,bedIdx,dateStr){return`${roomId}-${bedIdx}-${dateStr}`;}
-function getCell(key){return cells[key]||{name:'',status:'free',note:''};}
-
-function fmtDate(d){return`${d.getDate()} ${MONTHS[d.getMonth()]}`;}
-function fmtDateShort(d){return`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;}
-function dateStr(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
-function isToday(d){const n=new Date();return dateStr(d)===dateStr(n);}
-
-function getToday(){const d=new Date();d.setHours(0,0,0,0);return d;}
-function getTomorrow(){const d=getToday();d.setDate(d.getDate()+1);return d;}
-
-// SUMMARY
-function calcSummary(dates){
-  let checkin=0,unpaid=0,free=0,total=0;
-  dates.forEach(d=>{
-    const ds=dateStr(d);
-    rooms.forEach(r=>{
-      for(let b=0;b<r.beds;b++){
-        total++;
-        const c=getCell(cellKey(r.id,b,ds));
-        if(c.status==='free')free++;
-        if(c.status==='checkin')checkin++;
-        if(c.status==='unpaid')unpaid++;
-      }
-    });
-  });
-  return{checkin,unpaid,free,total};
-}
-
-function renderSummary(){
-  const today=getToday(),tmrw=getTomorrow();
-  const s=calcSummary([today,tmrw]);
+function renderSummary(days){
+  let ci=0,up=0;
+  days.forEach(d=>{const dstr=ds(d);rooms.forEach(r=>{for(let s=0;s<r.beds;s++){const c=gc(ck(r.id,s,dstr));if(c.status==='checkin')ci++;if(c.status==='unpaid')up++;}});});
   document.getElementById('summary').innerHTML=`
-    <div class="sum-card sum-checkin"><div class="sum-n">${s.checkin}</div><div class="sum-l">check-in dnes/zítra</div></div>
-    <div class="sum-card sum-unpaid"><div class="sum-n">${s.unpaid}</div><div class="sum-l">nezaplaceno</div></div>
-    <div class="sum-card sum-free"><div class="sum-n">${s.free}</div><div class="sum-l">volných lůžek</div></div>
-  `;
+    <div class="sum-card sum-ci"><div class="sum-n">${ci}</div><div class="sum-l">check-ins this week</div></div>
+    <div class="sum-card sum-up"><div class="sum-n">${up}</div><div class="sum-l">unpaid</div></div>`;
 }
 
-// TODAY VIEW
-function renderToday(){
-  const today=getToday(),tmrw=getTomorrow();
-  const tds=dateStr(today),tmds=dateStr(tmrw);
-  document.getElementById('date-today').textContent=`${DAYS[today.getDay()]} ${fmtDate(today)}`;
-  document.getElementById('date-tomorrow').textContent=`${DAYS[tmrw.getDay()]} ${fmtDate(tmrw)}`;
-  renderSummary();
+function statusClass(s){return s?`s-${s}`:'s-empty';}
 
-  if(!rooms.length){
-    document.getElementById('rooms-today').innerHTML=`<div class="empty"><p>Zatím žádné pokoje</p><span>Klikni na "+ Přidat pokoj" a začni</span></div>`;
-    return;
-  }
+function arrivalOpts(current){
+  return HOURS.map((h,i)=>{
+    if(h==='custom') return`<option value="custom">custom…</option>`;
+    if(h==='') return`<option value=""${!current?' selected':''}>— arrival —</option>`;
+    if(h==='arrived') return`<option value="arrived"${current==='arrived'?' selected':''}>arrived ✓</option>`;
+    return`<option value="${h}"${current===h?' selected':''}>${h}</option>`;
+  }).join('');
+}
+function statusOpts(current){
+  return STATUSES.map((s,i)=>`<option value="${s}"${current===s?' selected':''}>${STATUS_LABELS[i]}</option>`).join('');
+}
 
-  let html='';
-  rooms.forEach(r=>{
-    html+=`<div class="room-card">
-      <div class="room-head">
-        <span class="room-name">${r.name}</span>
-        <span class="room-count">${r.beds} lůžek</span>
-        <button class="room-del" onclick="deleteRoom('${r.id}')" title="Smazat pokoj">×</button>
-      </div>
-      <div class="bed-col-header" style="display:grid;grid-template-columns:100px 1fr 1fr">
-        <div class="bed-col-header" style="border:none;padding:6px 12px 6px 16px"></div>
-        <div class="bed-col-header is-today" style="border:none">dnes</div>
-        <div class="bed-col-header" style="border:none">zítra</div>
-      </div>`;
-    for(let b=0;b<r.beds;b++){
-      const k1=cellKey(r.id,b,tds),k2=cellKey(r.id,b,tmds);
-      const c1=getCell(k1),c2=getCell(k2);
-      html+=`<div class="bed-grid">
-        <div class="bed-label-col">Lůžko ${b+1}</div>
-        <div class="bed-cell s-${c1.status}" onclick="openCell('${k1}','${r.name} · Lůžko ${b+1} · dnes')">${cellHtml(c1)}</div>
-        <div class="bed-cell s-${c2.status}" onclick="openCell('${k2}','${r.name} · Lůžko ${b+1} · zítra')">${cellHtml(c2)}</div>
-      </div>`;
+function natOpts(current){
+  return NATS.map(n=>{
+    if(n.v==='custom') return`<option value="custom">✏️ other…</option>`;
+    return`<option value="${n.v}"${current===n.v?' selected':''}>${n.l}</option>`;
+  }).join('');
+}
+function handleNat(sel){
+  const key=sel.dataset.key;
+  if(sel.value==='custom'){
+    const custom=prompt('Enter nationality/flag (e.g. POL, NZL, KOR):');
+    if(custom&&custom.trim()){
+      const c=gc(key);c.nat=custom.trim().toUpperCase();cells[key]=c;save();
+      // add option
+      const opt=document.createElement('option');
+      opt.value=c.nat;opt.textContent='🌐 '+c.nat;opt.selected=true;
+      sel.insertBefore(opt,sel.lastElementChild);
+      sel.value=c.nat;
+    } else {
+      sel.value=gc(key).nat||'';
     }
-    html+='</div>';
-  });
-  document.getElementById('rooms-today').innerHTML=html;
+  } else {
+    const c=gc(key);c.nat=sel.value;cells[key]=c;save();
+  }
 }
-
-function cellHtml(c){
-  if(!c.name||c.status==='free')return'';
-  return`<div class="guest-name">${c.name}</div>${c.note?`<div class="guest-note">${c.note}</div>`:''}`;
-}
-
-// WEEK VIEW
-function getWeekDays(){
-  const now=new Date(),day=now.getDay(),monday=new Date(now);
-  monday.setDate(now.getDate()-(day===0?6:day-1)+weekOffset*7);
-  monday.setHours(0,0,0,0);
-  return Array.from({length:7},(_,i)=>{const d=new Date(monday);d.setDate(monday.getDate()+i);return d;});
+function cellHtml(key,c){
+  const hasNotes=gn(key).length>0;
+  const isCustomArrival=c.arrival&&!HOURS.slice(0,-1).includes(c.arrival);
+  return`<div class="slot-cell ${statusClass(c.status)}" id="sc-${key}">
+    <div class="cell-top">
+      <div class="cell-corner">
+        <button class="note-btn${hasNotes?' has-notes':''}" id="nb-${key}" onclick="openNotes('${key}','${esc(c.name||'Guest')}')" title="Notes">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block"><rect x="1" y="1" width="14" height="10" rx="3" fill="#f5c800" stroke="#333" stroke-width="1.5"/><polygon points="3,11 7,11 5,14" fill="#f5c800" stroke="#333" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <div class="note-dot"></div>
+        </button>
+      </div>
+      <input class="cell-name" value="${esc(c.name)}" placeholder="Guest…" data-key="${key}" onchange="updateField(this,'name')" onkeydown="if(event.key==='Enter')this.blur()" onfocus="this.select()">
+      <div class="cell-nat-row">
+        <select class="nat-select" data-key="${key}" onchange="handleNat(this)">${natOpts(c.nat||'')}${c.nat&&!NATS.find(n=>n.v===c.nat)?`<option value="${esc(c.nat)}" selected>${esc(c.nat)}</option>`:''}</select>
+      </div>
+    </div>
+    <div class="cell-bottom">
+      <select class="cell-select" data-key="${key}" onchange="updateField(this,'status')">${statusOpts(c.status)}</select>
+      <select class="cell-select" data-key="${key}" onchange="handleArrival(this)">${arrivalOpts(c.arrival)}${isCustomArrival?`<option value="${esc(c.arrival)}" selected>${esc(c.arrival)}</option>`:''}</select>
+    </div>
+  </div>`;
 }
 
 function renderWeek(){
-  const days=getWeekDays();
-  document.getElementById('week-label').textContent=`${fmtDateShort(days[0])} – ${fmtDateShort(days[6])} · ${days[0].getFullYear()}`;
-  let html=`<thead><tr><th style="min-width:110px;position:sticky;left:0;z-index:10;background:#fff">Pokoj / Lůžko</th>`;
-  days.forEach(d=>{html+=`<th class="${isToday(d)?'is-today':''}">${DAYS[d.getDay()]} ${fmtDateShort(d)}</th>`;});
-  html+='</tr></thead><tbody>';
+  const days=weekDays();
+  document.getElementById('period-label').textContent=`${fmt(days[0])} – ${fmt(days[6])} · ${days[0].getFullYear()}`;
+  renderSummary(days);
+
+  // Build two parallel column sets: sticky left col + scrollable day cols
+  // sticky col: corner + room labels + bed labels
+  // scroll cols: 7 day columns each with header + room-span + cells
+
+  if(!rooms.length){
+    document.getElementById('week-table').innerHTML=`<div style="padding:60px 20px;text-align:center;color:var(--muted)"><p style="font-size:15px;color:var(--text);margin-bottom:6px">No rooms yet</p>Click "+ Room" to get started</div>`;
+    return;
+  }
+
+  // We'll build a flex layout:
+  // .week-grid-outer
+  //   .week-sticky-col  (position:sticky left:0)
+  //   .week-scroll-cols (overflow visible, flex)
+  //     .wday-col x7
+
+  let stickyH = `<div class="th-corner"></div>`;
+  let dayColsH = days.map(d=>`<div class="wday-col"><div class="th-day${isToday(d)?' today':''}"><span class="th-weekday">${DAYS[d.getDay()]}</span><span class="th-date">${fmt(d)}</span></div>`).join('');
+
   rooms.forEach(r=>{
-    html+=`<tr><td colspan="8" class="td-room">${r.name}</td></tr>`;
-    for(let b=0;b<r.beds;b++){
-      html+=`<tr><td class="td-label" style="position:sticky;left:0;z-index:5;background:#fff">Lůžko ${b+1}</td>`;
-      days.forEach(d=>{
-        const ds=dateStr(d),key=cellKey(r.id,b,ds),c=getCell(key);
-        html+=`<td class="s-${c.status}"><div class="week-cell" onclick="openCell('${key}','${r.name} · Lůžko ${b+1} · ${fmtDateShort(d)}')">${cellHtml(c)}</div></td>`;
+    stickyH+=`<div class="room-label-sticky">${esc(r.name)}<button class="room-del-btn" onclick="deleteRoom('${r.id}')">×</button></div>`;
+    days.forEach((_,di)=>{
+      dayColsH=dayColsH.replace(/(<\/div>)(?![\s\S]*<\/div>)/, ''); // won't work, build differently
+    });
+  });
+
+  // Better: build per-column
+  let stickyCol = `<div class="th-corner"></div>`;
+  let dayCols = days.map(d=>{
+    return{header:`<div class="th-day${isToday(d)?' today':''}"><span class="th-weekday">${DAYS[d.getDay()]}</span><span class="th-date">${fmt(d)}</span></div>`, body:''};
+  });
+
+  rooms.forEach(r=>{
+    stickyCol+=`<div class="room-label-sticky">${esc(r.name)}<button class="room-del-btn" onclick="deleteRoom('${r.id}')">×</button></div>`;
+    dayCols.forEach(col=>col.body+=`<div class="room-label-span"></div>`);
+
+    for(let s=0;s<r.beds;s++){
+      const isLast=s===r.beds-1;
+      stickyCol+=`<div class="bed-label-cell${isLast?' last-bed':''}">Bed ${s+1}</div>`;
+      days.forEach((d,di)=>{
+        const dstr=ds(d),key=ck(r.id,s,dstr),c=gc(key);
+        dayCols[di].body+=`<div class="slot-col-cell${isLast?' last-bed':''}">${cellHtml(key,c)}</div>`;
       });
-      html+='</tr>';
     }
   });
-  html+='</tbody>';
+
+  let html=`<div class="week-grid-outer">
+    <div class="week-sticky-col">${stickyCol}</div>
+    <div class="week-scroll-cols">`;
+  dayCols.forEach(col=>{
+    html+=`<div class="wday-col">${col.header}${col.body}</div>`;
+  });
+  html+=`</div></div>`;
+
   document.getElementById('week-table').innerHTML=html;
 }
 
-function changeWeek(dir){weekOffset+=dir;renderWeek();}
+function updateField(el,field){
+  const key=el.dataset.key,c=gc(key);
+  c[field]=el.value;cells[key]=c;save();
+  if(field==='status'){
+    const cellEl=document.getElementById('sc-'+key);
+    if(cellEl) cellEl.className=`slot-cell ${statusClass(c.status)}`;
+  }
+}
 
-// SWITCHING
+function handleArrival(sel){
+  const key=sel.dataset.key;
+  if(sel.value==='custom'){
+    const custom=prompt('Enter custom arrival time:');
+    if(custom){
+      const c=gc(key);c.arrival=custom;cells[key]=c;save();
+      // add option and select it
+      const opt=document.createElement('option');
+      opt.value=custom;opt.textContent=custom;opt.selected=true;
+      sel.insertBefore(opt,sel.lastChild);
+      sel.value=custom;
+    } else {
+      sel.value=gc(key).arrival||'';
+    }
+  } else {
+    updateField(sel,'arrival');
+  }
+}
+
+// NOTES
+function openNotes(key,guestName){
+  activeNoteKey=key;
+  document.getElementById('notes-title').textContent=`Notes · ${guestName}`;
+  document.getElementById('notes-input').value='';
+  renderNotesList();
+  document.getElementById('notes-overlay').classList.add('open');
+  document.getElementById('notes-panel').classList.add('open');
+  setTimeout(()=>document.getElementById('notes-input').focus(),100);
+}
+function closeNotes(){
+  document.getElementById('notes-overlay').classList.remove('open');
+  document.getElementById('notes-panel').classList.remove('open');
+  activeNoteKey=null;
+}
+function renderNotesList(){
+  const list=gn(activeNoteKey);
+  const el=document.getElementById('notes-list');
+  if(!list.length){el.innerHTML=`<div class="notes-empty">No notes yet</div>`;return;}
+  el.innerHTML=list.map((n,i)=>`
+    <div class="note-item">
+      <div class="note-text">${esc(n.text)}</div>
+      <div class="note-time">${n.time}</div>
+      <button class="note-del" onclick="deleteNote(${i})">×</button>
+    </div>
+  `).join('');
+}
+function addNote(){
+  const text=document.getElementById('notes-input').value.trim();
+  if(!text||!activeNoteKey)return;
+  if(!notes[activeNoteKey])notes[activeNoteKey]=[];
+  const now=new Date();
+  notes[activeNoteKey].push({text,time:`${p2(now.getDate())}/${p2(now.getMonth()+1)} ${p2(now.getHours())}:${p2(now.getMinutes())}`});
+  save();
+  document.getElementById('notes-input').value='';
+  renderNotesList();
+  // update note icon
+  const nb=document.getElementById('nb-'+activeNoteKey);
+  if(nb)nb.classList.add('has-notes');
+}
+function deleteNote(idx){
+  notes[activeNoteKey].splice(idx,1);
+  if(!notes[activeNoteKey].length)delete notes[activeNoteKey];
+  save();renderNotesList();
+  const nb=document.getElementById('nb-'+activeNoteKey);
+  if(nb)nb.classList.toggle('has-notes',gn(activeNoteKey).length>0);
+}
+
+// MONTH
+function renderMonth(){
+  const days=monthDays(),first=days[0];
+  document.getElementById('period-label').textContent=`${MONTHS_LONG[first.getMonth()]} ${first.getFullYear()}`;
+  if(!rooms.length){document.getElementById('month-wrap').innerHTML=`<div class="empty"><p>No rooms yet</p>Click "+ Room" to get started</div>`;return;}
+  let h='';
+  rooms.forEach(r=>{
+    h+=`<div class="month-room"><div class="month-room-head"><span class="month-room-name">${esc(r.name)}</span><span class="month-room-sub">${r.beds} beds</span></div>
+    <div class="month-cal"><table class="month-table"><thead><tr>
+    <th style="position:sticky;left:0;z-index:6;background:var(--surface);min-width:55px"></th>`;
+    days.forEach(d=>h+=`<th class="${isToday(d)?'today-col':''}">${d.getDate()}<br><span style="font-weight:400;font-size:9px">${DAYS[d.getDay()]}</span></th>`);
+    h+='</tr></thead><tbody>';
+    for(let s=0;s<r.beds;s++){
+      h+=`<tr><td class="slot-col-sticky">Bed ${s+1}</td>`;
+      days.forEach(d=>{
+        const dstr=ds(d),key=ck(r.id,s,dstr),c=gc(key);
+        const init=c.name?c.name.split(' ')[0].substring(0,3):'';
+        const dotCls=c.status?`md-${c.status}`:'md-empty';
+        const hasN=gn(key).length>0;
+        h+=`<td class="${isToday(d)?'today-bg':''}"><div class="month-dot ${dotCls}" onclick="jumpToWeek('${dstr}')" title="${esc(c.name)||'—'}${c.arrival?' · '+c.arrival:''}${hasN?' 💬':''}">`;
+        if(c.name)h+=`<span>${init}</span>`;
+        h+='</div></td>';
+      });
+      h+='</tr>';
+    }
+    h+='</tbody></table></div></div>';
+  });
+  document.getElementById('month-wrap').innerHTML=h;
+}
+
+function jumpToWeek(dateStr){
+  const d=new Date(dateStr),now=new Date();now.setHours(0,0,0,0);
+  const day=d.getDay(),mon=new Date(d);mon.setDate(d.getDate()-(day===0?6:day-1));
+  const nowDay=now.getDay(),nowMon=new Date(now);nowMon.setDate(now.getDate()-(nowDay===0?6:nowDay-1));
+  weekOff=Math.round((mon-nowMon)/(7*86400000));
+  switchView('week');
+}
+
 function switchView(v){
-  currentView=v;
-  document.getElementById('view-today').style.display=v==='today'?'block':'none';
+  view=v;
   document.getElementById('view-week').style.display=v==='week'?'block':'none';
-  document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',['today','week'][i]===v));
-  if(v==='today')renderToday();else renderWeek();
+  document.getElementById('view-month').style.display=v==='month'?'block':'none';
+  document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',['week','month'][i]===v));
+  render();
 }
+function navPrev(){if(view==='week')weekOff--;else monthOff--;render();}
+function navNext(){if(view==='week')weekOff++;else monthOff++;render();}
 
-// CELL MODAL
-function openCell(key,title){
-  editingKey=key;
-  const c=getCell(key);
-  document.getElementById('cell-modal-title').textContent=title;
-  document.getElementById('cm-name').value=c.name||'';
-  document.getElementById('cm-status').value=c.status||'free';
-  document.getElementById('cm-note').value=c.note||'';
-  document.getElementById('cell-modal').classList.add('open');
-  setTimeout(()=>document.getElementById('cm-name').focus(),50);
-}
-function saveCell(){
-  cells[editingKey]={name:document.getElementById('cm-name').value.trim(),status:document.getElementById('cm-status').value,note:document.getElementById('cm-note').value.trim()};
-  save();closeModal('cell-modal');render();
-}
-function clearCell(){
-  delete cells[editingKey];
-  save();closeModal('cell-modal');render();
-}
-
-// ROOM MODAL
 function openAddRoom(){
-  document.getElementById('rm-name').value='';
-  document.getElementById('rm-beds').value='';
+  document.getElementById('rm-name').value='';document.getElementById('rm-beds').value='';
   document.getElementById('room-modal').classList.add('open');
   setTimeout(()=>document.getElementById('rm-name').focus(),50);
 }
 function saveRoom(){
-  const name=document.getElementById('rm-name').value.trim();
-  const beds=parseInt(document.getElementById('rm-beds').value)||0;
-  if(!name||beds<1)return;
-  rooms.push({id:'r'+Date.now(),name,beds});
-  save();closeModal('room-modal');render();
+  const name=document.getElementById('rm-name').value.trim(),beds=parseInt(document.getElementById('rm-beds').value)||0;
+  if(!name||beds<1)return;rooms.push({id:'r'+Date.now(),name,beds});save();closeModal('room-modal');render();
 }
 function deleteRoom(id){
-  if(!confirm('Smazat pokoj? Data lůžek zůstanou uložená.'))return;
-  rooms=rooms.filter(r=>r.id!==id);
-  save();render();
+  if(!confirm('Delete room?'))return;
+  rooms=rooms.filter(r=>r.id!==id);save();render();
 }
-
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-function render(){if(currentView==='today')renderToday();else renderWeek();}
+function render(){if(view==='week')renderWeek();else renderMonth();}
 
-document.querySelectorAll('.overlay').forEach(el=>{
-  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});
-});
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(el=>el.classList.remove('open'));
-  if(e.key==='Enter'&&e.ctrlKey&&document.getElementById('cell-modal').classList.contains('open'))saveCell();
-});
+document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.overlay.open').forEach(el=>el.classList.remove('open'));closeNotes();}});
 
 load();render();
 </script>
