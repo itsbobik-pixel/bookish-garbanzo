@@ -90,7 +90,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .slot-cell.s-empty:hover .cell-name::placeholder{color:#ccc}
 .cell-nat-row{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:1px;}
 .slot-cell.s-empty .cell-nat-row{opacity:0;transition:opacity .15s}
-.slot-cell.s-empty:hover .cell-nat-row{opacity:1}
+.slot-cell.s-empty:hover .cell-nat-row{opacity:.6}
 
 .slot-cell.s-unpaid .cell-name,.slot-cell.s-paid-noci .cell-name{color:#fff}
 .slot-cell.s-unpaid .cell-name::placeholder,.slot-cell.s-paid-noci .cell-name::placeholder{color:rgba(255,255,255,.35)}
@@ -99,7 +99,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .slot-cell.s-cancel .cell-name{color:#555}
 
 /* NAT FLAG */
-.nat-flag{font-size:14px;line-height:1;flex-shrink:0}
+.nat-flag{font-size:15px;line-height:1;flex-shrink:0;color:var(--text)}
+.slot-cell.s-unpaid .nat-flag,.slot-cell.s-paid-noci .nat-flag{color:#fff}
 .nat-flag img{width:16px;height:16px;vertical-align:middle;margin-right:2px}
 
 /* NAT SELECT */
@@ -109,7 +110,9 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
   appearance:none;-webkit-appearance:none;
   color:var(--muted);max-width:90px;text-align:center;
 }
-.slot-cell.s-unpaid .nat-select,.slot-cell.s-paid-noci .nat-select{color:rgba(255,255,255,.8)}
+.slot-cell.s-empty .nat-select{color:var(--muted)}
+.slot-cell.s-occupied .nat-select{color:var(--muted)}
+.slot-cell.s-unpaid .nat-select,.slot-cell.s-paid-noci .nat-select{color:rgba(255,255,255,.9)}
 .slot-cell.s-change .nat-select{color:#0a6b5a}
 .slot-cell.s-checkin .nat-select{color:#6b5800}
 .cell-corner{
