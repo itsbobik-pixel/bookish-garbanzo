@@ -85,8 +85,11 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20
   font-family:inherit;color:var(--text);padding:0;
   text-align:center;cursor:text;
 }
-.cell-name::placeholder{color:#ccc;font-weight:400;font-size:12px;text-align:center}
+.cell-name::placeholder{color:transparent;font-weight:400;font-size:12px;text-align:center;transition:color .15s}
+.slot-cell.s-empty:hover .cell-name::placeholder{color:#ccc}
 .cell-nat-row{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:1px;}
+.slot-cell.s-empty .cell-nat-row{opacity:0;transition:opacity .15s}
+.slot-cell.s-empty:hover .cell-nat-row{opacity:1}
 
 .slot-cell.s-unpaid .cell-name,.slot-cell.s-paid-noci .cell-name{color:#fff}
 .slot-cell.s-unpaid .cell-name::placeholder,.slot-cell.s-paid-noci .cell-name::placeholder{color:rgba(255,255,255,.35)}
@@ -123,12 +126,18 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20
   display:none;border:1px solid #fff;
 }
 .note-btn.has-notes .note-dot{display:block}
+.slot-cell.s-empty .note-btn{opacity:0}
+.slot-cell.s-empty:hover .note-btn{opacity:.25}
 .slot-cell.s-unpaid .note-btn{opacity:.35}
 .slot-cell.s-unpaid .note-btn.has-notes{opacity:1}
 .slot-cell.s-paid-noci .note-btn{opacity:.35}
 .slot-cell.s-paid-noci .note-btn.has-notes{opacity:1}
 
-.cell-bottom{border-top:1px solid rgba(0,0,0,.07);display:flex}
+.cell-bottom{border-top:1px solid rgba(0,0,0,.07);display:flex;opacity:0;transition:opacity .15s}
+.slot-cell:hover .cell-bottom{opacity:1}
+.slot-cell.s-checkin .cell-bottom,.slot-cell.s-unpaid .cell-bottom,
+.slot-cell.s-change .cell-bottom,.slot-cell.s-paid-noci .cell-bottom,
+.slot-cell.s-cancel .cell-bottom{opacity:1}
 .slot-cell.s-unpaid .cell-bottom,.slot-cell.s-paid-noci .cell-bottom{border-top-color:rgba(255,255,255,.15)}
 .cell-select{
   flex:1;font-size:11px;border:none;outline:none;
