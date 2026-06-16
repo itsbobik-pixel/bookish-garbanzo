@@ -47,8 +47,8 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20
 .sum-up .sum-n{color:#e63c3c}
 
 /* WEEK */
-.week-wrap{padding:16px 20px 80px}
-.week-grid-outer{display:flex;overflow-x:auto}
+.week-wrap{padding:16px 20px 80px;display:flex;justify-content:center}
+.week-grid-outer{display:flex;overflow-x:auto;max-width:1400px;width:100%}
 .week-sticky-col{width:95px;min-width:95px;flex-shrink:0;position:sticky;left:0;z-index:20;background:var(--surface);box-shadow:2px 0 4px rgba(0,0,0,.06)}
 .week-scroll-cols{display:flex}
 .wday-col{min-width:170px;width:170px;flex-shrink:0}
@@ -128,6 +128,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20
 .note-btn.has-notes .note-dot{display:block}
 .slot-cell.s-empty .note-btn{opacity:0}
 .slot-cell.s-empty:hover .note-btn{opacity:.25}
+.slot-cell.s-empty .note-btn.has-notes{opacity:1}
 .slot-cell.s-unpaid .note-btn{opacity:.35}
 .slot-cell.s-unpaid .note-btn.has-notes{opacity:1}
 .slot-cell.s-paid-noci .note-btn{opacity:.35}
@@ -194,7 +195,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20
 .notes-add button:hover{background:#333}
 
 /* MONTH */
-.month-wrap{padding:16px 20px 80px;display:flex;flex-direction:column;gap:12px}
+.month-wrap{padding:16px 20px 80px;display:flex;flex-direction:column;gap:12px;max-width:1400px;margin:0 auto}
 .month-room{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
 .month-room-head{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
 .month-room-name{font-size:13px;font-weight:600;flex:1}
