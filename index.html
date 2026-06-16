@@ -97,6 +97,10 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20
 .slot-cell.s-checkin .cell-name{color:#6b5800}
 .slot-cell.s-cancel .cell-name{color:#555}
 
+/* NAT FLAG */
+.nat-flag{font-size:14px;line-height:1;flex-shrink:0}
+.nat-flag img{width:16px;height:16px;vertical-align:middle;margin-right:2px}
+
 /* NAT SELECT */
 .nat-select{
   font-size:12px;border:none;outline:none;background:transparent;
@@ -230,6 +234,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20
 .empty{text-align:center;padding:60px 20px;color:var(--muted)}
 .empty p{font-size:15px;color:var(--text);margin-bottom:6px}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -301,19 +306,19 @@ const STATUS_LABELS=['— status —','Check-in (not paid)','Not paid','Change r
 const HOURS=['','arrived','00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','custom'];
 
 const NATS=[
-  {v:'',l:'— nat —'},
-  {v:'gb',l:'UK'},
-  {v:'us',l:'USA'},
-  {v:'au',l:'AUS'},
-  {v:'de',l:'GER'},
-  {v:'fr',l:'FRA'},
-  {v:'es',l:'ESP'},
-  {v:'it',l:'ITA'},
-  {v:'nl',l:'NL'},
-  {v:'ar',l:'ARG'},
-  {v:'br',l:'BRA'},
-  {v:'ca',l:'CAN'},
-  {v:'custom',l:'+ other…'},
+  {v:'',l:'— nat —',flag:''},
+  {v:'gb',l:'UK',flag:'🇬🇧'},
+  {v:'us',l:'USA',flag:'🇺🇸'},
+  {v:'au',l:'AUS',flag:'🇦🇺'},
+  {v:'de',l:'GER',flag:'🇩🇪'},
+  {v:'fr',l:'FRA',flag:'🇫🇷'},
+  {v:'es',l:'ESP',flag:'🇪🇸'},
+  {v:'it',l:'ITA',flag:'🇮🇹'},
+  {v:'nl',l:'NL',flag:'🇳🇱'},
+  {v:'ar',l:'ARG',flag:'🇦🇷'},
+  {v:'br',l:'BRA',flag:'🇧🇷'},
+  {v:'ca',l:'CAN',flag:'🇨🇦'},
+  {v:'custom',l:'+ other…',flag:''},
 ];
 let rooms=[], cells={}, notes={}, weekOff=0, monthOff=0, view='week', activeNoteKey=null;
 
@@ -371,28 +376,43 @@ function statusOpts(current){
   return STATUSES.map((s,i)=>`<option value="${s}"${current===s?' selected':''}>${STATUS_LABELS[i]}</option>`).join('');
 }
 
+function natFlagHtml(natVal){
+  const n=NATS.find(x=>x.v===natVal);
+  if(!n||!n.flag) return '';
+  return n.flag;
+}
+function parseTwemoji(){
+  if(window.twemoji) twemoji.parse(document.body,{folder:'svg',ext:'.svg'});
+}
 function natOpts(current){
   return NATS.map(n=>{
-    if(n.v==='custom') return`<option value="custom">✏️ other…</option>`;
-    return`<option value="${n.v}"${current===n.v?' selected':''}>${n.l}</option>`;
+    if(n.v==='custom') return`<option value="custom">+ other…</option>`;
+    if(n.v==='') return`<option value=""${!current?' selected':''}>— nat —</option>`;
+    return`<option value="${n.v}"${current===n.v?' selected':''}>${n.flag} ${n.l}</option>`;
   }).join('');
 }
 function handleNat(sel){
   const key=sel.dataset.key;
   if(sel.value==='custom'){
-    const custom=prompt('Enter nationality/flag (e.g. POL, NZL, KOR):');
+    const custom=prompt('Enter nationality (e.g. POL, NZL, KOR):');
     if(custom&&custom.trim()){
       const c=gc(key);c.nat=custom.trim().toUpperCase();cells[key]=c;save();
-      // add option
       const opt=document.createElement('option');
-      opt.value=c.nat;opt.textContent='🌐 '+c.nat;opt.selected=true;
+      opt.value=c.nat;opt.textContent=c.nat;opt.selected=true;
       sel.insertBefore(opt,sel.lastElementChild);
       sel.value=c.nat;
+      const flagEl=document.getElementById('nf-'+key);
+      if(flagEl){flagEl.textContent='';parseTwemoji();}
     } else {
       sel.value=gc(key).nat||'';
     }
   } else {
     const c=gc(key);c.nat=sel.value;cells[key]=c;save();
+    const flagEl=document.getElementById('nf-'+key);
+    if(flagEl){
+      flagEl.textContent=natFlagHtml(c.nat);
+      parseTwemoji();
+    }
   }
 }
 function cellHtml(key,c){
@@ -477,6 +497,7 @@ function renderWeek(){
   html+=`</div></div>`;
 
   document.getElementById('week-table').innerHTML=html;
+  parseTwemoji();
 }
 
 function updateField(el,field){
@@ -583,6 +604,7 @@ function renderMonth(){
     h+='</tbody></table></div></div>';
   });
   document.getElementById('month-wrap').innerHTML=h;
+  parseTwemoji();
 }
 
 function jumpToWeek(dateStr){
