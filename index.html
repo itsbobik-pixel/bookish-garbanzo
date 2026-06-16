@@ -49,7 +49,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 /* WEEK */
 .week-wrap{padding:16px 20px 80px;display:flex;justify-content:center}
 .week-grid-outer{display:flex;overflow-x:auto;max-width:1400px;width:100%}
-.week-sticky-col{width:95px;min-width:95px;flex-shrink:0;position:sticky;left:0;z-index:20;background:var(--surface);box-shadow:2px 0 4px rgba(0,0,0,.06)}
+.week-sticky-col{width:115px;min-width:115px;flex-shrink:0;position:sticky;left:0;z-index:20;background:var(--surface);box-shadow:2px 0 4px rgba(0,0,0,.06)}
 .week-scroll-cols{display:flex}
 .wday-col{min-width:170px;width:170px;flex-shrink:0}
 
@@ -478,7 +478,9 @@ function statusOpts(current){
 function natFlagHtml(natVal){
   const n=NATS.find(x=>x.v===natVal);
   if(!n||!n.code) return '';
-  return`<img src="https://flagcdn.com/20x15/${n.code}.png" width="20" height="15" alt="${n.l}" style="border-radius:2px;vertical-align:middle">`;
+  // Regional indicator Unicode chars - render as flags on Mac/iOS, as text on Windows (still readable)
+  const flag=n.code.toUpperCase().split('').map(c=>String.fromCodePoint(c.charCodeAt(0)+127397)).join('');
+  return`<span style="font-size:16px;line-height:1">${flag}</span>`;
 }
 function parseTwemoji(){}
 function natOpts(current){
