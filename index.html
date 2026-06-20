@@ -717,9 +717,8 @@ function renderArrivals(){
 
   timed.forEach(e=>{
     const past=e.mins<nowMins;
-    const cls=past?'arr-future':'arr-future'; // future styled same; could diff if past
-    h+=`<div class="arrival-item ${past?'':'arr-future'}" onclick="openSlotModal('${e.key}')">
-      <div class="arr-time">${e.c.arrival}</div>
+    h+=`<div class="arrival-item ${past?'arr-arrived':'arr-future'}" onclick="openSlotModal('${e.key}')">
+      <div class="arr-time" style="${past?'opacity:.5;text-decoration:line-through':''}">${e.c.arrival}</div>
       <div class="arr-name">${flagFor(e.c.nat||'')} ${esc(e.c.name)}</div>
       <div class="arr-room">${esc(e.roomName)} · Bed ${e.bed}</div>
     </div>`;
