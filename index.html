@@ -19,6 +19,7 @@
   --s-paid-noci:#3a6fd4;
   --s-cancel:#d0cfc9;
   --sticky-w:110px;
+  --header-h:148px;
 }
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
@@ -46,8 +47,63 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .leg{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
 .leg-dot{width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.1);flex-shrink:0}
 
+/* APP LAYOUT — 3 columns */
+.app-layout{display:flex;align-items:flex-start;gap:12px;padding:12px 12px 80px}
+.main-content{flex:1;min-width:0}
+
+/* SIDE PANELS */
+.side-panel{
+  width:210px;min-width:210px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  position:sticky;
+  top:calc(var(--header-h) + 12px);
+  max-height:calc(100vh - var(--header-h) - 24px);
+  display:flex;flex-direction:column;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+.panel-title{
+  padding:9px 12px;
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.07em;
+  color:var(--text);
+  border-bottom:1px solid var(--border);
+  background:var(--bg);
+  flex-shrink:0;
+}
+.panel-body{flex:1;overflow-y:auto;padding:8px}
+.panel-empty{font-size:12px;color:var(--muted);text-align:center;padding:24px 8px;line-height:1.5}
+
+/* GUIDELINES */
+.guideline-item{
+  background:var(--bg);border-radius:7px;
+  padding:8px 10px;margin-bottom:6px;
+  font-size:12px;line-height:1.5;color:var(--text);
+  border-left:3px solid #f0d800;
+}
+.guideline-item.done{opacity:.45;text-decoration:line-through}
+
+/* ARRIVALS PANEL */
+.arrival-item{
+  padding:8px 10px;border-radius:7px;
+  margin-bottom:6px;background:var(--bg);
+  border-left:3px solid var(--border);
+  cursor:pointer;transition:filter .12s;
+}
+.arrival-item:hover{filter:brightness(.95)}
+.arrival-item.arr-future{border-left-color:#3a6fd4}
+.arrival-item.arr-soon{border-left-color:#f0d800}
+.arrival-item.arr-arrived{border-left-color:#17c4aa;opacity:.6}
+.arrival-item.arr-unknown{border-left-color:#d0cfc9}
+.arr-time{font-size:15px;font-weight:700;color:var(--text);line-height:1}
+.arr-name{font-size:12px;font-weight:500;color:var(--text);margin-top:2px;display:flex;align-items:center;gap:4px}
+.arr-room{font-size:10px;color:var(--muted);margin-top:1px}
+.arr-divider{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:6px 2px 3px;border-top:1px solid var(--border);margin-top:6px;margin-bottom:4px}
+
 /* WEEK TABLE */
-.week-wrap{padding:16px 0 80px;overflow-x:auto;display:flex;justify-content:center}
+.week-wrap{padding:0;overflow-x:auto;display:flex;justify-content:center}
 .week-table{border-collapse:collapse;width:auto}
 
 .week-table th,.week-table td{border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
@@ -71,8 +127,7 @@ thead .col-sticky{z-index:11}
   padding:4px 10px;
   font-size:11px;font-weight:700;color:var(--text);
   letter-spacing:.06em;text-transform:uppercase;
-  white-space:nowrap;
-  height:28px;
+  white-space:nowrap;height:28px;
 }
 .room-row-sep{border-top:2px solid var(--border) !important;height:28px;padding:0}
 .room-del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 0 0 6px;line-height:1;vertical-align:middle}
@@ -81,7 +136,7 @@ thead .col-sticky{z-index:11}
 /* bed label */
 .bed-label-th{
   padding:0 10px;font-size:11px;color:var(--muted);
-  height:88px;vertical-align:middle;
+  height:76px;vertical-align:middle;
   background:var(--surface);
 }
 .bed-label-th.last-bed{border-bottom:2px solid var(--border) !important}
@@ -92,12 +147,12 @@ thead .col-sticky{z-index:11}
 
 .slot-cell{
   width:100%;height:76px;position:relative;cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;padding:8px;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:7px 10px;gap:3px;
   transition:filter .12s;
 }
 .slot-cell:hover{filter:brightness(.95)}
-.slot-cell.s-empty{background:#fff}
+.slot-cell.s-empty{background:#fff;align-items:center}
 .slot-cell.s-checkin{background:var(--s-checkin)}
 .slot-cell.s-unpaid{background:var(--s-unpaid)}
 .slot-cell.s-change{background:var(--s-change)}
@@ -106,46 +161,55 @@ thead .col-sticky{z-index:11}
 
 /* PLUS button (empty cell) */
 .cell-plus{
-  width:36px;height:36px;border-radius:50%;
+  width:34px;height:34px;border-radius:50%;
   border:2px dashed #ccc;
   display:flex;align-items:center;justify-content:center;
-  font-size:22px;color:#ccc;line-height:1;
-  transition:all .15s;
-  user-select:none;
+  font-size:20px;color:#ccc;line-height:1;
+  transition:all .15s;user-select:none;
 }
 .slot-cell.s-empty:hover .cell-plus{border-color:#999;color:#999;background:rgba(0,0,0,.04)}
 
-/* occupied cell content */
+/* occupied cell layout */
+.cell-name-row{
+  display:flex;align-items:center;gap:5px;
+  width:100%;min-width:0;
+}
 .cell-guest-name{
-  font-size:17px;font-weight:700;text-align:center;
-  max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+  font-size:15px;font-weight:700;
+  flex:1;min-width:0;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
   color:var(--text);line-height:1.2;
 }
+.cell-flag{font-size:18px;line-height:1;flex-shrink:0}
+.cell-nat-text{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.04em;flex-shrink:0}
+
+.cell-sub-row{display:flex;align-items:center;gap:6px;margin-top:1px}
+.cell-arrival{font-size:11px;font-weight:500;color:var(--text);opacity:.7}
+
+/* text colors per status */
 .slot-cell.s-unpaid .cell-guest-name,
 .slot-cell.s-paid-noci .cell-guest-name{color:#fff}
-.slot-cell.s-change .cell-guest-name{color:#0a6b5a}
-.slot-cell.s-checkin .cell-guest-name{color:#6b5800}
-.slot-cell.s-cancel .cell-guest-name{color:#555}
-
-.cell-flag{font-size:22px;line-height:1;text-align:center}
-.cell-nat-text{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.04em}
+.slot-cell.s-unpaid .cell-arrival,
+.slot-cell.s-paid-noci .cell-arrival{color:rgba(255,255,255,.8)}
 .slot-cell.s-unpaid .cell-nat-text,
 .slot-cell.s-paid-noci .cell-nat-text{color:rgba(255,255,255,.7)}
+.slot-cell.s-change .cell-guest-name{color:#0a6b5a}
+.slot-cell.s-checkin .cell-guest-name{color:#6b5800}
+.slot-cell.s-checkin .cell-arrival{color:#6b5800;opacity:.8}
+.slot-cell.s-cancel .cell-guest-name{color:#555}
 
 /* note icon */
 .cell-note-btn{
-  position:absolute;top:5px;right:6px;
   background:none;border:none;cursor:pointer;
-  padding:2px;line-height:1;
-  opacity:.22;transition:opacity .15s;
+  padding:1px;line-height:1;position:relative;display:block;
+  opacity:.22;transition:opacity .15s;flex-shrink:0;
 }
 .cell-note-btn:hover{opacity:.8}
 .cell-note-btn.has-notes{opacity:1}
 .note-red-dot{
   width:6px;height:6px;border-radius:50%;
   background:#e63c3c;border:1.5px solid #fff;
-  position:absolute;top:-1px;right:-1px;
-  display:none;
+  position:absolute;top:-1px;right:-1px;display:none;
 }
 .cell-note-btn.has-notes .note-red-dot{display:block}
 .slot-cell.s-unpaid .cell-note-btn,
@@ -154,7 +218,7 @@ thead .col-sticky{z-index:11}
 .slot-cell.s-paid-noci .cell-note-btn.has-notes{opacity:1}
 
 /* MONTH */
-.month-wrap{padding:16px 20px 80px;display:flex;flex-direction:column;gap:12px;max-width:1400px;margin:0 auto}
+.month-wrap{padding:0 0 40px;display:flex;flex-direction:column;gap:12px}
 .month-room{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
 .month-room-head{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
 .month-room-name{font-size:13px;font-weight:600;flex:1}
@@ -189,28 +253,17 @@ thead .col-sticky{z-index:11}
 .btn-danger{background:none;color:#e63c3c;border-color:#f5c0c0}
 .btn-danger:hover{background:#fff5f5}
 
-/* SLOT MODAL specifics */
+/* SLOT MODAL */
 .slot-modal{max-width:380px;padding:0;overflow:hidden}
 .slot-modal-top{padding:16px 16px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
-.slot-name-inp{
-  flex:1;font-size:18px;font-weight:700;border:none;outline:none;
-  background:transparent;color:var(--text);font-family:inherit;
-  padding:2px 0;
-}
+.slot-name-inp{flex:1;font-size:18px;font-weight:700;border:none;outline:none;background:transparent;color:var(--text);font-family:inherit;padding:2px 0}
 .slot-name-inp::placeholder{color:#ccc;font-weight:400;font-size:15px}
 .modal-x{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1;padding:2px 4px}
 .modal-x:hover{color:var(--text)}
 .slot-fields{padding:12px 16px 4px}
 .slot-fields .field{margin-bottom:9px}
-.extra-inp{
-  width:100%;margin-top:5px;padding:7px 10px;
-  border:1px solid var(--border);border-radius:8px;
-  font-size:13px;font-family:inherit;
-  background:var(--bg);color:var(--text);outline:none;
-}
+.extra-inp{width:100%;margin-top:5px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--bg);color:var(--text);outline:none}
 .extra-inp:focus{border-color:#3a6fd4}
-
-/* notes in modal */
 .slot-notes-section{padding:0 16px 12px}
 .slot-notes-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;padding-top:4px;border-top:1px solid var(--border)}
 .slot-notes-list{max-height:120px;overflow-y:auto;margin-bottom:7px}
@@ -222,11 +275,7 @@ thead .col-sticky{z-index:11}
 .slot-note-del:hover{color:#e63c3c}
 .slot-notes-empty{font-size:12px;color:var(--muted);text-align:center;padding:10px 0}
 .slot-notes-add{display:flex;gap:6px}
-.slot-notes-add textarea{
-  flex:1;padding:7px 9px;border:1px solid var(--border);border-radius:8px;
-  font-size:12px;font-family:inherit;background:var(--bg);color:var(--text);
-  resize:none;height:52px;outline:none;
-}
+.slot-notes-add textarea{flex:1;padding:7px 9px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit;background:var(--bg);color:var(--text);resize:none;height:52px;outline:none}
 .slot-notes-add textarea:focus{border-color:#3a6fd4}
 .slot-notes-add button{padding:7px 13px;background:var(--text);color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:500;align-self:flex-end}
 .slot-notes-add button:hover{background:#333}
@@ -301,11 +350,33 @@ thead .col-sticky{z-index:11}
   <span class="leg"><span class="leg-dot" style="background:#d0cfc9"></span>Cancellation / leaving sooner</span>
 </div>
 
-<div id="view-week">
-  <div class="week-wrap"><div id="week-table"></div></div>
-</div>
-<div id="view-month" style="display:none">
-  <div class="month-wrap" id="month-wrap"></div>
+<!-- 3-column layout -->
+<div class="app-layout">
+
+  <!-- LEFT: Guidelines -->
+  <aside class="side-panel">
+    <div class="panel-title">Guidelines</div>
+    <div class="panel-body" id="guidelines-body">
+      <div class="panel-empty">No guidelines yet.<br>Upload your guidelines file to get started.</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div id="view-week">
+      <div class="week-wrap"><div id="week-table"></div></div>
+    </div>
+    <div id="view-month" style="display:none">
+      <div class="month-wrap" id="month-wrap"></div>
+    </div>
+  </main>
+
+  <!-- RIGHT: Arrivals -->
+  <aside class="side-panel">
+    <div class="panel-title">Today's Arrivals</div>
+    <div class="panel-body" id="arrivals-body"></div>
+  </aside>
+
 </div>
 
 <!-- Slot modal -->
@@ -377,21 +448,22 @@ const NATS=[
   {v:'kr',l:'🇰🇷 KOR'},{v:'cn',l:'🇨🇳 CHN'},{v:'pt',l:'🇵🇹 POR'},
   {v:'custom',l:'+ other…'},
 ];
-
 const FLAG_MAP={gb:'🇬🇧',us:'🇺🇸',au:'🇦🇺',de:'🇩🇪',fr:'🇫🇷',es:'🇪🇸',it:'🇮🇹',nl:'🇳🇱',ar:'🇦🇷',br:'🇧🇷',ca:'🇨🇦',pl:'🇵🇱',cz:'🇨🇿',sk:'🇸🇰',jp:'🇯🇵',kr:'🇰🇷',cn:'🇨🇳',pt:'🇵🇹'};
 
-let rooms=[], cells={}, notes={}, weekOff=0, monthOff=0, view='week', currentSlotKey=null;
+let rooms=[], cells={}, notes={}, guidelines=[], weekOff=0, monthOff=0, view='week', currentSlotKey=null;
 
 function load(){
   try{const r=localStorage.getItem('hb7_rooms');if(r)rooms=JSON.parse(r);}catch{}
   try{const r=localStorage.getItem('hb7_cells');if(r)cells=JSON.parse(r);}catch{}
   try{const r=localStorage.getItem('hb7_notes');if(r)notes=JSON.parse(r);}catch{}
+  try{const r=localStorage.getItem('hb7_guidelines');if(r)guidelines=JSON.parse(r);}catch{}
   if(!rooms.length) rooms=[{id:'r1',name:'Room 1',beds:4},{id:'r2',name:'Room 2',beds:4}];
 }
 function save(){
   try{localStorage.setItem('hb7_rooms',JSON.stringify(rooms));}catch{}
   try{localStorage.setItem('hb7_cells',JSON.stringify(cells));}catch{}
   try{localStorage.setItem('hb7_notes',JSON.stringify(notes));}catch{}
+  try{localStorage.setItem('hb7_guidelines',JSON.stringify(guidelines));}catch{}
 }
 function p2(n){return String(n).padStart(2,'0');}
 function ds(d){return`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;}
@@ -402,10 +474,30 @@ function gc(key){return cells[key]||{name:'',status:'',arrival:'',nat:''};}
 function gn(key){return notes[key]||[];}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function flagFor(natVal){return FLAG_MAP[natVal]||'';}
-
 function statusClass(s){return s?`s-${s}`:'s-empty';}
 
-function cellHtml(key){
+/* arrival time helpers */
+function parseArrivalMinutes(arrival){
+  if(!arrival||arrival==='arrived') return null;
+  const m=arrival.match(/^(\d{1,2}):(\d{2})$/);
+  if(!m) return null;
+  return parseInt(m[1])*60+parseInt(m[2]);
+}
+function shouldShowArrival(dateStr, arrival){
+  if(!arrival||arrival===''||arrival==='arrived') return false;
+  const today=ds(new Date());
+  if(dateStr<today) return false;
+  if(dateStr>today) return true;
+  // today: show only if time hasn't passed yet
+  const mins=parseArrivalMinutes(arrival);
+  if(mins===null) return true; // custom text, show it
+  const now=new Date();
+  const nowMins=now.getHours()*60+now.getMinutes();
+  return nowMins<mins;
+}
+
+/* CELL HTML */
+function cellHtml(key, dateStr){
   const c=gc(key);
   const hasNotes=gn(key).length>0;
   const isEmpty=!c.name&&!c.status;
@@ -415,19 +507,25 @@ function cellHtml(key){
   }
 
   const flag=flagFor(c.nat||'');
-  const customNat=(c.nat&&!FLAG_MAP[c.nat]&&c.nat!=='')?c.nat:'';
+  const customNat=(c.nat&&!FLAG_MAP[c.nat]&&c.nat!=='')? c.nat:'';
+  const showArrival=shouldShowArrival(dateStr, c.arrival);
 
   return`<div class="slot-cell ${statusClass(c.status)}" onclick="openSlotModal('${key}')">
-    <button class="cell-note-btn${hasNotes?' has-notes':''}" onclick="event.stopPropagation();openSlotModal('${key}')" title="Notes">
-      <svg width="17" height="17" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <rect x="1" y="1" width="14" height="10" rx="3" fill="#f5c800" stroke="#555" stroke-width="1.5"/>
-        <polygon points="3,11 7,11 5,14" fill="#f5c800" stroke="#555" stroke-width="1.5" stroke-linejoin="round"/>
-      </svg>
-      <div class="note-red-dot"></div>
-    </button>
-    <div class="cell-guest-name">${esc(c.name)||'—'}</div>
-    ${flag?`<div class="cell-flag">${flag}</div>`:''}
-    ${customNat?`<div class="cell-nat-text">${esc(customNat)}</div>`:''}
+    <div class="cell-name-row">
+      <span class="cell-guest-name">${esc(c.name)||'—'}</span>
+      ${flag?`<span class="cell-flag">${flag}</span>`:''}
+      ${customNat?`<span class="cell-nat-text">${esc(customNat)}</span>`:''}
+    </div>
+    <div class="cell-sub-row">
+      <button class="cell-note-btn${hasNotes?' has-notes':''}" onclick="event.stopPropagation();openSlotModal('${key}')" title="Notes">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block">
+          <rect x="1" y="1" width="14" height="10" rx="3" fill="#f5c800" stroke="#555" stroke-width="1.5"/>
+          <polygon points="3,11 7,11 5,14" fill="#f5c800" stroke="#555" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <div class="note-red-dot"></div>
+      </button>
+      ${showArrival?`<span class="cell-arrival">✈ ${esc(c.arrival)}</span>`:''}
+    </div>
   </div>`;
 }
 
@@ -455,20 +553,13 @@ function renderWeek(){
   h+=`</tr></thead><tbody>`;
 
   rooms.forEach(r=>{
-    // room header row
-    h+=`<tr>`;
-    h+=`<td class="col-sticky room-row-th">${esc(r.name)}<button class="room-del-btn" onclick="deleteRoom('${r.id}')">×</button></td>`;
-    h+=`<td colspan="7" class="room-row-sep"></td>`;
-    h+=`</tr>`;
-
-    // bed rows
+    h+=`<tr><td class="col-sticky room-row-th">${esc(r.name)}<button class="room-del-btn" onclick="deleteRoom('${r.id}')">×</button></td><td colspan="7" class="room-row-sep"></td></tr>`;
     for(let s=0;s<r.beds;s++){
       const isLast=s===r.beds-1;
-      h+=`<tr>`;
-      h+=`<td class="col-sticky bed-label-th${isLast?' last-bed':''}">Bed ${s+1}</td>`;
+      h+=`<tr><td class="col-sticky bed-label-th${isLast?' last-bed':''}">Bed ${s+1}</td>`;
       days.forEach(d=>{
-        const key=ck(r.id,s,ds(d));
-        h+=`<td class="slot-td${isLast?' last-bed':''}">${cellHtml(key)}</td>`;
+        const dstr=ds(d),key=ck(r.id,s,dstr);
+        h+=`<td class="slot-td${isLast?' last-bed':''}">${cellHtml(key,dstr)}</td>`;
       });
       h+=`</tr>`;
     }
@@ -476,6 +567,71 @@ function renderWeek(){
 
   h+=`</tbody></table>`;
   document.getElementById('week-table').innerHTML=h;
+}
+
+/* ARRIVALS PANEL */
+function renderArrivals(){
+  const today=ds(new Date());
+  const now=new Date();
+  const nowMins=now.getHours()*60+now.getMinutes();
+
+  const timed=[],arrived=[],unknown=[];
+
+  rooms.forEach(r=>{
+    for(let s=0;s<r.beds;s++){
+      const key=ck(r.id,s,today);
+      const c=gc(key);
+      if(!c.name) continue;
+      const entry={key,c,roomName:r.name,bed:s+1,mins:parseArrivalMinutes(c.arrival)};
+      if(c.arrival==='arrived') arrived.push(entry);
+      else if(entry.mins!==null) timed.push(entry);
+      else unknown.push(entry);
+    }
+  });
+
+  timed.sort((a,b)=>a.mins-b.mins);
+
+  const el=document.getElementById('arrivals-body');
+  if(!timed.length&&!arrived.length&&!unknown.length){
+    el.innerHTML='<div class="panel-empty">No guests today</div>';
+    return;
+  }
+
+  let h='';
+
+  timed.forEach(e=>{
+    const past=e.mins<nowMins;
+    const cls=past?'arr-future':'arr-future'; // future styled same; could diff if past
+    h+=`<div class="arrival-item ${past?'':'arr-future'}" onclick="openSlotModal('${e.key}')">
+      <div class="arr-time">${e.c.arrival}</div>
+      <div class="arr-name">${flagFor(e.c.nat||'')} ${esc(e.c.name)}</div>
+      <div class="arr-room">${esc(e.roomName)} · Bed ${e.bed}</div>
+    </div>`;
+  });
+
+  if(arrived.length){
+    if(timed.length) h+=`<div class="arr-divider">Arrived ✓</div>`;
+    arrived.forEach(e=>{
+      h+=`<div class="arrival-item arr-arrived" onclick="openSlotModal('${e.key}')">
+        <div class="arr-time" style="font-size:12px;opacity:.7">arrived ✓</div>
+        <div class="arr-name">${flagFor(e.c.nat||'')} ${esc(e.c.name)}</div>
+        <div class="arr-room">${esc(e.roomName)} · Bed ${e.bed}</div>
+      </div>`;
+    });
+  }
+
+  if(unknown.length){
+    if(timed.length||arrived.length) h+=`<div class="arr-divider">Time unknown</div>`;
+    unknown.forEach(e=>{
+      h+=`<div class="arrival-item arr-unknown" onclick="openSlotModal('${e.key}')">
+        <div class="arr-time" style="font-size:11px;opacity:.5">— time unknown</div>
+        <div class="arr-name">${flagFor(e.c.nat||'')} ${esc(e.c.name)}</div>
+        <div class="arr-room">${esc(e.roomName)} · Bed ${e.bed}</div>
+      </div>`;
+    });
+  }
+
+  el.innerHTML=h;
 }
 
 /* SLOT MODAL */
@@ -543,21 +699,10 @@ function saveSlot(){
   const c=gc(currentSlotKey);
   c.name=document.getElementById('slot-name').value.trim();
   c.status=document.getElementById('slot-status').value;
-
   const arrSel=document.getElementById('slot-arrival');
-  if(arrSel.value==='custom'){
-    c.arrival=document.getElementById('slot-arrival-text').value.trim()||'';
-  } else {
-    c.arrival=arrSel.value;
-  }
-
+  c.arrival=arrSel.value==='custom'?document.getElementById('slot-arrival-text').value.trim()||'':arrSel.value;
   const natSel=document.getElementById('slot-nat');
-  if(natSel.value==='custom'){
-    c.nat=document.getElementById('slot-nat-text').value.trim().toUpperCase()||'';
-  } else {
-    c.nat=natSel.value;
-  }
-
+  c.nat=natSel.value==='custom'?document.getElementById('slot-nat-text').value.trim().toUpperCase()||'':natSel.value;
   cells[currentSlotKey]=c;
   save();
   closeSlotModal();
@@ -614,7 +759,6 @@ function monthDays(){
   while(d.getMonth()===mo){days.push(new Date(d));d.setDate(d.getDate()+1);}
   return days;
 }
-
 function renderMonth(){
   const days=monthDays(),first=days[0];
   document.getElementById('period-label').textContent=`${MONTHS_LONG[first.getMonth()]} ${first.getFullYear()}`;
@@ -629,11 +773,11 @@ function renderMonth(){
     for(let s=0;s<r.beds;s++){
       h+=`<tr><td class="slot-col-sticky">Bed ${s+1}</td>`;
       days.forEach(d=>{
-        const key=ck(r.id,s,ds(d)),c=gc(key);
+        const dstr=ds(d),key=ck(r.id,s,dstr),c=gc(key);
         const init=c.name?c.name.split(' ')[0].substring(0,3):'';
         const dotCls=c.status?`md-${c.status}`:'md-empty';
         const hasN=gn(key).length>0;
-        h+=`<td class="${isToday(d)?'today-bg':''}"><div class="month-dot ${dotCls}" onclick="jumpToWeek('${ds(d)}')" title="${esc(c.name)||'—'}${c.arrival?' · '+c.arrival:''}${hasN?' 💬':''}">`;
+        h+=`<td class="${isToday(d)?'today-bg':''}"><div class="month-dot ${dotCls}" onclick="jumpToWeek('${dstr}')" title="${esc(c.name)||'—'}${c.arrival?' · '+c.arrival:''}${hasN?' 💬':''}">`;
         if(c.name)h+=`<span>${init}</span>`;
         h+='</div></td>';
       });
@@ -676,7 +820,10 @@ function deleteRoom(id){
   rooms=rooms.filter(r=>r.id!==id);save();render();
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-function render(){if(view==='week')renderWeek();else renderMonth();}
+function render(){
+  if(view==='week') renderWeek(); else renderMonth();
+  renderArrivals();
+}
 
 document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{
   if(e.target===el){
