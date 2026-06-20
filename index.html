@@ -652,14 +652,14 @@ function cellHtml(key, dateStr){
 
 /* WEEK */
 function weekDays(){
-  const n=new Date(),day=n.getDay(),m=new Date(n);
-  m.setDate(n.getDate()-(day===0?6:day-1)+weekOff*7);m.setHours(0,0,0,0);
-  return Array.from({length:7},(_,i)=>{const d=new Date(m);d.setDate(m.getDate()+i);return d;});
+  const n=new Date(),m=new Date(n);
+  m.setDate(n.getDate()-3+weekOff*7);m.setHours(0,0,0,0);
+  return Array.from({length:14},(_,i)=>{const d=new Date(m);d.setDate(m.getDate()+i);return d;});
 }
 
 function renderWeek(){
   const days=weekDays();
-  document.getElementById('period-label').textContent=`${fmt(days[0])} – ${fmt(days[6])} · ${days[0].getFullYear()}`;
+  document.getElementById('period-label').textContent=`${fmt(days[0])} – ${fmt(days[13])} · ${days[0].getFullYear()}`;
 
   if(!rooms.length){
     document.getElementById('week-table').innerHTML=`<div style="padding:60px 20px;text-align:center;color:var(--muted)"><p style="font-size:15px;color:var(--text);margin-bottom:6px">No rooms yet</p>Click "+ Room" to get started</div>`;
