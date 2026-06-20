@@ -18,6 +18,7 @@
   --s-change:#17c4aa;
   --s-paid-noci:#3a6fd4;
   --s-cancel:#d0cfc9;
+  --s-allgood:#22c55e;
   --sticky-w:110px;
   --header-h:148px;
 }
@@ -203,6 +204,7 @@ thead .col-sticky{z-index:11}
 .slot-cell.s-change{background:var(--s-change)}
 .slot-cell.s-paid-noci{background:var(--s-paid-noci)}
 .slot-cell.s-cancel{background:var(--s-cancel)}
+.slot-cell.s-allgood{background:var(--s-allgood)}
 
 /* PLUS button (empty cell) */
 .cell-plus{
@@ -242,6 +244,7 @@ thead .col-sticky{z-index:11}
 .slot-cell.s-checkin .cell-guest-name{color:#6b5800}
 .slot-cell.s-checkin .cell-arrival{color:#6b5800;opacity:.8}
 .slot-cell.s-cancel .cell-guest-name{color:#555}
+.slot-cell.s-allgood .cell-guest-name{color:#fff}
 
 /* note icon */
 .cell-note-btn{
@@ -279,7 +282,8 @@ thead .col-sticky{z-index:11}
 .month-dot span{font-size:9px;font-weight:700;color:rgba(0,0,0,.4);max-width:24px;overflow:hidden;white-space:nowrap}
 .md-checkin{background:var(--s-checkin)}.md-unpaid{background:var(--s-unpaid)}
 .md-change{background:var(--s-change)}.md-paid-noci{background:var(--s-paid-noci)}
-.md-cancel{background:var(--s-cancel)}.md-empty{background:#fff}.today-bg{background:#f0ede8}
+.md-cancel{background:var(--s-cancel)}.md-allgood{background:var(--s-allgood)}
+.md-empty{background:#fff}.today-bg{background:#f0ede8}
 
 /* MODALS */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;padding:20px}
@@ -393,6 +397,7 @@ thead .col-sticky{z-index:11}
   <span class="leg"><span class="leg-dot" style="background:#17c4aa"></span>Change room</span>
   <span class="leg"><span class="leg-dot" style="background:#3a6fd4"></span>Paid, not checked in</span>
   <span class="leg"><span class="leg-dot" style="background:#d0cfc9"></span>Cancellation / leaving sooner</span>
+  <span class="leg"><span class="leg-dot" style="background:#22c55e"></span>All good ✓</span>
 </div>
 
 <!-- 2-column layout -->
@@ -492,8 +497,8 @@ thead .col-sticky{z-index:11}
 <script>
 const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS_LONG=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const STATUSES=['','checkin','unpaid','change','paid-noci','cancel'];
-const STATUS_LABELS=['— status —','Check-in (not paid)','Not paid','Change room','Paid, not checked in','Cancellation / leaving sooner'];
+const STATUSES=['','checkin','unpaid','change','paid-noci','cancel','allgood'];
+const STATUS_LABELS=['— status —','Check-in (not paid)','Not paid','Change room','Paid, not checked in','Cancellation / leaving sooner','All good ✓'];
 const HOURS=['','arrived','00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','custom'];
 const NATS=[
   {v:'',l:'— nationality —'},
