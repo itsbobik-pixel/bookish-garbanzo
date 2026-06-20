@@ -47,8 +47,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .leg-dot{width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.1);flex-shrink:0}
 
 /* WEEK TABLE */
-.week-wrap{padding:16px 0 80px;overflow-x:auto}
-.week-table{border-collapse:collapse;min-width:100%}
+.week-wrap{padding:16px 0 80px;overflow-x:auto;display:flex;justify-content:center}
+.week-table{border-collapse:collapse;width:auto}
 
 .week-table th,.week-table td{border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
 
@@ -57,7 +57,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 thead .col-sticky{z-index:11}
 
 /* day headers */
-.th-day{padding:9px 12px;height:54px;vertical-align:middle;min-width:150px;background:var(--surface)}
+.th-day{padding:9px 12px;height:54px;vertical-align:middle;min-width:120px;background:var(--surface)}
 .th-day.today{background:#f0ede8}
 .th-weekday{font-size:11px;color:var(--muted);display:block}
 .th-date{font-size:15px;font-weight:600;display:block}
@@ -87,13 +87,13 @@ thead .col-sticky{z-index:11}
 .bed-label-th.last-bed{border-bottom:2px solid var(--border) !important}
 
 /* slot cells */
-.slot-td{padding:0;vertical-align:top;height:88px;min-width:150px}
+.slot-td{padding:0;vertical-align:top;height:76px;min-width:120px}
 .slot-td.last-bed{border-bottom:2px solid var(--border) !important}
 
 .slot-cell{
-  width:100%;height:88px;position:relative;cursor:pointer;
+  width:100%;height:76px;position:relative;cursor:pointer;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:4px;padding:8px;
+  gap:3px;padding:8px;
   transition:filter .12s;
 }
 .slot-cell:hover{filter:brightness(.95)}
@@ -117,7 +117,7 @@ thead .col-sticky{z-index:11}
 
 /* occupied cell content */
 .cell-guest-name{
-  font-size:14px;font-weight:700;text-align:center;
+  font-size:17px;font-weight:700;text-align:center;
   max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
   color:var(--text);line-height:1.2;
 }
@@ -127,7 +127,7 @@ thead .col-sticky{z-index:11}
 .slot-cell.s-checkin .cell-guest-name{color:#6b5800}
 .slot-cell.s-cancel .cell-guest-name{color:#555}
 
-.cell-flag{font-size:17px;line-height:1;text-align:center}
+.cell-flag{font-size:22px;line-height:1;text-align:center}
 .cell-nat-text{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.04em}
 .slot-cell.s-unpaid .cell-nat-text,
 .slot-cell.s-paid-noci .cell-nat-text{color:rgba(255,255,255,.7)}
@@ -419,7 +419,7 @@ function cellHtml(key){
 
   return`<div class="slot-cell ${statusClass(c.status)}" onclick="openSlotModal('${key}')">
     <button class="cell-note-btn${hasNotes?' has-notes':''}" onclick="event.stopPropagation();openSlotModal('${key}')" title="Notes">
-      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block">
+      <svg width="17" height="17" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block">
         <rect x="1" y="1" width="14" height="10" rx="3" fill="#f5c800" stroke="#555" stroke-width="1.5"/>
         <polygon points="3,11 7,11 5,14" fill="#f5c800" stroke="#555" stroke-width="1.5" stroke-linejoin="round"/>
       </svg>
