@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push)",
+      "Bash(git push *)",
+      "Bash(git config *)",
+      "Bash(git clone *)",
+      "Bash(cd * && git add * && git commit *)",
+      "Bash(cd * && git add * && git config * && git commit *)",
+      "Bash(curl *)",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(git *)",
+      "mcp__ccd_session_mgmt__search_session_transcripts"
+    ]
+  }
+}

@@ -952,17 +952,7 @@ function renderGuidelines(){
     </div>`;
   }
 
-  // Check-in section
-  let h=`<div class="gl-checkin-card">
-    <div class="gl-block-label">✓ Check-in</div>
-    ${CHECKIN_STEPS.map((t,i)=>taskHtml(t,glKey('ci',i))).join('')}
-  </div>`;
-
-  // Check-out section
-  h+=`<div class="gl-checkout-card">
-    <div class="gl-block-label">↩ Check-out</div>
-    ${CHECKOUT_STEPS.map((t,i)=>taskHtml(t,glKey('co',i))).join('')}
-  </div>`;
+  let h='';
 
   // Find current and next time block
   let curIdx=-1, nextIdx=-1;
