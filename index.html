@@ -18,10 +18,11 @@
   --s-change:#17c4aa;
   --s-paid-noci:#3a6fd4;
   --s-cancel:#d0cfc9;
-  --s-lower:#f0f0f0;
+  --sticky-w:110px;
 }
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
+/* HEADER */
 .hero-header{position:sticky;top:0;z-index:50;height:110px;overflow:hidden;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
 .hero-bg{position:absolute;inset:0;z-index:0}
 .hero-bg svg{width:100%;height:100%;display:block}
@@ -33,178 +34,124 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .hero-tabs{display:flex;gap:2px;background:rgba(0,0,0,.2);border-radius:8px;padding:3px}
 .hero-tab{padding:5px 16px;font-size:12px;font-weight:500;border:none;border-radius:6px;cursor:pointer;background:none;color:rgba(255,255,255,.7)}
 .hero-tab.active{background:rgba(255,255,255,.2);color:white}
-.nav-btn{padding:6px 13px;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:7px;cursor:pointer;background:none;color:var(--text)}
-.nav-btn:hover{background:var(--bg)}
 .period-nav{display:flex;align-items:center;gap:6px}
-.period-nav button{border:1px solid var(--border);background:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:13px;color:var(--text);line-height:1}
-.period-nav button:hover{background:var(--bg)}
-.period-nav span{font-size:12px;color:var(--muted);min-width:150px;text-align:center}
+.period-nav button{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.85);line-height:1}
+.period-nav button:hover{background:rgba(255,255,255,.2)}
+.period-nav span{font-size:12px;color:rgba(255,255,255,.9);min-width:150px;text-align:center}
+.nav-btn{padding:6px 13px;font-size:12px;font-weight:500;border:1px solid rgba(255,255,255,.4);border-radius:7px;cursor:pointer;background:rgba(255,255,255,.15);color:white}
+.nav-btn:hover{background:rgba(255,255,255,.25)}
 
+/* LEGEND */
 .legend-bar{display:flex;gap:10px;padding:7px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
 .leg{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
 .leg-dot{width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.1);flex-shrink:0}
 
+/* WEEK TABLE */
+.week-wrap{padding:16px 0 80px;overflow-x:auto}
+.week-table{border-collapse:collapse;min-width:100%}
 
+.week-table th,.week-table td{border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
 
-/* WEEK */
-.week-wrap{padding:16px 20px 80px;display:flex;justify-content:center}
-.week-grid-outer{display:flex;overflow-x:auto;max-width:1400px;width:100%}
-.week-sticky-col{display:none}
-.week-scroll-cols{display:flex}
-.wday-col{min-width:170px;width:170px;flex-shrink:0}
+/* sticky left column */
+.col-sticky{position:sticky;left:0;z-index:10;background:var(--surface);width:var(--sticky-w);min-width:var(--sticky-w);max-width:var(--sticky-w)}
+thead .col-sticky{z-index:11}
 
-.th-corner{display:none}
-.th-day{background:var(--surface);padding:9px 12px;border-bottom:2px solid var(--border);border-right:1px solid var(--border);height:54px;display:flex;flex-direction:column;justify-content:center}
+/* day headers */
+.th-day{padding:9px 12px;height:54px;vertical-align:middle;min-width:150px;background:var(--surface)}
 .th-day.today{background:#f0ede8}
 .th-weekday{font-size:11px;color:var(--muted);display:block}
 .th-date{font-size:15px;font-weight:600;display:block}
+.th-corner{height:54px;border-bottom:2px solid var(--border) !important}
 
-.room-header-row{display:flex;align-items:center;background:var(--bg);border-top:2px solid var(--border);border-right:1px solid var(--border);height:28px;overflow:visible}
-.room-header-first{position:relative;overflow:visible;z-index:5}
-.room-header-label{font-size:11px;font-weight:700;color:var(--text);letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;white-space:nowrap}
-.room-del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:4px 8px}
+/* room header row */
+.room-row-th{
+  background:var(--bg);
+  border-top:2px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:4px 10px;
+  font-size:11px;font-weight:700;color:var(--text);
+  letter-spacing:.06em;text-transform:uppercase;
+  white-space:nowrap;
+  height:28px;
+}
+.room-row-sep{border-top:2px solid var(--border) !important;height:28px;padding:0}
+.room-del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 0 0 6px;line-height:1;vertical-align:middle}
 .room-del-btn:hover{color:#e63c3c}
-.room-label-span{display:none}
-.bed-label-cell{display:none}
-.room-del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 2px;line-height:1}
-.room-del-btn:hover{color:#e63c3c}
 
-.bed-label-cell{background:var(--surface);border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:11px;color:var(--muted);padding:0 10px;display:flex;align-items:center;min-height:80px}
-.bed-label-cell.last-bed{border-bottom:2px solid var(--border)}
-.slot-col-cell{border-bottom:1px solid var(--border);border-right:1px solid var(--border);padding:0;min-height:80px}
-.slot-col-cell.last-bed{border-bottom:2px solid var(--border)}
+/* bed label */
+.bed-label-th{
+  padding:0 10px;font-size:11px;color:var(--muted);
+  height:88px;vertical-align:middle;
+  background:var(--surface);
+}
+.bed-label-th.last-bed{border-bottom:2px solid var(--border) !important}
 
-/* CELL */
-.slot-cell{display:flex;flex-direction:column;min-height:80px}
+/* slot cells */
+.slot-td{padding:0;vertical-align:top;height:88px;min-width:150px}
+.slot-td.last-bed{border-bottom:2px solid var(--border) !important}
+
+.slot-cell{
+  width:100%;height:88px;position:relative;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;padding:8px;
+  transition:filter .12s;
+}
+.slot-cell:hover{filter:brightness(.95)}
+.slot-cell.s-empty{background:#fff}
 .slot-cell.s-checkin{background:var(--s-checkin)}
 .slot-cell.s-unpaid{background:var(--s-unpaid)}
 .slot-cell.s-change{background:var(--s-change)}
 .slot-cell.s-paid-noci{background:var(--s-paid-noci)}
 .slot-cell.s-cancel{background:var(--s-cancel)}
-.slot-cell.s-empty{background:#fff}
 
-.cell-top{display:flex;flex-direction:column;align-items:center;padding:8px 8px 3px;position:relative;}
-.cell-name{
-  font-size:16px;font-weight:700;width:100%;
-  border:none;outline:none;background:transparent;
-  font-family:inherit;color:var(--text);padding:0;
-  text-align:center;cursor:text;
+/* PLUS button (empty cell) */
+.cell-plus{
+  width:36px;height:36px;border-radius:50%;
+  border:2px dashed #ccc;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:#ccc;line-height:1;
+  transition:all .15s;
+  user-select:none;
 }
-.cell-name::placeholder{color:transparent;font-weight:400;font-size:12px;text-align:center;transition:color .15s}
-.slot-cell.s-empty:hover .cell-name::placeholder{color:#ccc}
-.cell-nat-row{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:1px;}
-.slot-cell.s-empty .cell-nat-row{opacity:0;transition:opacity .15s}
-.slot-cell.s-empty:hover .cell-nat-row{opacity:.6}
+.slot-cell.s-empty:hover .cell-plus{border-color:#999;color:#999;background:rgba(0,0,0,.04)}
 
-.slot-cell.s-unpaid .cell-name,.slot-cell.s-paid-noci .cell-name{color:#fff}
-.slot-cell.s-unpaid .cell-name::placeholder,.slot-cell.s-paid-noci .cell-name::placeholder{color:rgba(255,255,255,.35)}
-.slot-cell.s-change .cell-name{color:#0a6b5a}
-.slot-cell.s-checkin .cell-name{color:#6b5800}
-.slot-cell.s-cancel .cell-name{color:#555}
-
-/* NAT FLAG */
-.nat-flag{font-size:15px;line-height:1;flex-shrink:0;color:var(--text)}
-.slot-cell.s-unpaid .nat-flag,.slot-cell.s-paid-noci .nat-flag{color:#fff}
-.nat-flag img{width:16px;height:16px;vertical-align:middle;margin-right:2px}
-
-/* NAT SELECT */
-.nat-select{
-  font-size:12px;border:none;outline:none;background:transparent;
-  font-family:inherit;cursor:pointer;padding:1px 2px;
-  appearance:none;-webkit-appearance:none;
-  color:var(--muted);max-width:90px;text-align:center;
+/* occupied cell content */
+.cell-guest-name{
+  font-size:14px;font-weight:700;text-align:center;
+  max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+  color:var(--text);line-height:1.2;
 }
-.slot-cell.s-empty .nat-select{color:var(--muted)}
-.slot-cell.s-occupied .nat-select{color:var(--muted)}
-.slot-cell.s-unpaid .nat-select,.slot-cell.s-paid-noci .nat-select{color:rgba(255,255,255,.9)}
-.slot-cell.s-change .nat-select{color:#0a6b5a}
-.slot-cell.s-checkin .nat-select{color:#6b5800}
-.cell-corner{
-  position:absolute;top:3px;right:4px;
-}
+.slot-cell.s-unpaid .cell-guest-name,
+.slot-cell.s-paid-noci .cell-guest-name{color:#fff}
+.slot-cell.s-change .cell-guest-name{color:#0a6b5a}
+.slot-cell.s-checkin .cell-guest-name{color:#6b5800}
+.slot-cell.s-cancel .cell-guest-name{color:#555}
 
-/* NOTE ICON */
-.note-btn{
-  background:none;border:none;cursor:pointer;padding:1px;
-  line-height:1;border-radius:3px;
-  font-size:12px;opacity:.2;transition:opacity .15s;
-  position:relative;display:block;
+.cell-flag{font-size:17px;line-height:1;text-align:center}
+.cell-nat-text{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.04em}
+.slot-cell.s-unpaid .cell-nat-text,
+.slot-cell.s-paid-noci .cell-nat-text{color:rgba(255,255,255,.7)}
+
+/* note icon */
+.cell-note-btn{
+  position:absolute;top:5px;right:6px;
+  background:none;border:none;cursor:pointer;
+  padding:2px;line-height:1;
+  opacity:.22;transition:opacity .15s;
 }
-.note-btn:hover{opacity:.7}
-.note-btn.has-notes{opacity:1;filter:drop-shadow(0 0 3px rgba(250,200,0,.6))}
-.note-dot{
-  width:5px;height:5px;border-radius:50%;background:#e6a800;
+.cell-note-btn:hover{opacity:.8}
+.cell-note-btn.has-notes{opacity:1}
+.note-red-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:#e63c3c;border:1.5px solid #fff;
   position:absolute;top:-1px;right:-1px;
-  display:none;border:1px solid #fff;
+  display:none;
 }
-.note-btn.has-notes .note-dot{display:block}
-.slot-cell.s-empty .note-btn{opacity:0}
-.slot-cell.s-empty:hover .note-btn{opacity:.25}
-.slot-cell.s-empty .note-btn.has-notes{opacity:1}
-.slot-cell.s-unpaid .note-btn{opacity:.35}
-.slot-cell.s-unpaid .note-btn.has-notes{opacity:1}
-.slot-cell.s-paid-noci .note-btn{opacity:.35}
-.slot-cell.s-paid-noci .note-btn.has-notes{opacity:1}
-
-.cell-bottom{border-top:1px solid rgba(0,0,0,.07);display:flex;opacity:0;transition:opacity .15s}
-.slot-cell:hover .cell-bottom{opacity:1}
-.slot-cell.s-checkin .cell-bottom,.slot-cell.s-unpaid .cell-bottom,
-.slot-cell.s-change .cell-bottom,.slot-cell.s-paid-noci .cell-bottom,
-.slot-cell.s-cancel .cell-bottom{opacity:1}
-.slot-cell.s-unpaid .cell-bottom,.slot-cell.s-paid-noci .cell-bottom{border-top-color:rgba(255,255,255,.15)}
-.cell-select{
-  flex:1;font-size:11px;border:none;outline:none;
-  background:transparent;color:var(--text);
-  font-family:inherit;padding:4px 6px;cursor:pointer;
-  appearance:none;-webkit-appearance:none;min-width:0;
-}
-.cell-select:first-child{border-right:1px solid rgba(0,0,0,.1)}
-.slot-cell.s-unpaid .cell-select,.slot-cell.s-paid-noci .cell-select{
-  color:#fff;background:transparent;
-}
-.slot-cell.s-unpaid .cell-select option,.slot-cell.s-paid-noci .cell-select option{
-  color:var(--text);background:#fff;
-}
-.slot-cell.s-unpaid .cell-select:first-child,.slot-cell.s-paid-noci .cell-select:first-child{border-right-color:rgba(255,255,255,.2)}
-.slot-cell.s-change .cell-select{color:#0a6b5a}
-.slot-cell.s-change .cell-select option{color:var(--text);background:#fff}
-.slot-cell.s-checkin .cell-select{color:#6b5800}
-.slot-cell.s-checkin .cell-select option{color:var(--text);background:#fff}
-.slot-cell.s-cancel .cell-select{color:#444}
-.slot-cell.s-lower .cell-select{color:#444}
-
-/* NOTES PANEL */
-.notes-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.3)}
-.notes-overlay.open{display:block}
-.notes-panel{
-  position:fixed;right:-340px;top:0;bottom:0;width:320px;
-  background:var(--surface);border-left:1px solid var(--border);
-  display:flex;flex-direction:column;z-index:301;
-  box-shadow:-4px 0 20px rgba(0,0,0,.1);
-  transition:right .25s ease;
-}
-.notes-panel.open{right:0}
-.notes-header{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.notes-header h3{font-size:14px;font-weight:600;flex:1}
-.notes-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;padding:2px}
-.notes-close:hover{color:var(--text)}
-.notes-list{flex:1;overflow-y:auto;padding:12px}
-.note-item{background:var(--bg);border-radius:8px;padding:10px 12px;margin-bottom:8px;position:relative}
-.note-text{font-size:13px;line-height:1.5;color:var(--text);white-space:pre-wrap}
-.note-time{font-size:10px;color:var(--muted);margin-top:4px}
-.note-del{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;opacity:0}
-.note-item:hover .note-del{opacity:1}
-.note-del:hover{color:#e63c3c}
-.notes-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px}
-.notes-add{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px}
-.notes-add textarea{
-  flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:8px;
-  font-size:13px;font-family:inherit;background:var(--bg);color:var(--text);
-  resize:none;height:60px;outline:none;
-}
-.notes-add textarea:focus{border-color:#3a6fd4}
-.notes-add button{padding:8px 14px;background:var(--text);color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500;align-self:flex-end}
-.notes-add button:hover{background:#333}
+.cell-note-btn.has-notes .note-red-dot{display:block}
+.slot-cell.s-unpaid .cell-note-btn,
+.slot-cell.s-paid-noci .cell-note-btn{opacity:.4}
+.slot-cell.s-unpaid .cell-note-btn.has-notes,
+.slot-cell.s-paid-noci .cell-note-btn.has-notes{opacity:1}
 
 /* MONTH */
 .month-wrap{padding:16px 20px 80px;display:flex;flex-direction:column;gap:12px;max-width:1400px;margin:0 auto}
@@ -223,24 +170,67 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .month-dot span{font-size:9px;font-weight:700;color:rgba(0,0,0,.4);max-width:24px;overflow:hidden;white-space:nowrap}
 .md-checkin{background:var(--s-checkin)}.md-unpaid{background:var(--s-unpaid)}
 .md-change{background:var(--s-change)}.md-paid-noci{background:var(--s-paid-noci)}
-.md-cancel{background:var(--s-cancel)}.md-lower{background:var(--s-lower)}
-.md-empty{background:#fff}.today-bg{background:#f0ede8}
+.md-cancel{background:var(--s-cancel)}.md-empty{background:#fff}.today-bg{background:#f0ede8}
 
-/* ROOM MODAL */
+/* MODALS */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;padding:20px}
 .overlay.open{display:flex}
-.modal{background:var(--surface);border-radius:14px;padding:1.4rem;width:100%;max-width:320px;box-shadow:0 12px 40px rgba(0,0,0,.15)}
+.modal{background:var(--surface);border-radius:14px;padding:1.4rem;width:100%;max-width:340px;box-shadow:0 12px 40px rgba(0,0,0,.15)}
 .modal h3{font-size:15px;font-weight:600;margin-bottom:1.1rem}
 .field{margin-bottom:11px}
 .field label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
-.field input{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text);font-family:inherit}
-.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:1.1rem}
+.field input,.field select{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text);font-family:inherit;appearance:none;-webkit-appearance:none}
+.field input:focus,.field select:focus{outline:none;border-color:#3a6fd4}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:1.2rem;align-items:center}
 .btn{padding:7px 15px;font-size:13px;font-weight:500;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:none;color:var(--text)}
 .btn:hover{background:var(--bg)}
 .btn-primary{background:var(--text);color:#fff;border-color:var(--text)}
 .btn-primary:hover{background:#333}
-.empty{text-align:center;padding:60px 20px;color:var(--muted)}
-.empty p{font-size:15px;color:var(--text);margin-bottom:6px}
+.btn-danger{background:none;color:#e63c3c;border-color:#f5c0c0}
+.btn-danger:hover{background:#fff5f5}
+
+/* SLOT MODAL specifics */
+.slot-modal{max-width:380px;padding:0;overflow:hidden}
+.slot-modal-top{padding:16px 16px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.slot-name-inp{
+  flex:1;font-size:18px;font-weight:700;border:none;outline:none;
+  background:transparent;color:var(--text);font-family:inherit;
+  padding:2px 0;
+}
+.slot-name-inp::placeholder{color:#ccc;font-weight:400;font-size:15px}
+.modal-x{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1;padding:2px 4px}
+.modal-x:hover{color:var(--text)}
+.slot-fields{padding:12px 16px 4px}
+.slot-fields .field{margin-bottom:9px}
+.extra-inp{
+  width:100%;margin-top:5px;padding:7px 10px;
+  border:1px solid var(--border);border-radius:8px;
+  font-size:13px;font-family:inherit;
+  background:var(--bg);color:var(--text);outline:none;
+}
+.extra-inp:focus{border-color:#3a6fd4}
+
+/* notes in modal */
+.slot-notes-section{padding:0 16px 12px}
+.slot-notes-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;padding-top:4px;border-top:1px solid var(--border)}
+.slot-notes-list{max-height:120px;overflow-y:auto;margin-bottom:7px}
+.slot-note-item{background:var(--bg);border-radius:7px;padding:7px 10px;margin-bottom:5px;position:relative;padding-right:26px}
+.slot-note-text{font-size:12px;line-height:1.45;color:var(--text);white-space:pre-wrap}
+.slot-note-time{font-size:10px;color:var(--muted);margin-top:2px}
+.slot-note-del{position:absolute;top:6px;right:7px;background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;line-height:1;opacity:0}
+.slot-note-item:hover .slot-note-del{opacity:1}
+.slot-note-del:hover{color:#e63c3c}
+.slot-notes-empty{font-size:12px;color:var(--muted);text-align:center;padding:10px 0}
+.slot-notes-add{display:flex;gap:6px}
+.slot-notes-add textarea{
+  flex:1;padding:7px 9px;border:1px solid var(--border);border-radius:8px;
+  font-size:12px;font-family:inherit;background:var(--bg);color:var(--text);
+  resize:none;height:52px;outline:none;
+}
+.slot-notes-add textarea:focus{border-color:#3a6fd4}
+.slot-notes-add button{padding:7px 13px;background:var(--text);color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:500;align-self:flex-end}
+.slot-notes-add button:hover{background:#333}
+.slot-modal-footer{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center}
 </style>
 </head>
 <body>
@@ -248,96 +238,32 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 <div class="hero-header">
   <div class="hero-bg">
     <svg viewBox="0 0 1200 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <!-- Sky -->
       <rect width="1200" height="200" fill="#87CEEB"/>
-      <!-- Sun -->
       <circle cx="1050" cy="45" r="28" fill="#FFD700" opacity="0.9"/>
-      <!-- Clouds -->
       <ellipse cx="150" cy="35" rx="55" ry="18" fill="white" opacity="0.7"/>
       <ellipse cx="195" cy="28" rx="40" ry="16" fill="white" opacity="0.7"/>
       <ellipse cx="110" cy="30" rx="35" ry="14" fill="white" opacity="0.6"/>
       <ellipse cx="700" cy="25" rx="45" ry="14" fill="white" opacity="0.5"/>
       <ellipse cx="740" cy="18" rx="32" ry="12" fill="white" opacity="0.5"/>
-      <!-- Sea -->
       <rect y="130" width="1200" height="70" fill="#1a7abf"/>
-      <!-- Sea shimmer -->
       <rect y="130" width="1200" height="5" fill="#2596d6" opacity="0.5"/>
       <ellipse cx="300" cy="138" rx="80" ry="4" fill="#6ec6f5" opacity="0.3"/>
       <ellipse cx="700" cy="142" rx="120" ry="5" fill="#6ec6f5" opacity="0.25"/>
       <ellipse cx="1000" cy="135" rx="90" ry="4" fill="#6ec6f5" opacity="0.2"/>
-      <!-- Mountains/hills behind buildings -->
       <path d="M0 120 Q100 60 200 100 Q300 60 400 95 Q500 50 600 90 Q700 55 800 95 Q900 65 1000 100 Q1100 70 1200 105 L1200 200 L0 200Z" fill="#2d5a1b" opacity="0.7"/>
       <path d="M0 130 Q150 90 300 115 Q450 85 600 110 Q750 80 900 115 Q1050 90 1200 120 L1200 200 L0 200Z" fill="#3a7a25" opacity="0.6"/>
-      <!-- Buildings La Spezia style -->
-      <!-- Building 1 - pink/salmon -->
-      <rect x="30" y="80" width="45" height="60" fill="#E8927C"/>
-      <rect x="35" y="75" width="35" height="10" fill="#D4785F"/>
-      <rect x="38" y="88" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="52" y="88" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="38" y="105" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="52" y="105" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
-      <!-- Building 2 - yellow -->
-      <rect x="80" y="70" width="38" height="70" fill="#F5C842"/>
-      <rect x="84" y="65" width="30" height="10" fill="#E0B030"/>
-      <rect x="86" y="78" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="98" y="78" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="86" y="94" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="98" y="94" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="86" y="110" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="98" y="110" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <!-- Building 3 - terracotta -->
-      <rect x="123" y="85" width="42" height="55" fill="#C17A4A"/>
-      <rect x="127" y="80" width="34" height="10" fill="#A86035"/>
-      <rect x="129" y="92" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="143" y="92" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="129" y="108" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="143" y="108" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
-      <!-- Building 4 - white/cream -->
-      <rect x="170" y="75" width="40" height="65" fill="#F0EAD6"/>
-      <rect x="174" y="70" width="32" height="10" fill="#D9C9A8"/>
-      <rect x="176" y="82" width="7" height="9" fill="#5a3a2a" opacity="0.5"/>
-      <rect x="189" y="82" width="7" height="9" fill="#5a3a2a" opacity="0.5"/>
-      <rect x="176" y="98" width="7" height="9" fill="#5a3a2a" opacity="0.5"/>
-      <rect x="189" y="98" width="7" height="9" fill="#5a3a2a" opacity="0.5"/>
-      <!-- Building 5 - sage green -->
-      <rect x="215" y="82" width="36" height="58" fill="#7DAF6A"/>
-      <rect x="219" y="77" width="28" height="10" fill="#5E9050"/>
-      <rect x="221" y="89" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
-      <rect x="233" y="89" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
-      <rect x="221" y="105" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
-      <rect x="233" y="105" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
-      <!-- RIGHT SIDE buildings -->
-      <rect x="960" y="78" width="44" height="62" fill="#E8927C"/>
-      <rect x="964" y="73" width="36" height="10" fill="#D4785F"/>
-      <rect x="966" y="85" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="980" y="85" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="966" y="102" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="980" y="102" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="1009" y="68" width="40" height="72" fill="#F5C842"/>
-      <rect x="1013" y="63" width="32" height="10" fill="#E0B030"/>
-      <rect x="1015" y="76" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="1027" y="76" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="1015" y="92" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="1027" y="92" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="1015" y="108" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="1027" y="108" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="1054" y="82" width="38" height="58" fill="#C17A4A"/>
-      <rect x="1058" y="77" width="30" height="10" fill="#A86035"/>
-      <rect x="1060" y="89" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="1073" y="89" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="1060" y="105" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="1073" y="105" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
-      <rect x="1097" y="75" width="42" height="65" fill="#7DAF6A"/>
-      <rect x="1101" y="70" width="34" height="10" fill="#5E9050"/>
-      <rect x="1103" y="82" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
-      <rect x="1115" y="82" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
-      <rect x="1103" y="98" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
-      <rect x="1115" y="98" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
-      <!-- Small boat -->
+      <rect x="30" y="80" width="45" height="60" fill="#E8927C"/><rect x="35" y="75" width="35" height="10" fill="#D4785F"/><rect x="38" y="88" width="8" height="10" fill="#5a3a2a" opacity="0.6"/><rect x="52" y="88" width="8" height="10" fill="#5a3a2a" opacity="0.6"/><rect x="38" y="105" width="8" height="10" fill="#5a3a2a" opacity="0.6"/><rect x="52" y="105" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="80" y="70" width="38" height="70" fill="#F5C842"/><rect x="84" y="65" width="30" height="10" fill="#E0B030"/><rect x="86" y="78" width="7" height="9" fill="#5a3a2a" opacity="0.6"/><rect x="98" y="78" width="7" height="9" fill="#5a3a2a" opacity="0.6"/><rect x="86" y="94" width="7" height="9" fill="#5a3a2a" opacity="0.6"/><rect x="98" y="94" width="7" height="9" fill="#5a3a2a" opacity="0.6"/><rect x="86" y="110" width="7" height="9" fill="#5a3a2a" opacity="0.6"/><rect x="98" y="110" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="123" y="85" width="42" height="55" fill="#C17A4A"/><rect x="127" y="80" width="34" height="10" fill="#A86035"/><rect x="129" y="92" width="8" height="10" fill="#5a3a2a" opacity="0.6"/><rect x="143" y="92" width="8" height="10" fill="#5a3a2a" opacity="0.6"/><rect x="129" y="108" width="8" height="10" fill="#5a3a2a" opacity="0.6"/><rect x="143" y="108" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="170" y="75" width="40" height="65" fill="#F0EAD6"/><rect x="174" y="70" width="32" height="10" fill="#D9C9A8"/><rect x="176" y="82" width="7" height="9" fill="#5a3a2a" opacity="0.5"/><rect x="189" y="82" width="7" height="9" fill="#5a3a2a" opacity="0.5"/><rect x="176" y="98" width="7" height="9" fill="#5a3a2a" opacity="0.5"/><rect x="189" y="98" width="7" height="9" fill="#5a3a2a" opacity="0.5"/>
+      <rect x="215" y="82" width="36" height="58" fill="#7DAF6A"/><rect x="219" y="77" width="28" height="10" fill="#5E9050"/><rect x="221" y="89" width="7" height="9" fill="#3a5a2a" opacity="0.6"/><rect x="233" y="89" width="7" height="9" fill="#3a5a2a" opacity="0.6"/><rect x="221" y="105" width="7" height="9" fill="#3a5a2a" opacity="0.6"/><rect x="233" y="105" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
+      <rect x="960" y="78" width="44" height="62" fill="#E8927C"/><rect x="964" y="73" width="36" height="10" fill="#D4785F"/><rect x="966" y="85" width="8" height="10" fill="#5a3a2a" opacity="0.6"/><rect x="980" y="85" width="8" height="10" fill="#5a3a2a" opacity="0.6"/><rect x="966" y="102" width="8" height="10" fill="#5a3a2a" opacity="0.6"/><rect x="980" y="102" width="8" height="10" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1009" y="68" width="40" height="72" fill="#F5C842"/><rect x="1013" y="63" width="32" height="10" fill="#E0B030"/><rect x="1015" y="76" width="7" height="9" fill="#5a3a2a" opacity="0.6"/><rect x="1027" y="76" width="7" height="9" fill="#5a3a2a" opacity="0.6"/><rect x="1015" y="92" width="7" height="9" fill="#5a3a2a" opacity="0.6"/><rect x="1027" y="92" width="7" height="9" fill="#5a3a2a" opacity="0.6"/><rect x="1015" y="108" width="7" height="9" fill="#5a3a2a" opacity="0.6"/><rect x="1027" y="108" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1054" y="82" width="38" height="58" fill="#C17A4A"/><rect x="1058" y="77" width="30" height="10" fill="#A86035"/><rect x="1060" y="89" width="7" height="9" fill="#5a3a2a" opacity="0.6"/><rect x="1073" y="89" width="7" height="9" fill="#5a3a2a" opacity="0.6"/><rect x="1060" y="105" width="7" height="9" fill="#5a3a2a" opacity="0.6"/><rect x="1073" y="105" width="7" height="9" fill="#5a3a2a" opacity="0.6"/>
+      <rect x="1097" y="75" width="42" height="65" fill="#7DAF6A"/><rect x="1101" y="70" width="34" height="10" fill="#5E9050"/><rect x="1103" y="82" width="7" height="9" fill="#3a5a2a" opacity="0.6"/><rect x="1115" y="82" width="7" height="9" fill="#3a5a2a" opacity="0.6"/><rect x="1103" y="98" width="7" height="9" fill="#3a5a2a" opacity="0.6"/><rect x="1115" y="98" width="7" height="9" fill="#3a5a2a" opacity="0.6"/>
       <path d="M880 145 Q900 140 920 145 L915 152 L885 152Z" fill="#8B4513"/>
       <rect x="898" y="130" width="2" height="15" fill="#5a3a1a"/>
       <path d="M900 130 L920 138 L900 140Z" fill="white" opacity="0.9"/>
-      <!-- Overlay gradient for readability -->
       <rect width="1200" height="200" fill="rgba(0,30,60,0.35)"/>
     </svg>
   </div>
@@ -358,12 +284,12 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
       <button class="hero-tab active" onclick="switchView('week')">Week</button>
       <button class="hero-tab" onclick="switchView('month')">Month</button>
     </div>
-    <div class="period-nav" style="color:rgba(255,255,255,.85)">
-      <button onclick="navPrev()" style="border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.85);background:rgba(255,255,255,.1)">‹</button>
-      <span id="period-label" style="color:rgba(255,255,255,.9)"></span>
-      <button onclick="navNext()" style="border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.85);background:rgba(255,255,255,.1)">›</button>
+    <div class="period-nav">
+      <button onclick="navPrev()">‹</button>
+      <span id="period-label"></span>
+      <button onclick="navNext()">›</button>
     </div>
-    <button class="nav-btn" onclick="openAddRoom()" style="border-color:rgba(255,255,255,.4);color:white;background:rgba(255,255,255,.15)">+ Room</button>
+    <button class="nav-btn" onclick="openAddRoom()">+ Room</button>
   </div>
 </div>
 
@@ -373,7 +299,6 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
   <span class="leg"><span class="leg-dot" style="background:#17c4aa"></span>Change room</span>
   <span class="leg"><span class="leg-dot" style="background:#3a6fd4"></span>Paid, not checked in</span>
   <span class="leg"><span class="leg-dot" style="background:#d0cfc9"></span>Cancellation / leaving sooner</span>
-
 </div>
 
 <div id="view-week">
@@ -383,25 +308,51 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
   <div class="month-wrap" id="month-wrap"></div>
 </div>
 
-<!-- Notes panel -->
-<div class="notes-overlay" id="notes-overlay" onclick="closeNotes()"></div>
-<div class="notes-panel" id="notes-panel">
-  <div class="notes-header">
-    <h3 id="notes-title">Notes</h3>
-    <button class="notes-close" onclick="closeNotes()">×</button>
-  </div>
-  <div class="notes-list" id="notes-list"></div>
-  <div class="notes-add">
-    <textarea id="notes-input" placeholder="Add a note…" onkeydown="if(event.key==='Enter'&&event.ctrlKey)addNote()"></textarea>
-    <button onclick="addNote()">Add</button>
+<!-- Slot modal -->
+<div class="overlay" id="slot-modal">
+  <div class="modal slot-modal">
+    <div class="slot-modal-top">
+      <input class="slot-name-inp" id="slot-name" placeholder="Guest name…" onkeydown="if(event.key==='Enter')saveSlot()">
+      <button class="modal-x" onclick="closeSlotModal()">×</button>
+    </div>
+    <div class="slot-fields">
+      <div class="field">
+        <label>Status</label>
+        <select id="slot-status"></select>
+      </div>
+      <div class="field">
+        <label>Arrival</label>
+        <select id="slot-arrival" onchange="onModalArrivalChange()"></select>
+        <input class="extra-inp" id="slot-arrival-text" placeholder="e.g. 15:30" style="display:none">
+      </div>
+      <div class="field">
+        <label>Nationality</label>
+        <select id="slot-nat" onchange="onModalNatChange()"></select>
+        <input class="extra-inp" id="slot-nat-text" placeholder="e.g. POL, NZL, KOR" style="display:none">
+      </div>
+    </div>
+    <div class="slot-notes-section">
+      <div class="slot-notes-label">Notes</div>
+      <div id="slot-notes-list" class="slot-notes-list"></div>
+      <div class="slot-notes-add">
+        <textarea id="slot-note-input" placeholder="Add a note… (Ctrl+Enter)" onkeydown="if(event.key==='Enter'&&event.ctrlKey)addSlotNote()"></textarea>
+        <button onclick="addSlotNote()">Add</button>
+      </div>
+    </div>
+    <div class="slot-modal-footer">
+      <button class="btn btn-danger" id="slot-delete-btn" onclick="deleteSlot()" style="display:none">Clear</button>
+      <div style="flex:1"></div>
+      <button class="btn" onclick="closeSlotModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSlot()">Save</button>
+    </div>
   </div>
 </div>
 
-<!-- Room modal -->
+<!-- Add room modal -->
 <div class="overlay" id="room-modal">
   <div class="modal">
     <h3>Add room</h3>
-    <div class="field"><label>Room name</label><input id="rm-name" placeholder="e.g. Room 1, Dorm A..."></div>
+    <div class="field"><label>Room name</label><input id="rm-name" placeholder="e.g. Room 1, Dorm A…"></div>
     <div class="field"><label>Number of beds</label><input id="rm-beds" type="number" min="1" max="30" placeholder="4"></div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal('room-modal')">Cancel</button>
@@ -416,23 +367,20 @@ const MONTHS_LONG=['January','February','March','April','May','June','July','Aug
 const STATUSES=['','checkin','unpaid','change','paid-noci','cancel'];
 const STATUS_LABELS=['— status —','Check-in (not paid)','Not paid','Change room','Paid, not checked in','Cancellation / leaving sooner'];
 const HOURS=['','arrived','00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','custom'];
-
 const NATS=[
-  {v:'',l:'— nat —',code:''},
-  {v:'gb',l:'UK',code:'gb'},
-  {v:'us',l:'USA',code:'us'},
-  {v:'au',l:'AUS',code:'au'},
-  {v:'de',l:'GER',code:'de'},
-  {v:'fr',l:'FRA',code:'fr'},
-  {v:'es',l:'ESP',code:'es'},
-  {v:'it',l:'ITA',code:'it'},
-  {v:'nl',l:'NL',code:'nl'},
-  {v:'ar',l:'ARG',code:'ar'},
-  {v:'br',l:'BRA',code:'br'},
-  {v:'ca',l:'CAN',code:'ca'},
-  {v:'custom',l:'+ other…',code:''},
+  {v:'',l:'— nationality —'},
+  {v:'gb',l:'🇬🇧 UK'},{v:'us',l:'🇺🇸 USA'},{v:'au',l:'🇦🇺 AUS'},
+  {v:'de',l:'🇩🇪 GER'},{v:'fr',l:'🇫🇷 FRA'},{v:'es',l:'🇪🇸 ESP'},
+  {v:'it',l:'🇮🇹 ITA'},{v:'nl',l:'🇳🇱 NL'},{v:'ar',l:'🇦🇷 ARG'},
+  {v:'br',l:'🇧🇷 BRA'},{v:'ca',l:'🇨🇦 CAN'},{v:'pl',l:'🇵🇱 POL'},
+  {v:'cz',l:'🇨🇿 CZE'},{v:'sk',l:'🇸🇰 SVK'},{v:'jp',l:'🇯🇵 JPN'},
+  {v:'kr',l:'🇰🇷 KOR'},{v:'cn',l:'🇨🇳 CHN'},{v:'pt',l:'🇵🇹 POR'},
+  {v:'custom',l:'+ other…'},
 ];
-let rooms=[], cells={}, notes={}, weekOff=0, monthOff=0, view='week', activeNoteKey=null;
+
+const FLAG_MAP={gb:'🇬🇧',us:'🇺🇸',au:'🇦🇺',de:'🇩🇪',fr:'🇫🇷',es:'🇪🇸',it:'🇮🇹',nl:'🇳🇱',ar:'🇦🇷',br:'🇧🇷',ca:'🇨🇦',pl:'🇵🇱',cz:'🇨🇿',sk:'🇸🇰',jp:'🇯🇵',kr:'🇰🇷',cn:'🇨🇳',pt:'🇵🇹'};
+
+let rooms=[], cells={}, notes={}, weekOff=0, monthOff=0, view='week', currentSlotKey=null;
 
 function load(){
   try{const r=localStorage.getItem('hb7_rooms');if(r)rooms=JSON.parse(r);}catch{}
@@ -450,15 +398,216 @@ function ds(d){return`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())
 function fmt(d){return`${p2(d.getDate())}/${p2(d.getMonth()+1)}`;}
 function isToday(d){return ds(d)===ds(new Date());}
 function ck(rid,slot,datestr){return`${rid}-${slot}-${datestr}`;}
-function gc(key){return cells[key]||{name:'',status:'',arrival:''};}
+function gc(key){return cells[key]||{name:'',status:'',arrival:'',nat:''};}
 function gn(key){return notes[key]||[];}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function flagFor(natVal){return FLAG_MAP[natVal]||'';}
 
+function statusClass(s){return s?`s-${s}`:'s-empty';}
+
+function cellHtml(key){
+  const c=gc(key);
+  const hasNotes=gn(key).length>0;
+  const isEmpty=!c.name&&!c.status;
+
+  if(isEmpty){
+    return`<div class="slot-cell s-empty" onclick="openSlotModal('${key}')"><div class="cell-plus">+</div></div>`;
+  }
+
+  const flag=flagFor(c.nat||'');
+  const customNat=(c.nat&&!FLAG_MAP[c.nat]&&c.nat!=='')?c.nat:'';
+
+  return`<div class="slot-cell ${statusClass(c.status)}" onclick="openSlotModal('${key}')">
+    <button class="cell-note-btn${hasNotes?' has-notes':''}" onclick="event.stopPropagation();openSlotModal('${key}')" title="Notes">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <rect x="1" y="1" width="14" height="10" rx="3" fill="#f5c800" stroke="#555" stroke-width="1.5"/>
+        <polygon points="3,11 7,11 5,14" fill="#f5c800" stroke="#555" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      <div class="note-red-dot"></div>
+    </button>
+    <div class="cell-guest-name">${esc(c.name)||'—'}</div>
+    ${flag?`<div class="cell-flag">${flag}</div>`:''}
+    ${customNat?`<div class="cell-nat-text">${esc(customNat)}</div>`:''}
+  </div>`;
+}
+
+/* WEEK */
 function weekDays(){
   const n=new Date(),day=n.getDay(),m=new Date(n);
   m.setDate(n.getDate()-(day===0?6:day-1)+weekOff*7);m.setHours(0,0,0,0);
   return Array.from({length:7},(_,i)=>{const d=new Date(m);d.setDate(m.getDate()+i);return d;});
 }
+
+function renderWeek(){
+  const days=weekDays();
+  document.getElementById('period-label').textContent=`${fmt(days[0])} – ${fmt(days[6])} · ${days[0].getFullYear()}`;
+
+  if(!rooms.length){
+    document.getElementById('week-table').innerHTML=`<div style="padding:60px 20px;text-align:center;color:var(--muted)"><p style="font-size:15px;color:var(--text);margin-bottom:6px">No rooms yet</p>Click "+ Room" to get started</div>`;
+    return;
+  }
+
+  let h=`<table class="week-table"><thead><tr>`;
+  h+=`<th class="col-sticky th-corner"></th>`;
+  days.forEach(d=>{
+    h+=`<th class="th-day${isToday(d)?' today':''}"><span class="th-weekday">${DAYS[d.getDay()]}</span><span class="th-date">${fmt(d)}</span></th>`;
+  });
+  h+=`</tr></thead><tbody>`;
+
+  rooms.forEach(r=>{
+    // room header row
+    h+=`<tr>`;
+    h+=`<td class="col-sticky room-row-th">${esc(r.name)}<button class="room-del-btn" onclick="deleteRoom('${r.id}')">×</button></td>`;
+    h+=`<td colspan="7" class="room-row-sep"></td>`;
+    h+=`</tr>`;
+
+    // bed rows
+    for(let s=0;s<r.beds;s++){
+      const isLast=s===r.beds-1;
+      h+=`<tr>`;
+      h+=`<td class="col-sticky bed-label-th${isLast?' last-bed':''}">Bed ${s+1}</td>`;
+      days.forEach(d=>{
+        const key=ck(r.id,s,ds(d));
+        h+=`<td class="slot-td${isLast?' last-bed':''}">${cellHtml(key)}</td>`;
+      });
+      h+=`</tr>`;
+    }
+  });
+
+  h+=`</tbody></table>`;
+  document.getElementById('week-table').innerHTML=h;
+}
+
+/* SLOT MODAL */
+function statusOpts(cur){
+  return STATUSES.map((s,i)=>`<option value="${s}"${cur===s?' selected':''}>${STATUS_LABELS[i]}</option>`).join('');
+}
+function arrivalOpts(cur){
+  return HOURS.map(h=>{
+    if(h==='custom') return`<option value="custom"${cur==='custom'?' selected':''}>custom…</option>`;
+    if(h==='') return`<option value=""${!cur?' selected':''}>— arrival —</option>`;
+    if(h==='arrived') return`<option value="arrived"${cur==='arrived'?' selected':''}>arrived ✓</option>`;
+    return`<option value="${h}"${cur===h?' selected':''}>${h}</option>`;
+  }).join('');
+}
+function natOpts(cur){
+  const knownVals=NATS.map(n=>n.v);
+  const isCustom=cur&&!knownVals.includes(cur);
+  let opts=NATS.map(n=>`<option value="${n.v}"${cur===n.v?' selected':''}>${n.l}</option>`).join('');
+  if(isCustom) opts+=`<option value="${esc(cur)}" selected>${esc(cur)}</option>`;
+  return opts;
+}
+
+function openSlotModal(key){
+  currentSlotKey=key;
+  const c=gc(key);
+  document.getElementById('slot-name').value=c.name||'';
+  document.getElementById('slot-status').innerHTML=statusOpts(c.status||'');
+  document.getElementById('slot-arrival').innerHTML=arrivalOpts(c.arrival||'');
+  document.getElementById('slot-nat').innerHTML=natOpts(c.nat||'');
+
+  const knownVals=NATS.map(n=>n.v);
+  const isCustomArrival=c.arrival&&!HOURS.includes(c.arrival);
+  const isCustomNat=c.nat&&!knownVals.includes(c.nat);
+
+  const arrText=document.getElementById('slot-arrival-text');
+  arrText.style.display=isCustomArrival?'block':'none';
+  if(isCustomArrival) arrText.value=c.arrival;
+
+  const natText=document.getElementById('slot-nat-text');
+  natText.style.display=isCustomNat?'block':'none';
+  if(isCustomNat) natText.value=c.nat;
+
+  document.getElementById('slot-delete-btn').style.display=(c.name||c.status)?'inline-block':'none';
+  document.getElementById('slot-note-input').value='';
+  renderSlotNotes();
+  document.getElementById('slot-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('slot-name').focus(),50);
+}
+
+function onModalArrivalChange(){
+  const sel=document.getElementById('slot-arrival');
+  const inp=document.getElementById('slot-arrival-text');
+  inp.style.display=sel.value==='custom'?'block':'none';
+  if(sel.value==='custom') setTimeout(()=>inp.focus(),30);
+}
+function onModalNatChange(){
+  const sel=document.getElementById('slot-nat');
+  const inp=document.getElementById('slot-nat-text');
+  inp.style.display=sel.value==='custom'?'block':'none';
+  if(sel.value==='custom') setTimeout(()=>inp.focus(),30);
+}
+
+function saveSlot(){
+  if(!currentSlotKey)return;
+  const c=gc(currentSlotKey);
+  c.name=document.getElementById('slot-name').value.trim();
+  c.status=document.getElementById('slot-status').value;
+
+  const arrSel=document.getElementById('slot-arrival');
+  if(arrSel.value==='custom'){
+    c.arrival=document.getElementById('slot-arrival-text').value.trim()||'';
+  } else {
+    c.arrival=arrSel.value;
+  }
+
+  const natSel=document.getElementById('slot-nat');
+  if(natSel.value==='custom'){
+    c.nat=document.getElementById('slot-nat-text').value.trim().toUpperCase()||'';
+  } else {
+    c.nat=natSel.value;
+  }
+
+  cells[currentSlotKey]=c;
+  save();
+  closeSlotModal();
+}
+
+function deleteSlot(){
+  if(!currentSlotKey)return;
+  delete cells[currentSlotKey];
+  delete notes[currentSlotKey];
+  save();
+  closeSlotModal();
+}
+
+function closeSlotModal(){
+  document.getElementById('slot-modal').classList.remove('open');
+  currentSlotKey=null;
+  render();
+}
+
+/* NOTES IN MODAL */
+function renderSlotNotes(){
+  const list=gn(currentSlotKey);
+  const el=document.getElementById('slot-notes-list');
+  if(!list.length){el.innerHTML=`<div class="slot-notes-empty">No notes yet</div>`;return;}
+  el.innerHTML=list.map((n,i)=>`
+    <div class="slot-note-item">
+      <div class="slot-note-text">${esc(n.text)}</div>
+      <div class="slot-note-time">${n.time}</div>
+      <button class="slot-note-del" onclick="deleteSlotNote(${i})">×</button>
+    </div>
+  `).join('');
+}
+function addSlotNote(){
+  const text=document.getElementById('slot-note-input').value.trim();
+  if(!text||!currentSlotKey)return;
+  if(!notes[currentSlotKey])notes[currentSlotKey]=[];
+  const now=new Date();
+  notes[currentSlotKey].push({text,time:`${p2(now.getDate())}/${p2(now.getMonth()+1)} ${p2(now.getHours())}:${p2(now.getMinutes())}`});
+  save();
+  document.getElementById('slot-note-input').value='';
+  renderSlotNotes();
+}
+function deleteSlotNote(idx){
+  notes[currentSlotKey].splice(idx,1);
+  if(!notes[currentSlotKey].length)delete notes[currentSlotKey];
+  save();
+  renderSlotNotes();
+}
+
+/* MONTH */
 function monthDays(){
   const n=new Date(),d=new Date(n.getFullYear(),n.getMonth()+monthOff,1),days=[];
   const mo=d.getMonth();
@@ -466,223 +615,10 @@ function monthDays(){
   return days;
 }
 
-function renderSummary(days){}
-
-function statusClass(s){return s?`s-${s}`:'s-empty';}
-
-function arrivalOpts(current){
-  return HOURS.map((h,i)=>{
-    if(h==='custom') return`<option value="custom">custom…</option>`;
-    if(h==='') return`<option value=""${!current?' selected':''}>— arrival —</option>`;
-    if(h==='arrived') return`<option value="arrived"${current==='arrived'?' selected':''}>arrived ✓</option>`;
-    return`<option value="${h}"${current===h?' selected':''}>${h}</option>`;
-  }).join('');
-}
-function statusOpts(current){
-  return STATUSES.map((s,i)=>`<option value="${s}"${current===s?' selected':''}>${STATUS_LABELS[i]}</option>`).join('');
-}
-
-function natFlagHtml(natVal){
-  const n=NATS.find(x=>x.v===natVal);
-  if(!n||!n.code) return '';
-  // Regional indicator Unicode chars - render as flags on Mac/iOS, as text on Windows (still readable)
-  const flag=n.code.toUpperCase().split('').map(c=>String.fromCodePoint(c.charCodeAt(0)+127397)).join('');
-  return`<span style="font-size:16px;line-height:1">${flag}</span>`;
-}
-function parseTwemoji(){}
-function natOpts(current){
-  return NATS.map(n=>{
-    if(n.v==='custom') return`<option value="custom">+ other…</option>`;
-    if(n.v==='') return`<option value=""${!current?' selected':''}>— nat —</option>`;
-    return`<option value="${n.v}"${current===n.v?' selected':''}>${n.l}</option>`;
-  }).join('');
-}
-function handleNat(sel){
-  const key=sel.dataset.key;
-  if(sel.value==='custom'){
-    const custom=prompt('Enter nationality (e.g. POL, NZL, KOR):');
-    if(custom&&custom.trim()){
-      const c=gc(key);c.nat=custom.trim().toUpperCase();cells[key]=c;save();
-      const opt=document.createElement('option');
-      opt.value=c.nat;opt.textContent=c.nat;opt.selected=true;
-      sel.insertBefore(opt,sel.lastElementChild);
-      sel.value=c.nat;
-      const flagEl=document.getElementById('nf-'+key);
-      if(flagEl){flagEl.textContent='';parseTwemoji();}
-    } else {
-      sel.value=gc(key).nat||'';
-    }
-  } else {
-    const c=gc(key);c.nat=sel.value;cells[key]=c;save();
-    const flagEl=document.getElementById('nf-'+key);
-    if(flagEl){
-      flagEl.textContent=natFlagHtml(c.nat);
-      parseTwemoji();
-    }
-  }
-}
-function cellHtml(key,c){
-  const hasNotes=gn(key).length>0;
-  const isCustomArrival=c.arrival&&!HOURS.slice(0,-1).includes(c.arrival);
-  return`<div class="slot-cell ${statusClass(c.status)}" id="sc-${key}">
-    <div class="cell-top">
-      <div class="cell-corner">
-        <button class="note-btn${hasNotes?' has-notes':''}" id="nb-${key}" onclick="openNotes('${key}','${esc(c.name||'Guest')}')" title="Notes">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block"><rect x="1" y="1" width="14" height="10" rx="3" fill="#f5c800" stroke="#333" stroke-width="1.5"/><polygon points="3,11 7,11 5,14" fill="#f5c800" stroke="#333" stroke-width="1.5" stroke-linejoin="round"/></svg>
-          <div class="note-dot"></div>
-        </button>
-      </div>
-      <input class="cell-name" value="${esc(c.name)}" placeholder="Guest…" data-key="${key}" onchange="updateField(this,'name')" onkeydown="if(event.key==='Enter')this.blur()" onfocus="this.select()">
-      <div class="cell-nat-row">
-        <select class="nat-select" data-key="${key}" onchange="handleNat(this)">${natOpts(c.nat||'')}${c.nat&&!NATS.find(n=>n.v===c.nat)?`<option value="${esc(c.nat)}" selected>${esc(c.nat)}</option>`:''}</select>
-      </div>
-    </div>
-    <div class="cell-bottom">
-      <select class="cell-select" data-key="${key}" onchange="updateField(this,'status')">${statusOpts(c.status)}</select>
-      <select class="cell-select" data-key="${key}" onchange="handleArrival(this)">${arrivalOpts(c.arrival)}${isCustomArrival?`<option value="${esc(c.arrival)}" selected>${esc(c.arrival)}</option>`:''}</select>
-    </div>
-  </div>`;
-}
-
-function renderWeek(){
-  const days=weekDays();
-  document.getElementById('period-label').textContent=`${fmt(days[0])} – ${fmt(days[6])} · ${days[0].getFullYear()}`;
-  renderSummary(days);
-
-  // Build two parallel column sets: sticky left col + scrollable day cols
-  // sticky col: corner + room labels + bed labels
-  // scroll cols: 7 day columns each with header + room-span + cells
-
-  if(!rooms.length){
-    document.getElementById('week-table').innerHTML=`<div style="padding:60px 20px;text-align:center;color:var(--muted)"><p style="font-size:15px;color:var(--text);margin-bottom:6px">No rooms yet</p>Click "+ Room" to get started</div>`;
-    return;
-  }
-
-  // We'll build a flex layout:
-  // .week-grid-outer
-  //   .week-sticky-col  (position:sticky left:0)
-  //   .week-scroll-cols (overflow visible, flex)
-  //     .wday-col x7
-
-  let stickyH = `<div class="th-corner"></div>`;
-  let dayColsH = days.map(d=>`<div class="wday-col"><div class="th-day${isToday(d)?' today':''}"><span class="th-weekday">${DAYS[d.getDay()]}</span><span class="th-date">${fmt(d)}</span></div>`).join('');
-
-  rooms.forEach(r=>{
-    stickyH+=`<div class="room-label-sticky">${esc(r.name)}<button class="room-del-btn" onclick="deleteRoom('${r.id}')">×</button></div>`;
-    days.forEach((_,di)=>{
-      dayColsH=dayColsH.replace(/(<\/div>)(?![\s\S]*<\/div>)/, ''); // won't work, build differently
-    });
-  });
-
-  // Better: build per-column
-  let stickyCol = `<div class="th-corner"></div>`;
-  let dayCols = days.map(d=>{
-    return{header:`<div class="th-day${isToday(d)?' today':''}"><span class="th-weekday">${DAYS[d.getDay()]}</span><span class="th-date">${fmt(d)}</span></div>`, body:''};
-  });
-
-  rooms.forEach(r=>{
-    let bedLabels='';
-    for(let s=0;s<r.beds;s++){
-      const isLast=s===r.beds-1;
-      bedLabels+=`<div class="bed-label-cell${isLast?' last-bed':''}">Bed ${s+1}</div>`;
-      days.forEach((d,di)=>{
-        const dstr=ds(d),key=ck(r.id,s,dstr),c=gc(key);
-        dayCols[di].body+=`<div class="slot-col-cell${isLast?' last-bed':''}">${cellHtml(key,c)}</div>`;
-      });
-    }
-  });
-
-  let html=`<div class="week-grid-outer"><div class="week-scroll-cols">`;
-  dayCols.forEach(col=>{
-    html+=`<div class="wday-col">${col.header}${col.body}</div>`;
-  });
-  html+=`</div></div>`;
-
-  document.getElementById('week-table').innerHTML=html;
-  parseTwemoji();
-}
-
-function updateField(el,field){
-  const key=el.dataset.key,c=gc(key);
-  c[field]=el.value;cells[key]=c;save();
-  if(field==='status'){
-    const cellEl=document.getElementById('sc-'+key);
-    if(cellEl) cellEl.className=`slot-cell ${statusClass(c.status)}`;
-  }
-}
-
-function handleArrival(sel){
-  const key=sel.dataset.key;
-  if(sel.value==='custom'){
-    const custom=prompt('Enter custom arrival time:');
-    if(custom){
-      const c=gc(key);c.arrival=custom;cells[key]=c;save();
-      // add option and select it
-      const opt=document.createElement('option');
-      opt.value=custom;opt.textContent=custom;opt.selected=true;
-      sel.insertBefore(opt,sel.lastChild);
-      sel.value=custom;
-    } else {
-      sel.value=gc(key).arrival||'';
-    }
-  } else {
-    updateField(sel,'arrival');
-  }
-}
-
-// NOTES
-function openNotes(key,guestName){
-  activeNoteKey=key;
-  document.getElementById('notes-title').textContent=`Notes · ${guestName}`;
-  document.getElementById('notes-input').value='';
-  renderNotesList();
-  document.getElementById('notes-overlay').classList.add('open');
-  document.getElementById('notes-panel').classList.add('open');
-  setTimeout(()=>document.getElementById('notes-input').focus(),100);
-}
-function closeNotes(){
-  document.getElementById('notes-overlay').classList.remove('open');
-  document.getElementById('notes-panel').classList.remove('open');
-  activeNoteKey=null;
-}
-function renderNotesList(){
-  const list=gn(activeNoteKey);
-  const el=document.getElementById('notes-list');
-  if(!list.length){el.innerHTML=`<div class="notes-empty">No notes yet</div>`;return;}
-  el.innerHTML=list.map((n,i)=>`
-    <div class="note-item">
-      <div class="note-text">${esc(n.text)}</div>
-      <div class="note-time">${n.time}</div>
-      <button class="note-del" onclick="deleteNote(${i})">×</button>
-    </div>
-  `).join('');
-}
-function addNote(){
-  const text=document.getElementById('notes-input').value.trim();
-  if(!text||!activeNoteKey)return;
-  if(!notes[activeNoteKey])notes[activeNoteKey]=[];
-  const now=new Date();
-  notes[activeNoteKey].push({text,time:`${p2(now.getDate())}/${p2(now.getMonth()+1)} ${p2(now.getHours())}:${p2(now.getMinutes())}`});
-  save();
-  document.getElementById('notes-input').value='';
-  renderNotesList();
-  // update note icon
-  const nb=document.getElementById('nb-'+activeNoteKey);
-  if(nb)nb.classList.add('has-notes');
-}
-function deleteNote(idx){
-  notes[activeNoteKey].splice(idx,1);
-  if(!notes[activeNoteKey].length)delete notes[activeNoteKey];
-  save();renderNotesList();
-  const nb=document.getElementById('nb-'+activeNoteKey);
-  if(nb)nb.classList.toggle('has-notes',gn(activeNoteKey).length>0);
-}
-
-// MONTH
 function renderMonth(){
   const days=monthDays(),first=days[0];
   document.getElementById('period-label').textContent=`${MONTHS_LONG[first.getMonth()]} ${first.getFullYear()}`;
-  if(!rooms.length){document.getElementById('month-wrap').innerHTML=`<div class="empty"><p>No rooms yet</p>Click "+ Room" to get started</div>`;return;}
+  if(!rooms.length){document.getElementById('month-wrap').innerHTML=`<div style="text-align:center;padding:60px 20px;color:var(--muted)"><p style="font-size:15px;color:var(--text);margin-bottom:6px">No rooms yet</p>Click "+ Room" to get started</div>`;return;}
   let h='';
   rooms.forEach(r=>{
     h+=`<div class="month-room"><div class="month-room-head"><span class="month-room-name">${esc(r.name)}</span><span class="month-room-sub">${r.beds} beds</span></div>
@@ -693,11 +629,11 @@ function renderMonth(){
     for(let s=0;s<r.beds;s++){
       h+=`<tr><td class="slot-col-sticky">Bed ${s+1}</td>`;
       days.forEach(d=>{
-        const dstr=ds(d),key=ck(r.id,s,dstr),c=gc(key);
+        const key=ck(r.id,s,ds(d)),c=gc(key);
         const init=c.name?c.name.split(' ')[0].substring(0,3):'';
         const dotCls=c.status?`md-${c.status}`:'md-empty';
         const hasN=gn(key).length>0;
-        h+=`<td class="${isToday(d)?'today-bg':''}"><div class="month-dot ${dotCls}" onclick="jumpToWeek('${dstr}')" title="${esc(c.name)||'—'}${c.arrival?' · '+c.arrival:''}${hasN?' 💬':''}">`;
+        h+=`<td class="${isToday(d)?'today-bg':''}"><div class="month-dot ${dotCls}" onclick="jumpToWeek('${ds(d)}')" title="${esc(c.name)||'—'}${c.arrival?' · '+c.arrival:''}${hasN?' 💬':''}">`;
         if(c.name)h+=`<span>${init}</span>`;
         h+='</div></td>';
       });
@@ -706,7 +642,6 @@ function renderMonth(){
     h+='</tbody></table></div></div>';
   });
   document.getElementById('month-wrap').innerHTML=h;
-  parseTwemoji();
 }
 
 function jumpToWeek(dateStr){
@@ -737,14 +672,24 @@ function saveRoom(){
   if(!name||beds<1)return;rooms.push({id:'r'+Date.now(),name,beds});save();closeModal('room-modal');render();
 }
 function deleteRoom(id){
-  if(!confirm('Delete room?'))return;
+  if(!confirm('Delete room and all its data?'))return;
   rooms=rooms.filter(r=>r.id!==id);save();render();
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function render(){if(view==='week')renderWeek();else renderMonth();}
 
-document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.overlay.open').forEach(el=>el.classList.remove('open'));closeNotes();}});
+document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{
+  if(e.target===el){
+    if(el.id==='slot-modal') closeSlotModal();
+    else el.classList.remove('open');
+  }
+}));
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(document.getElementById('slot-modal').classList.contains('open')) closeSlotModal();
+    else document.querySelectorAll('.overlay.open').forEach(el=>el.classList.remove('open'));
+  }
+});
 
 load();render();
 </script>
