@@ -47,32 +47,46 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .leg{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
 .leg-dot{width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.1);flex-shrink:0}
 
-/* APP LAYOUT — 3 columns */
+/* APP LAYOUT — 2 columns: table left, panels right */
 .app-layout{display:flex;align-items:flex-start;gap:12px;padding:12px 12px 80px}
 .main-content{flex:1;min-width:0}
+.right-col{
+  width:230px;min-width:230px;
+  position:sticky;
+  top:calc(var(--header-h) + 12px);
+  max-height:calc(100vh - var(--header-h) - 24px);
+  display:flex;flex-direction:column;gap:8px;
+}
 
 /* SIDE PANELS */
 .side-panel{
-  width:210px;min-width:210px;
   background:var(--surface);
   border:1px solid var(--border);
   border-radius:var(--radius);
   overflow:hidden;
-  position:sticky;
-  top:calc(var(--header-h) + 12px);
-  max-height:calc(100vh - var(--header-h) - 24px);
   display:flex;flex-direction:column;
   box-shadow:0 2px 12px rgba(0,0,0,.06);
+  min-height:0;
 }
+.panel-arrivals{flex:0 0 auto;max-height:240px}
+.panel-guidelines{flex:1;min-height:0}
 .panel-title{
-  padding:9px 12px;
+  padding:8px 12px;
   font-size:11px;font-weight:700;
   text-transform:uppercase;letter-spacing:.07em;
   color:var(--text);
   border-bottom:1px solid var(--border);
   background:var(--bg);
   flex-shrink:0;
+  display:flex;align-items:center;
 }
+.panel-title-text{flex:1}
+.panel-full-btn{
+  background:none;border:none;cursor:pointer;
+  font-size:14px;padding:1px 3px;opacity:.5;
+  transition:opacity .15s;line-height:1;
+}
+.panel-full-btn:hover{opacity:1}
 .panel-body{flex:1;overflow-y:auto;padding:8px}
 .panel-empty{font-size:12px;color:var(--muted);text-align:center;padding:24px 8px;line-height:1.5}
 
@@ -381,18 +395,10 @@ thead .col-sticky{z-index:11}
   <span class="leg"><span class="leg-dot" style="background:#d0cfc9"></span>Cancellation / leaving sooner</span>
 </div>
 
-<!-- 3-column layout -->
+<!-- 2-column layout -->
 <div class="app-layout">
 
-  <!-- LEFT: Guidelines -->
-  <aside class="side-panel">
-    <div class="panel-title">Guidelines</div>
-    <div class="panel-body" id="guidelines-body">
-      <div class="panel-empty">No guidelines yet.<br>Upload your guidelines file to get started.</div>
-    </div>
-  </aside>
-
-  <!-- MAIN -->
+  <!-- MAIN: table -->
   <main class="main-content">
     <div id="view-week">
       <div class="week-wrap"><div id="week-table"></div></div>
@@ -402,12 +408,32 @@ thead .col-sticky{z-index:11}
     </div>
   </main>
 
-  <!-- RIGHT: Arrivals -->
-  <aside class="side-panel">
-    <div class="panel-title">Today's Arrivals</div>
-    <div class="panel-body" id="arrivals-body"></div>
-  </aside>
+  <!-- RIGHT COL: Arrivals + Guidelines stacked -->
+  <div class="right-col">
+    <aside class="side-panel panel-arrivals">
+      <div class="panel-title"><span class="panel-title-text">Today's Arrivals</span></div>
+      <div class="panel-body" id="arrivals-body"></div>
+    </aside>
+    <aside class="side-panel panel-guidelines">
+      <div class="panel-title">
+        <span class="panel-title-text">Guidelines</span>
+        <button class="panel-full-btn" onclick="openFullGuidelines()" title="Show full guidelines">📋</button>
+      </div>
+      <div class="panel-body" id="guidelines-body"></div>
+    </aside>
+  </div>
 
+</div>
+
+<!-- Full Guidelines Modal -->
+<div class="overlay" id="full-gl-modal">
+  <div class="modal" style="max-width:600px;max-height:85vh;overflow-y:auto;padding:0">
+    <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;position:sticky;top:0;background:var(--surface);z-index:1">
+      <span style="font-size:15px;font-weight:700;flex:1">Costello Guidelines</span>
+      <button class="modal-x" onclick="closeModal('full-gl-modal')">×</button>
+    </div>
+    <div id="full-gl-body" style="padding:16px"></div>
+  </div>
 </div>
 
 <!-- Slot modal -->
@@ -912,86 +938,99 @@ function deleteRoom(id){
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
 /* GUIDELINES */
-function glKey(blockIdx, taskIdx){ return `${ds(new Date())}-${blockIdx}-${taskIdx}`; }
-function toggleGlTask(blockIdx, taskIdx){
-  const k=glKey(blockIdx,taskIdx);
-  glDone[k]=!glDone[k];
-  save();
-  renderGuidelines();
-}
+function glKey(prefix, idx){ return `${prefix}-${ds(new Date())}-${idx}`; }
 
 function renderGuidelines(){
   const now=new Date();
   const mins=now.getHours()*60+now.getMinutes();
   const el=document.getElementById('guidelines-body');
-  let h='';
 
-  // Check-in card (always visible)
-  h+=`<div class="gl-checkin-card">
-    <div class="gl-block-label">✓ Check-in steps</div>
-    ${CHECKIN_STEPS.map((t,i)=>{
-      const k=`ci-${ds(now)}-${i}`;
-      const done=!!glDone[k];
-      return`<div class="gl-task${done?' done':''}" onclick="glDone['${k}']=!glDone['${k}'];save();renderGuidelines()">
-        <div class="gl-check">${done?'✓':''}</div><span>${t}</span>
-      </div>`;
-    }).join('')}
+  function taskHtml(t, k){
+    const done=!!glDone[k];
+    return`<div class="gl-task${done?' done':''}" onclick="glDone['${k}']=!glDone['${k}'];save();renderGuidelines()">
+      <div class="gl-check">${done?'✓':''}</div><span>${esc(t)}</span>
+    </div>`;
+  }
+
+  // Check-in section
+  let h=`<div class="gl-checkin-card">
+    <div class="gl-block-label">✓ Check-in</div>
+    ${CHECKIN_STEPS.map((t,i)=>taskHtml(t,glKey('ci',i))).join('')}
   </div>`;
 
-  // Check-out card (always visible)
+  // Check-out section
   h+=`<div class="gl-checkout-card">
     <div class="gl-block-label">↩ Check-out</div>
-    ${CHECKOUT_STEPS.map((t,i)=>{
-      const k=`co-${ds(now)}-${i}`;
-      const done=!!glDone[k];
-      return`<div class="gl-task${done?' done':''}" onclick="glDone['${k}']=!glDone['${k}'];save();renderGuidelines()">
-        <div class="gl-check">${done?'✓':''}</div><span>${t}</span>
-      </div>`;
-    }).join('')}
+    ${CHECKOUT_STEPS.map((t,i)=>taskHtml(t,glKey('co',i))).join('')}
   </div>`;
 
   // Find current and next time block
-  let currentIdx=-1, nextIdx=-1;
+  let curIdx=-1, nextIdx=-1;
   for(let i=0;i<GL_BLOCKS.length;i++){
-    if(mins>=GL_BLOCKS[i].from && mins<GL_BLOCKS[i].to){ currentIdx=i; break; }
+    if(mins>=GL_BLOCKS[i].from && mins<GL_BLOCKS[i].to){ curIdx=i; break; }
   }
-  if(currentIdx===-1){
-    // between blocks — find next upcoming
+  if(curIdx===-1){
     for(let i=0;i<GL_BLOCKS.length;i++){
       if(GL_BLOCKS[i].from>mins){ nextIdx=i; break; }
     }
   } else {
-    for(let i=currentIdx+1;i<GL_BLOCKS.length;i++){
-      if(GL_BLOCKS[i].from>=GL_BLOCKS[currentIdx].to){ nextIdx=i; break; }
+    for(let i=curIdx+1;i<GL_BLOCKS.length;i++){
+      if(GL_BLOCKS[i].from>=GL_BLOCKS[curIdx].to){ nextIdx=i; break; }
     }
   }
 
-  function renderBlock(idx, cls){
+  function blockHtml(idx, cls){
     const b=GL_BLOCKS[idx];
     return`<div class="gl-block ${cls}">
       <div class="gl-block-label">${b.label}</div>
       ${b.tasks.map((t,ti)=>{
-        const k=glKey(idx,ti);
+        const k=glKey('bl'+idx, ti);
         const done=!!glDone[k];
-        return`<div class="gl-task${done?' done':''}" onclick="toggleGlTask(${idx},${ti})">
-          <div class="gl-check">${done?'✓':''}</div><span>${t}</span>
+        return`<div class="gl-task${done?' done':''}" onclick="glDone['${k}']=!glDone['${k}'];save();renderGuidelines()">
+          <div class="gl-check">${done?'✓':''}</div><span>${esc(t)}</span>
         </div>`;
       }).join('')}
     </div>`;
   }
 
-  if(currentIdx>=0){
-    h+=renderBlock(currentIdx,'current');
+  if(curIdx>=0){
+    h+=blockHtml(curIdx,'current');
   } else {
-    h+=`<div class="panel-empty" style="font-size:11px">No active task block right now</div>`;
+    h+=`<div class="panel-empty" style="font-size:11px;padding:12px 4px">No active block right now</div>`;
   }
-
   if(nextIdx>=0){
-    h+=`<div class="gl-next-label">Coming up: ${GL_BLOCKS[nextIdx].label.split('·')[0].trim()}</div>`;
-    h+=renderBlock(nextIdx,'next-up');
+    h+=`<div class="gl-next-label">↓ Coming up: ${GL_BLOCKS[nextIdx].label.split('·')[0].trim()}</div>`;
+    h+=blockHtml(nextIdx,'next-up');
   }
 
   el.innerHTML=h;
+}
+
+function openFullGuidelines(){
+  const el=document.getElementById('full-gl-body');
+  const now=new Date();
+  const mins=now.getHours()*60+now.getMinutes();
+
+  function sectionHtml(title, tasks, color){
+    return`<div style="margin-bottom:18px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:${color};margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid ${color}40">${title}</div>
+      ${tasks.map(t=>`<div style="font-size:13px;line-height:1.55;padding:3px 0 3px 12px;border-left:2px solid ${color}40;margin-bottom:3px;color:var(--text)">${esc(t)}</div>`).join('')}
+    </div>`;
+  }
+
+  let h=sectionHtml('Check-in Steps', CHECKIN_STEPS, '#f0a800');
+  h+=sectionHtml('Check-out', CHECKOUT_STEPS, '#17c4aa');
+  h+=`<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:12px;margin-top:4px">Daily Schedule</div>`;
+  GL_BLOCKS.forEach((b,i)=>{
+    const active=mins>=b.from&&mins<b.to;
+    h+=`<div style="margin-bottom:14px${active?';background:#f0f5ff;border-radius:8px;padding:8px;margin-left:-8px;margin-right:-8px':''}">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:${active?'#3a6fd4':'var(--muted)'};margin-bottom:6px">${b.label}</div>
+      ${b.tasks.map(t=>`<div style="font-size:12.5px;line-height:1.5;padding:2px 0 2px 10px;border-left:2px solid ${active?'#3a6fd4':'var(--border)'};margin-bottom:2px">${esc(t)}</div>`).join('')}
+    </div>`;
+  });
+
+  el.innerHTML=h;
+  document.getElementById('full-gl-modal').classList.add('open');
 }
 
 function render(){
