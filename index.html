@@ -77,13 +77,44 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .panel-empty{font-size:12px;color:var(--muted);text-align:center;padding:24px 8px;line-height:1.5}
 
 /* GUIDELINES */
-.guideline-item{
-  background:var(--bg);border-radius:7px;
-  padding:8px 10px;margin-bottom:6px;
-  font-size:12px;line-height:1.5;color:var(--text);
-  border-left:3px solid #f0d800;
+.gl-block{margin-bottom:10px}
+.gl-block-label{
+  font-size:10px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--muted);
+  padding:2px 0 5px;
 }
-.guideline-item.done{opacity:.45;text-decoration:line-through}
+.gl-block.current .gl-block-label{color:#3a6fd4}
+.gl-block.next-up .gl-block-label{color:#9a9891}
+.gl-task{
+  display:flex;align-items:flex-start;gap:6px;
+  font-size:11.5px;line-height:1.45;color:var(--text);
+  padding:4px 0;border-bottom:1px solid var(--border);
+  cursor:pointer;
+}
+.gl-task:last-child{border-bottom:none}
+.gl-task.done{color:var(--muted);text-decoration:line-through}
+.gl-check{
+  width:14px;height:14px;border-radius:3px;
+  border:1.5px solid #ccc;flex-shrink:0;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:transparent;transition:all .12s;
+}
+.gl-task.done .gl-check{background:#17c4aa;border-color:#17c4aa;color:#fff}
+.gl-block.current .gl-check{border-color:#3a6fd4}
+.gl-next-label{
+  font-size:10px;color:var(--muted);font-style:italic;
+  padding:6px 0 2px;
+}
+.gl-checkin-card{
+  background:#fffbe6;border:1px solid #f0d800;
+  border-radius:8px;padding:8px 10px;margin-bottom:8px;
+}
+.gl-checkin-card .gl-block-label{color:#8a7000;margin-bottom:4px}
+.gl-checkout-card{
+  background:#f0fff8;border:1px solid #17c4aa;
+  border-radius:8px;padding:8px 10px;margin-bottom:8px;
+}
+.gl-checkout-card .gl-block-label{color:#0a6b5a;margin-bottom:4px}
 
 /* ARRIVALS PANEL */
 .arrival-item{
@@ -450,20 +481,79 @@ const NATS=[
 ];
 const FLAG_MAP={gb:'🇬🇧',us:'🇺🇸',au:'🇦🇺',de:'🇩🇪',fr:'🇫🇷',es:'🇪🇸',it:'🇮🇹',nl:'🇳🇱',ar:'🇦🇷',br:'🇧🇷',ca:'🇨🇦',pl:'🇵🇱',cz:'🇨🇿',sk:'🇸🇰',jp:'🇯🇵',kr:'🇰🇷',cn:'🇨🇳',pt:'🇵🇹'};
 
-let rooms=[], cells={}, notes={}, guidelines=[], weekOff=0, monthOff=0, view='week', currentSlotKey=null;
+const CHECKIN_STEPS = [
+  'Welcome drink (water/lemon, juice, coffee)',
+  'Ask guest to leave things on couch, feel comfortable',
+  'Show blackboard (door codes, WiFi, WhatsApp QR)',
+  'Hostel tour (kitchen freebies, terrace 8am–11pm)',
+  'Photo ID (passport / EU identity card)',
+  'Payment — "How would you like to pay?" + receipt?',
+  'Go to room: explain bed sheets, put label on bed',
+  'Locker & towel if needed (both free)',
+  'Update Excel: change cell color + note name/payment',
+];
+const CHECKOUT_STEPS = [
+  'Free the bed by 11am',
+  'Guests can enjoy hostel after checkout — just smile!',
+  'Remove label from bed',
+  'Put dirty sheets in juta sack → plastic box outside',
+];
+
+const GL_BLOCKS = [
+  { from:  8*60, to:  9*60, label: '8:00 – 9:00 · Opening',
+    tasks: ['Open the terrace', 'Switch on phone volume for calls', 'Switch on door bell', 'Open curtain/big tent in terrace (arrow ↓ on remote)', 'Sweep bathroom + kitchen follow-up', 'Check & fold dry laundry/towels from terrace', 'Wash & refill water jar (lemon, cucumber/mint/ice)', 'Prepare labels for today\'s new arrivals', 'Write post-it of guests checking out (room by room)', 'Switch off kitchen light (& terrace if forgotten)', 'Check coffee quantity, make new if needed'] },
+  { from:  9*60, to:  9*60+30, label: '9:00 · Jazz & Laundry',
+    tasks: ['Play jazz/instrumental on Spotify', 'Mon & Thu: laundry guy? → get blue juta sacks, store new clean sheets'] },
+  { from:  9*60+30, to: 11*60, label: '9:30 – 11:00 · Mid-morning',
+    tasks: ['Run dishwasher if full (38 min program: ON → last watch icon)', 'Open room windows (natural ventilation)', 'Switch off lights in rooms & kitchen', 'Check all ACs are OFF — switch off if on'] },
+  { from: 11*60, to: 13*60, label: '11:00 – 13:00 · Cleaning',
+    tasks: ['Eggs → staff drawer, Milk → fridge staff drawer, Biscuits → underneath', 'Run washing machine with dirty towels + tappettini + kitchen rugs', 'BEDS: remove dirty sheets from checkout beds, remove labels', 'Put dirty sheets in juta sacks → plastic box outside', 'Put used towels in hostel laundry bag (next to big metal closet)', 'Put new bed sheets on checkout beds (2 sheets + 1 pillow cover)', 'Fold mattress covers, set pillow & blanket for new arrivals', 'Put label below bed number for new check-ins', 'BATHROOM: Sanikal all surfaces, CIF for mirrors/glass, WC Gel inside toilet, Alcho Floor for floors, tappetini + 4 small towels + toilet paper', 'KITCHEN: Mastrolindo all surfaces & appliances', 'ROOMS: Red Roll on mattresses, Keradet for staircases, clean boxes', 'Unload dishwasher (check cleanliness)', 'Hang towels on terrace (or use dryer if rainy)', 'End check: tappetini ✓ toilet paper ✓ dorm doors closed (both sides) ✓'] },
+  { from: 12*60+30, to: 13*60, label: '12:30 · AC remotes',
+    tasks: ['Take AC remotes from rooms (avoid AC during day unless very hot)'] },
+  { from: 13*60, to: 14*60, label: '13:00 · Post-cleaning',
+    tasks: ['Empty ashtrays in terrace → general waste bin, clean terrace tables', 'Add ice in plastic tupperware in freezer', 'Run washing machine if not done yet'] },
+  { from: 13*60+45, to: 14*60, label: '13:45 · Pre-2pm check',
+    tasks: ['BATHROOM: toilet paper + tappetini ✓', 'KITCHEN: dish rag/trapito (≥2 at sink & hanging from fridge) ✓', 'ROOMS: doors closed both sides ✓, bed sheets on every bed ✓, boxes clean ✓'] },
+  { from: 14*60, to: 15*60, label: '14:00 · Arrivals check',
+    tasks: ['Check Excel: all arrival times filled for today?', 'Missing response? → contact Andrea to take action', 'Charge batteries of tiny lights across the doors'] },
+  { from: 15*60, to: 16*60, label: '15:00 · Afternoon round',
+    tasks: ['KITCHEN: empty dishwasher or run if full', 'Check water jar — refill or add ice', 'Check terrace laundry — fold & store if dry', 'Take out morning coffee grounds → plants or organic bin', 'BATHROOM: vacuum floor if needed, change toilet paper', 'ROOMS: check all beds have sheets for arrivals, enough towels (never <1–2 in storage)'] },
+  { from: 16*60, to: 17*60, label: '16:00 · Afternoon shift',
+    tasks: ['Check fridge for rotten items / left-behinds from departed guests', 'Clean & organise fridge'] },
+  { from: 16*60+30, to: 18*60, label: '16:30 · Emails',
+    tasks: ['Send arrival-time request emails for tomorrow\'s guests', 'Booking.com: use extranet template (right language) + entrance photo', 'Airbnb: auto-scheduled — just add entrance photo', 'Others: compose from info@costellolaspezia.com, use template + signature'] },
+  { from: 17*60, to: 18*60, label: '17:00 – 18:00 · Trash & setup',
+    tasks: ['Take out trash (card for street bin): PAPER + ORGANIC + PLASTIC daily; WASTE only 2–3×/week', 'Change bags in baskets', 'Switch music on', 'Stock small reception fridge (beers, cokes, water)', 'Add ice to water jar', 'Check tomorrow\'s arrivals in Cloudbeds — matches Excel & availability matrix?', 'Fill Excel for next 7 days', 'Register guests on Alloggiati (alloggiatiweb.poliziadistato.it)', 'Register guests in ISTAT (Gaia & Amanda)'] },
+  { from: 19*60, to: 20*60, label: '19:00 · Terrace lights',
+    tasks: ['Switch on ALL terrace lights (table, fence, above)', 'Switch on small lights around doors (reception area)', 'BATHROOM CHECK every 30 mins: tappetini, hand towels, floor, toilet paper', 'KITCHEN: tidy glasses/plates, keep kitchen clean'] },
+  { from: 20*60, to: 21*60, label: '20:00 · Evening round',
+    tasks: ['Plug in mosquito plugs in all dorms', 'Check laundry outside', 'Change tappetini if very wet', 'Change toilet paper if needed', 'Check towel stock for next day — organise wash if few left'] },
+  { from: 21*60, to: 21*60+30, label: '21:00 · Night prep',
+    tasks: ['AC: switch on all rooms at 20°C automatic mode', 'IMPORTANT: press OFF twice → sets auto-off at 7am', 'Check tappetini, change if wet', 'Water plants (if no rain today)', 'Prepare coffee machine: coffee in filter, right water, press timer', 'Make sure coffee pots are completely empty'] },
+  { from: 21*60+30, to: 22*60, label: '21:30 · Dishwasher',
+    tasks: ['Run dishwasher (if guests finished dinner)', 'Must be done by 22:20 to unload before end of shift', 'Close dorm windows'] },
+  { from: 22*60, to: 22*60+30, label: '22:00 · Wind down',
+    tasks: ['Switch off music', 'Close kitchen door (guests in room 3/4 might be sleeping)', 'Check: dorm doors closed ✓ corridor doors (left & right) ✓ kitchen door ✓'] },
+  { from: 22*60+30, to: 23*60, label: '22:30 · Before closing',
+    tasks: ['Arrange milk for next day (2L cow + 1L soya)', 'Check all breakfast items on trailer (biscuits, cornflakes, oat…)', 'BATHROOM: floor + tappetini + toilet + sink + hand towels — mop or vacuum if needed', 'Leave 1 toilet paper on blue wooden stool', 'KITCHEN: check coffee machine timers, empty & clean dishes/sink filter/stove', 'Unload dishwasher'] },
+  { from: 22*60+59, to: 23*60+15, label: '23:00 · Closing',
+    tasks: ['Put eggs on shelf with "FREE EGGS" paper', 'Biscuits back up on wagon', 'Bring clothes inside from terrace (get wet even without rain)', 'Green shades OPEN, glass doors CLOSED', 'CLOSE TERRACE with bike lock (no music/guitar/loud talking after 22:00)', 'Switch off terrace lights', 'Close curtain outside (arrow ↑ on remote)', 'Switch off door bell + mute iPhone'] },
+];
+
+let rooms=[], cells={}, notes={}, glDone={}, weekOff=0, monthOff=0, view='week', currentSlotKey=null;
 
 function load(){
   try{const r=localStorage.getItem('hb7_rooms');if(r)rooms=JSON.parse(r);}catch{}
   try{const r=localStorage.getItem('hb7_cells');if(r)cells=JSON.parse(r);}catch{}
   try{const r=localStorage.getItem('hb7_notes');if(r)notes=JSON.parse(r);}catch{}
-  try{const r=localStorage.getItem('hb7_guidelines');if(r)guidelines=JSON.parse(r);}catch{}
+  try{const r=localStorage.getItem('hb7_gl_done');if(r)glDone=JSON.parse(r);}catch{}
   if(!rooms.length) rooms=[{id:'r1',name:'Room 1',beds:4},{id:'r2',name:'Room 2',beds:4}];
 }
 function save(){
   try{localStorage.setItem('hb7_rooms',JSON.stringify(rooms));}catch{}
   try{localStorage.setItem('hb7_cells',JSON.stringify(cells));}catch{}
   try{localStorage.setItem('hb7_notes',JSON.stringify(notes));}catch{}
-  try{localStorage.setItem('hb7_guidelines',JSON.stringify(guidelines));}catch{}
+  try{localStorage.setItem('hb7_gl_done',JSON.stringify(glDone));}catch{}
 }
 function p2(n){return String(n).padStart(2,'0');}
 function ds(d){return`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;}
@@ -820,9 +910,94 @@ function deleteRoom(id){
   rooms=rooms.filter(r=>r.id!==id);save();render();
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+/* GUIDELINES */
+function glKey(blockIdx, taskIdx){ return `${ds(new Date())}-${blockIdx}-${taskIdx}`; }
+function toggleGlTask(blockIdx, taskIdx){
+  const k=glKey(blockIdx,taskIdx);
+  glDone[k]=!glDone[k];
+  save();
+  renderGuidelines();
+}
+
+function renderGuidelines(){
+  const now=new Date();
+  const mins=now.getHours()*60+now.getMinutes();
+  const el=document.getElementById('guidelines-body');
+  let h='';
+
+  // Check-in card (always visible)
+  h+=`<div class="gl-checkin-card">
+    <div class="gl-block-label">✓ Check-in steps</div>
+    ${CHECKIN_STEPS.map((t,i)=>{
+      const k=`ci-${ds(now)}-${i}`;
+      const done=!!glDone[k];
+      return`<div class="gl-task${done?' done':''}" onclick="glDone['${k}']=!glDone['${k}'];save();renderGuidelines()">
+        <div class="gl-check">${done?'✓':''}</div><span>${t}</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  // Check-out card (always visible)
+  h+=`<div class="gl-checkout-card">
+    <div class="gl-block-label">↩ Check-out</div>
+    ${CHECKOUT_STEPS.map((t,i)=>{
+      const k=`co-${ds(now)}-${i}`;
+      const done=!!glDone[k];
+      return`<div class="gl-task${done?' done':''}" onclick="glDone['${k}']=!glDone['${k}'];save();renderGuidelines()">
+        <div class="gl-check">${done?'✓':''}</div><span>${t}</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  // Find current and next time block
+  let currentIdx=-1, nextIdx=-1;
+  for(let i=0;i<GL_BLOCKS.length;i++){
+    if(mins>=GL_BLOCKS[i].from && mins<GL_BLOCKS[i].to){ currentIdx=i; break; }
+  }
+  if(currentIdx===-1){
+    // between blocks — find next upcoming
+    for(let i=0;i<GL_BLOCKS.length;i++){
+      if(GL_BLOCKS[i].from>mins){ nextIdx=i; break; }
+    }
+  } else {
+    for(let i=currentIdx+1;i<GL_BLOCKS.length;i++){
+      if(GL_BLOCKS[i].from>=GL_BLOCKS[currentIdx].to){ nextIdx=i; break; }
+    }
+  }
+
+  function renderBlock(idx, cls){
+    const b=GL_BLOCKS[idx];
+    return`<div class="gl-block ${cls}">
+      <div class="gl-block-label">${b.label}</div>
+      ${b.tasks.map((t,ti)=>{
+        const k=glKey(idx,ti);
+        const done=!!glDone[k];
+        return`<div class="gl-task${done?' done':''}" onclick="toggleGlTask(${idx},${ti})">
+          <div class="gl-check">${done?'✓':''}</div><span>${t}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  if(currentIdx>=0){
+    h+=renderBlock(currentIdx,'current');
+  } else {
+    h+=`<div class="panel-empty" style="font-size:11px">No active task block right now</div>`;
+  }
+
+  if(nextIdx>=0){
+    h+=`<div class="gl-next-label">Coming up: ${GL_BLOCKS[nextIdx].label.split('·')[0].trim()}</div>`;
+    h+=renderBlock(nextIdx,'next-up');
+  }
+
+  el.innerHTML=h;
+}
+
 function render(){
   if(view==='week') renderWeek(); else renderMonth();
   renderArrivals();
+  renderGuidelines();
 }
 
 document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{
