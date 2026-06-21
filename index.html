@@ -26,8 +26,16 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 
 /* HEADER */
 .hero-header{position:sticky;top:0;z-index:50;height:170px;overflow:hidden;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
-.hero-bg{position:absolute;inset:0;z-index:0}
-.hero-bg::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.38)}
+.hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden;background:#111}
+.hero-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.42);z-index:2}
+.collage-photo{
+  position:absolute;
+  object-fit:cover;
+  border:3px solid white;
+  border-radius:2px;
+  box-shadow:2px 4px 14px rgba(0,0,0,0.5);
+  z-index:1;
+}
 .hero-bg svg{width:100%;height:100%;display:block}
 .hero-content{z-index:1;display:flex;flex-direction:column;align-items:center;gap:4px;position:absolute;left:50%;transform:translateX(-50%)}
 .hero-logo{display:flex;align-items:center;gap:10px}
@@ -369,7 +377,9 @@ thead .col-sticky{z-index:11}
 <body>
 
 <div class="hero-header">
-  <div class="hero-bg" style="background:url('terrace.jpg') center 25%/cover no-repeat;"></div>
+  <div class="hero-bg" id="hero-collage">
+    <div class="hero-overlay"></div>
+  </div>
   <div class="hero-content">
     <img src="logo.png" alt="Costello" style="height:90px;filter:brightness(0) invert(1);drop-shadow(0 2px 8px rgba(0,0,0,0.4))">
   </div>
@@ -1253,7 +1263,7 @@ document.addEventListener('keydown',e=>{
   }
 });
 
-load();render();
+load();render();buildCollage();
 
 /* ── DRAG & DROP ── */
 let dragKey=null;
@@ -1374,6 +1384,50 @@ function positionTooltip(e, tip){
   const x=e.clientX+14, y=e.clientY-10;
   tip.style.left=Math.min(x, window.innerWidth-230)+'px';
   tip.style.top=y+'px';
+}
+
+/* ── COLLAGE ── */
+const PHOTOS=[
+  'fotky/0ff51731-a340-4e9e-8658-7a7425898090.jpg',
+  'fotky/120b84fe-396c-474f-8408-f77cfd4df8d8.jpg',
+  'fotky/221a6951-730b-44e0-b8a3-0c35e782895b.jpg',
+  'fotky/2f834f6b-b295-41c3-8ba8-b4f62a68d929.jpg',
+  'fotky/3fb416f3-7f83-451f-bb1b-4a1b892261ba.jpg',
+  'fotky/4ce79526-693b-432a-ab94-f3e128ddc3bf.JPG',
+  'fotky/64841ee7-fadb-40b0-aaf4-30b39020df7c.jpg',
+  'fotky/9816338a-97eb-490d-91d2-43262ce54bce.jpg',
+  'fotky/IMG_0031.JPEG','fotky/IMG_0111.JPEG','fotky/IMG_0187.JPEG',
+  'fotky/IMG_0242.JPEG','fotky/IMG_0375.JPEG','fotky/IMG_0411.JPEG',
+  'fotky/IMG_0637.JPEG','fotky/IMG_0682.JPEG','fotky/IMG_1062.JPEG',
+  'fotky/IMG_1281.JPEG','fotky/IMG_1686.JPEG','fotky/IMG_1689.JPEG',
+  'fotky/IMG_1874.JPEG','fotky/IMG_1883.JPEG','fotky/IMG_1936.JPEG',
+  'fotky/IMG_1937.JPEG','fotky/IMG_1959.JPEG','fotky/IMG_1964.JPEG',
+  'fotky/IMG_1967.JPEG','fotky/IMG_1975.JPEG','fotky/IMG_1976.JPEG',
+  'fotky/IMG_1980.JPEG','fotky/IMG_2044.JPEG','fotky/IMG_2050.JPEG',
+  'fotky/IMG_2055.JPEG','fotky/IMG_2056.JPEG','fotky/IMG_2057.JPEG',
+  'fotky/IMG_2059.JPEG','fotky/IMG_2081.JPEG','fotky/IMG_2320.JPEG',
+  'fotky/IMG_3093.JPEG','fotky/IMG_3458.JPEG',
+  'fotky/d662ee22-5884-4188-9217-ab9ad7749d3a.jpg',
+];
+
+function buildCollage(){
+  const bg=document.getElementById('hero-collage');
+  const h=bg.offsetHeight||170;
+  const w=bg.offsetWidth||window.innerWidth;
+  const picked=[...PHOTOS].sort(()=>Math.random()-.5).slice(0,13);
+  // remove old photos
+  bg.querySelectorAll('.collage-photo').forEach(el=>el.remove());
+  picked.forEach((src,i)=>{
+    const rot=(Math.random()-.5)*18;        // -9° to +9°
+    const ph=Math.round(h*(.75+Math.random()*.45)); // 75%–120% of header height
+    const topPct=(Math.random()-.5)*35;     // vertical scatter
+    const leftPct=5+(i/(picked.length-1))*90; // spread across width
+    const img=document.createElement('img');
+    img.src=src;
+    img.className='collage-photo';
+    img.style.cssText=`height:${ph}px;width:auto;top:calc(50% + ${topPct}px);left:${leftPct}%;transform:translate(-50%,-50%) rotate(${rot}deg);`;
+    bg.insertBefore(img,bg.querySelector('.hero-overlay'));
+  });
 }
 
 function applyScale(){
