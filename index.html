@@ -308,6 +308,18 @@ thead .col-sticky{z-index:11}
 .md-cancel{background:var(--s-cancel)}.md-allgood{background:var(--s-allgood)}
 .md-empty{background:#fff}.today-bg{background:#f0ede8}
 
+/* STATUS PICKER */
+.status-picker{display:flex;flex-wrap:wrap;gap:5px;padding:2px 0}
+.status-chip{
+  display:flex;align-items:center;gap:4px;padding:5px 9px;
+  border-radius:20px;border:2.5px solid transparent;
+  cursor:pointer;font-size:11px;font-weight:600;
+  transition:border-color .12s,transform .1s;user-select:none;
+}
+.status-chip:hover{filter:brightness(.93)}
+.status-chip.selected{border-color:rgba(0,0,0,.45);transform:scale(1.06)}
+.status-chip-dot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.5}
+
 /* MODALS */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;padding:20px}
 .overlay.open{display:flex}
@@ -437,7 +449,7 @@ thead .col-sticky{z-index:11}
     <div class="slot-fields">
       <div class="field">
         <label>Status</label>
-        <select id="slot-status"></select>
+        <div class="status-picker" id="status-picker"></div>
       </div>
       <div class="field">
         <label>Arrival</label>
@@ -484,7 +496,8 @@ thead .col-sticky{z-index:11}
 const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS_LONG=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const STATUSES=['','checkin','unpaid','change','paid-noci','cancel','allgood'];
-const STATUS_LABELS=['— status —','Check-in (not paid)','Not paid','Change room','Paid, not checked in','Cancellation / leaving sooner','All good ✓'];
+const STATUS_LABELS=['— status —','Check-in (not paid)','Not paid','Change room','Paid, not checked in','Cancellation','All good ✓'];
+const STATUS_COLORS={checkin:'#f0d800',unpaid:'#e63c3c',change:'#17c4aa','paid-noci':'#3a6fd4',cancel:'#d0cfc9',allgood:'#e8f9ee'};
 const HOURS=['','arrived','00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','custom'];
 const NATS=[
   {v:'',l:'— nationality —'},
@@ -733,7 +746,13 @@ function gc(key){return cells[key]||{name:'',status:'',arrival:'',nat:''};}
 function gn(key){return notes[key]||[];}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function flagFor(natVal){return FLAG_MAP[natVal]||'';}
-function statusClass(s){return s?`s-${s}`:'s-empty';}
+function statusClass(s){const p=(s||'').split(',')[0];return p?`s-${p}`:'s-empty';}
+function statusBg(s){
+  const parts=(s||'').split(',').filter(Boolean);
+  if(parts.length>=2) return `linear-gradient(135deg,${STATUS_COLORS[parts[0]]||'#fff'} 50%,${STATUS_COLORS[parts[1]]||'#fff'} 50%)`;
+  if(parts.length===1) return STATUS_COLORS[parts[0]]||'';
+  return '';
+}
 
 /* arrival time helpers */
 function parseArrivalMinutes(arrival){
@@ -769,8 +788,8 @@ function cellHtml(key, dateStr){
   const customNat=(c.nat&&!FLAG_MAP[c.nat]&&c.nat!=='')? c.nat:'';
   const showArrival=shouldShowArrival(dateStr, c.arrival);
 
-  const notesText=gn(key).join('\n');
-  return`<div class="slot-cell ${statusClass(c.status)}"
+  const bg=statusBg(c.status);
+  return`<div class="slot-cell ${statusClass(c.status)}"${bg?` style="background:${bg}"`:''}
       draggable="true"
       ondragstart="dragStart(event,'${key}')"
       ondragend="dragEnd(event)"
@@ -897,8 +916,26 @@ function renderArrivals(){
 }
 
 /* SLOT MODAL */
-function statusOpts(cur){
-  return STATUSES.map((s,i)=>`<option value="${s}"${cur===s?' selected':''}>${STATUS_LABELS[i]}</option>`).join('');
+let pickerSelected=[];
+function renderStatusPicker(cur){
+  pickerSelected=(cur||'').split(',').filter(Boolean);
+  const el=document.getElementById('status-picker');
+  el.innerHTML=STATUSES.filter(s=>s).map((s,i)=>{
+    const col=STATUS_COLORS[s]||'#eee';
+    const sel=pickerSelected.includes(s);
+    return`<div class="status-chip${sel?' selected':''}" style="background:${col}" onclick="toggleStatusChip('${s}')">
+      ${STATUS_LABELS[i+1]}
+    </div>`;
+  }).join('');
+}
+function toggleStatusChip(s){
+  if(pickerSelected.includes(s)){
+    pickerSelected=pickerSelected.filter(x=>x!==s);
+  } else {
+    if(pickerSelected.length>=2) pickerSelected.shift();
+    pickerSelected.push(s);
+  }
+  renderStatusPicker(pickerSelected.join(','));
 }
 function arrivalOpts(cur){
   return HOURS.map(h=>{
@@ -920,7 +957,7 @@ function openSlotModal(key){
   currentSlotKey=key;
   const c=gc(key);
   document.getElementById('slot-name').value=c.name||'';
-  document.getElementById('slot-status').innerHTML=statusOpts(c.status||'');
+  renderStatusPicker(c.status||'');
   document.getElementById('slot-arrival').innerHTML=arrivalOpts(c.arrival||'');
   document.getElementById('slot-nat').innerHTML=natOpts(c.nat||'');
 
@@ -960,7 +997,7 @@ function saveSlot(){
   if(!currentSlotKey)return;
   const c=gc(currentSlotKey);
   c.name=document.getElementById('slot-name').value.trim();
-  c.status=document.getElementById('slot-status').value;
+  c.status=pickerSelected.join(',');
   const arrSel=document.getElementById('slot-arrival');
   c.arrival=arrSel.value==='custom'?document.getElementById('slot-arrival-text').value.trim()||'':arrSel.value;
   const natSel=document.getElementById('slot-nat');
