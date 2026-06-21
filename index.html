@@ -363,7 +363,7 @@ thead .col-sticky{z-index:11}
 .nat-other-inp{margin-top:4px;width:100%;padding:5px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;display:none}
 
 /* STATUS PICKER */
-.status-picker{display:flex;flex-wrap:wrap;gap:5px;padding:2px 0}
+.status-picker{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:2px 0}
 .status-chip{
   display:flex;align-items:center;gap:4px;padding:5px 9px;
   border-radius:20px;border:2.5px solid transparent;
@@ -1023,8 +1023,8 @@ function renderArrivalPicker(){
       <div class="arr-hour${s.ampm==='pm'?' selected':''}" onclick="setAmPm('pm')">PM</div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">${left}</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">${right}</div>
+      <div style="display:grid;grid-template-columns:1fr;gap:4px">${left}</div>
+      <div style="display:grid;grid-template-columns:1fr;gap:4px">${right}</div>
     </div>
     <div style="display:flex;gap:6px;align-items:center;margin-top:2px">
       <div class="arr-hour${s.other?' selected':''}" style="flex:none" onclick="toggleArrOther()">Other</div>
