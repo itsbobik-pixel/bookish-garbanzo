@@ -20,12 +20,12 @@
   --s-cancel:#d0cfc9;
   --s-allgood:#e8f9ee;
   --sticky-w:110px;
-  --header-h:178px;
+  --header-h:208px;
 }
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
 /* HEADER */
-.hero-header{position:sticky;top:0;z-index:50;height:140px;overflow:hidden;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.hero-header{position:sticky;top:0;z-index:50;height:170px;overflow:hidden;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
 .hero-bg{position:absolute;inset:0;z-index:0}
 .hero-bg::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.38)}
 .hero-bg svg{width:100%;height:100%;display:block}
@@ -345,7 +345,7 @@ thead .col-sticky{z-index:11}
 <body>
 
 <div class="hero-header">
-  <div class="hero-bg" style="background:url('terrace.jpg') center 40%/cover no-repeat;"></div>
+  <div class="hero-bg" style="background:url('terrace.jpg') center center/cover no-repeat;"></div>
   <div class="hero-content">
     <img src="logo.png" alt="Costello" style="height:90px;filter:brightness(0) invert(1);drop-shadow(0 2px 8px rgba(0,0,0,0.4))">
     <div class="hero-sub">reception board</div>
