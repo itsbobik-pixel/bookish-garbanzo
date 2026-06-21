@@ -1636,22 +1636,30 @@ const PHOTOS=[
 function buildCollage(){
   const bg=document.getElementById('hero-collage');
   const h=bg.offsetHeight||170;
-  const w=bg.offsetWidth||window.innerWidth;
-  const picked=[...PHOTOS].sort(()=>Math.random()-.5).slice(0,13);
-  bg.querySelectorAll('.collage-photo').forEach(el=>el.remove());
   const positions=[
-    ...Array.from({length:6},(_,i)=>3+(i/5)*32),        // left zone 3–35%
-    ...Array.from({length:7},(_,i)=>65+(i/6)*30),        // right zone 65–95%
+    ...Array.from({length:6},(_,i)=>3+(i/5)*32),
+    ...Array.from({length:7},(_,i)=>65+(i/6)*30),
   ];
-  picked.forEach((src,i)=>{
-    const rot=(Math.random()-.5)*18;
-    const ph=Math.round(h*(.75+Math.random()*.45));
-    const topPct=(Math.random()-.5)*35;
-    const leftPct=positions[i]||50;
+  // reuse saved layout or generate new one
+  let layout;
+  try{layout=JSON.parse(localStorage.getItem('hb7_collage')||'null');}catch{}
+  if(!layout){
+    const picked=[...PHOTOS].sort(()=>Math.random()-.5).slice(0,13);
+    layout=picked.map((src,i)=>({
+      src,
+      rot:+(((Math.random()-.5)*18).toFixed(2)),
+      ph:Math.round((h||170)*(.75+Math.random()*.45)),
+      top:+(((Math.random()-.5)*35).toFixed(2)),
+      left:positions[i]||50,
+    }));
+    try{localStorage.setItem('hb7_collage',JSON.stringify(layout));}catch{}
+  }
+  bg.querySelectorAll('.collage-photo').forEach(el=>el.remove());
+  layout.forEach(({src,rot,ph,top,left})=>{
     const img=document.createElement('img');
     img.src=src;
     img.className='collage-photo';
-    img.style.cssText=`height:${ph}px;width:auto;top:calc(50% + ${topPct}px);left:${leftPct}%;transform:translate(-50%,-50%) rotate(${rot}deg);`;
+    img.style.cssText=`height:${ph}px;width:auto;top:calc(50% + ${top}px);left:${left}%;transform:translate(-50%,-50%) rotate(${rot}deg);`;
     bg.insertBefore(img,bg.querySelector('.hero-overlay'));
   });
 }
