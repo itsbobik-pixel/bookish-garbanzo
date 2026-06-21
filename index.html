@@ -40,6 +40,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .hero-bg svg{width:100%;height:100%;display:block}
 .hero-content{z-index:1;display:flex;flex-direction:column;align-items:center;gap:4px;position:absolute;left:50%;transform:translateX(-50%)}
 .hero-logo{display:flex;align-items:center;gap:10px}
+.hero-logo-img{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);height:90px;z-index:3;pointer-events:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.4))}
 .hero-name{font-size:28px;font-weight:700;color:white;letter-spacing:.02em;text-shadow:0 2px 12px rgba(0,0,0,.4)}
 .hero-sub{font-size:11px;color:rgba(255,255,255,.7);letter-spacing:.12em;text-transform:uppercase}
 .hero-nav{z-index:1;display:flex;align-items:center;gap:10px;margin-left:auto}
@@ -320,6 +321,27 @@ thead .col-sticky{z-index:11}
 .md-cancel{background:var(--s-cancel)}.md-lower-bed{background:var(--s-lower-bed)}.md-laundry{background:var(--s-laundry)}
 .md-empty{background:#fff}.today-bg{background:#f0ede8}
 
+/* ARRIVAL PICKER */
+.arrival-picker{display:flex;flex-direction:column;gap:6px}
+.arr-controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.arr-toggle{display:flex;border-radius:20px;overflow:hidden;border:1.5px solid var(--border)}
+.arr-toggle-btn{padding:4px 12px;font-size:11px;font-weight:600;border:none;cursor:pointer;background:#f5f5f5;color:var(--muted);transition:background .12s,color .12s}
+.arr-toggle-btn.active{background:var(--accent);color:#fff}
+.arr-hours{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.arr-hour{padding:5px 0;font-size:12px;font-weight:600;border-radius:16px;border:2px solid transparent;cursor:pointer;background:#f0f0f0;color:var(--text);text-align:center;transition:background .12s,border-color .12s,opacity .12s;opacity:.6}
+.arr-hour:hover{opacity:.9}
+.arr-hour.selected{background:var(--accent);color:#fff;border-color:rgba(0,0,0,.15);opacity:1}
+.arr-special{display:flex;gap:4px}
+.arr-special-btn{padding:4px 10px;font-size:11px;border-radius:14px;border:1.5px solid var(--border);cursor:pointer;background:#f5f5f5;color:var(--muted);font-weight:500;transition:all .12s}
+.arr-special-btn.active{background:#166534;color:#fff;border-color:#166534}
+
+/* NAT PICKER */
+.nat-picker{display:flex;flex-wrap:wrap;gap:5px}
+.nat-chip{padding:5px 8px;border-radius:16px;border:2px solid transparent;cursor:pointer;font-size:12px;background:#f0f0f0;transition:border-color .12s,opacity .12s;opacity:.6}
+.nat-chip:hover{opacity:.9}
+.nat-chip.selected{border-color:var(--accent);opacity:1;background:#e8f4fd}
+.nat-other-inp{margin-top:4px;width:100%;padding:5px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;display:none}
+
 /* STATUS PICKER */
 .status-picker{display:flex;flex-wrap:wrap;gap:5px;padding:2px 0}
 .status-chip{
@@ -385,6 +407,7 @@ thead .col-sticky{z-index:11}
   <div class="hero-bg" id="hero-collage">
     <div class="hero-overlay"></div>
   </div>
+  <img src="logo.png" class="hero-logo-img" alt="Costello">
   <div class="hero-nav">
     <div class="hero-tabs">
       <button class="hero-tab active" onclick="switchView('week')">Week</button>
@@ -460,13 +483,12 @@ thead .col-sticky{z-index:11}
       </div>
       <div class="field">
         <label>Arrival</label>
-        <select id="slot-arrival" onchange="onModalArrivalChange()"></select>
-        <input class="extra-inp" id="slot-arrival-text" placeholder="e.g. 15:30" style="display:none">
+        <div class="arrival-picker" id="arrival-picker"></div>
       </div>
       <div class="field">
         <label>Nationality</label>
-        <select id="slot-nat" onchange="onModalNatChange()"></select>
-        <input class="extra-inp" id="slot-nat-text" placeholder="e.g. POL, NZL, KOR" style="display:none">
+        <div class="nat-picker" id="nat-picker"></div>
+        <input class="nat-other-inp" id="nat-other-inp" placeholder="e.g. POL, NZL, KOR" oninput="natOtherChanged()">
       </div>
     </div>
     <div class="slot-notes-section">
@@ -944,41 +966,93 @@ function toggleStatusChip(s){
   }
   renderStatusPicker(pickerSelected.join(','));
 }
-function arrivalOpts(cur){
-  return HOURS.map(h=>{
-    if(h==='custom') return`<option value="custom"${cur==='custom'?' selected':''}>custom…</option>`;
-    if(h==='') return`<option value=""${!cur?' selected':''}>— arrival —</option>`;
-    if(h==='arrived') return`<option value="arrived"${cur==='arrived'?' selected':''}>arrived ✓</option>`;
-    return`<option value="${h}"${cur===h?' selected':''}>${h}</option>`;
-  }).join('');
+/* ---- ARRIVAL PICKER STATE ---- */
+let arrState={hour:null,ampm:'pm',half:false,arrived:false};
+
+function parseArrivalToState(val){
+  if(!val) return {hour:null,ampm:'pm',half:false,arrived:false};
+  if(val==='arrived') return {hour:null,ampm:'pm',half:false,arrived:true};
+  const m=val.match(/^(\d{1,2}):(\d{2})$/);
+  if(!m) return {hour:null,ampm:'pm',half:false,arrived:false};
+  let h=parseInt(m[1]);const min=parseInt(m[2]);
+  const ampm=h>=12?'pm':'am';
+  if(h>12)h-=12; if(h===0)h=12;
+  return{hour:h,ampm,half:min>=30,arrived:false};
 }
-function natOpts(cur){
-  const knownVals=NATS.map(n=>n.v);
-  const isCustom=cur&&!knownVals.includes(cur);
-  let opts=NATS.map(n=>`<option value="${n.v}"${cur===n.v?' selected':''}>${n.l}</option>`).join('');
-  if(isCustom) opts+=`<option value="${esc(cur)}" selected>${esc(cur)}</option>`;
-  return opts;
+function getArrivalValue(){
+  if(arrState.arrived) return 'arrived';
+  if(!arrState.hour) return '';
+  let h=arrState.hour;
+  if(arrState.ampm==='pm'&&h!==12)h+=12;
+  if(arrState.ampm==='am'&&h===12)h=0;
+  return `${String(h).padStart(2,'0')}:${arrState.half?'30':'00'}`;
 }
+function renderArrivalPicker(){
+  const s=arrState;
+  const hours=[1,2,3,4,5,6,7,8,9,10,11,12];
+  const leftCol=hours.slice(0,6).map(h=>`<div class="arr-hour${s.hour===h&&!s.arrived?' selected':''}" onclick="toggleArrHour(${h})">${h}</div>`).join('');
+  const rightCol=hours.slice(6).map(h=>`<div class="arr-hour${s.hour===h&&!s.arrived?' selected':''}" onclick="toggleArrHour(${h})">${h}</div>`).join('');
+  document.getElementById('arrival-picker').innerHTML=`
+    <div class="arr-controls">
+      <div class="arr-toggle">
+        <button class="arr-toggle-btn${s.ampm==='am'?' active':''}" onclick="setAmPm('am')">AM</button>
+        <button class="arr-toggle-btn${s.ampm==='pm'?' active':''}" onclick="setAmPm('pm')">PM</button>
+      </div>
+      <div class="arr-toggle">
+        <button class="arr-toggle-btn${!s.half?' active':''}" onclick="setHalf(false)">:00</button>
+        <button class="arr-toggle-btn${s.half?' active':''}" onclick="setHalf(true)">:30</button>
+      </div>
+      <button class="arr-special-btn${s.arrived?' active':''}" onclick="toggleArrived()">Arrived ✓</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">${leftCol}</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">${rightCol}</div>
+    </div>`;
+}
+function toggleArrHour(h){
+  arrState.arrived=false;
+  arrState.hour=arrState.hour===h?null:h;
+  renderArrivalPicker();
+}
+function setAmPm(v){arrState.ampm=v;renderArrivalPicker();}
+function setHalf(v){arrState.half=v;renderArrivalPicker();}
+function toggleArrived(){arrState.arrived=!arrState.arrived;if(arrState.arrived)arrState.hour=null;renderArrivalPicker();}
+
+/* ---- NAT PICKER STATE ---- */
+const NAT_CHIPS=[
+  {v:'gb',l:'🇬🇧 UK'},{v:'us',l:'🇺🇸 USA'},{v:'au',l:'🇦🇺 AUS'},
+  {v:'de',l:'🇩🇪 GER'},{v:'fr',l:'🇫🇷 FRA'},{v:'es',l:'🇪🇸 ESP'},
+  {v:'it',l:'🇮🇹 ITA'},{v:'nl',l:'🇳🇱 NL'},{v:'br',l:'🇧🇷 BRA'},
+  {v:'ca',l:'🇨🇦 CAN'},{v:'pl',l:'🇵🇱 POL'},{v:'cz',l:'🇨🇿 CZE'},
+];
+let natSelected='';
+function renderNatPicker(){
+  const knownVals=NAT_CHIPS.map(n=>n.v);
+  const isOther=natSelected&&!knownVals.includes(natSelected);
+  document.getElementById('nat-picker').innerHTML=
+    NAT_CHIPS.map(n=>`<div class="nat-chip${natSelected===n.v?' selected':''}" onclick="toggleNat('${n.v}')">${n.l}</div>`).join('')+
+    `<div class="nat-chip${isOther?' selected':''}" onclick="toggleNat('other')">+ Other</div>`;
+  const inp=document.getElementById('nat-other-inp');
+  inp.style.display=isOther||natSelected==='other'?'block':'none';
+  if(isOther) inp.value=natSelected;
+}
+function toggleNat(v){
+  if(v==='other'){natSelected=natSelected&&!NAT_CHIPS.find(n=>n.v===natSelected)?natSelected:'other';}
+  else{natSelected=natSelected===v?'':v;}
+  renderNatPicker();
+  if(v==='other') setTimeout(()=>document.getElementById('nat-other-inp').focus(),30);
+}
+function natOtherChanged(){natSelected=document.getElementById('nat-other-inp').value.trim().toUpperCase();}
 
 function openSlotModal(key){
   currentSlotKey=key;
   const c=gc(key);
   document.getElementById('slot-name').value=c.name||'';
   renderStatusPicker(c.status||'');
-  document.getElementById('slot-arrival').innerHTML=arrivalOpts(c.arrival||'');
-  document.getElementById('slot-nat').innerHTML=natOpts(c.nat||'');
-
-  const knownVals=NATS.map(n=>n.v);
-  const isCustomArrival=c.arrival&&!HOURS.includes(c.arrival);
-  const isCustomNat=c.nat&&!knownVals.includes(c.nat);
-
-  const arrText=document.getElementById('slot-arrival-text');
-  arrText.style.display=isCustomArrival?'block':'none';
-  if(isCustomArrival) arrText.value=c.arrival;
-
-  const natText=document.getElementById('slot-nat-text');
-  natText.style.display=isCustomNat?'block':'none';
-  if(isCustomNat) natText.value=c.nat;
+  arrState=parseArrivalToState(c.arrival||'');
+  renderArrivalPicker();
+  natSelected=c.nat||'';
+  renderNatPicker();
 
   document.getElementById('slot-delete-btn').style.display=(c.name||c.status)?'inline-block':'none';
   document.getElementById('slot-note-input').value='';
@@ -987,28 +1061,14 @@ function openSlotModal(key){
   setTimeout(()=>document.getElementById('slot-name').focus(),50);
 }
 
-function onModalArrivalChange(){
-  const sel=document.getElementById('slot-arrival');
-  const inp=document.getElementById('slot-arrival-text');
-  inp.style.display=sel.value==='custom'?'block':'none';
-  if(sel.value==='custom') setTimeout(()=>inp.focus(),30);
-}
-function onModalNatChange(){
-  const sel=document.getElementById('slot-nat');
-  const inp=document.getElementById('slot-nat-text');
-  inp.style.display=sel.value==='custom'?'block':'none';
-  if(sel.value==='custom') setTimeout(()=>inp.focus(),30);
-}
 
 function saveSlot(){
   if(!currentSlotKey)return;
   const c=gc(currentSlotKey);
   c.name=document.getElementById('slot-name').value.trim();
   c.status=pickerSelected.join(',');
-  const arrSel=document.getElementById('slot-arrival');
-  c.arrival=arrSel.value==='custom'?document.getElementById('slot-arrival-text').value.trim()||'':arrSel.value;
-  const natSel=document.getElementById('slot-nat');
-  c.nat=natSel.value==='custom'?document.getElementById('slot-nat-text').value.trim().toUpperCase()||'':natSel.value;
+  c.arrival=getArrivalValue();
+  c.nat=natSelected==='other'?document.getElementById('nat-other-inp').value.trim().toUpperCase()||'':natSelected;
   cells[currentSlotKey]=c;
   // propagate to all linked cells in same group
   if(c.groupId){
