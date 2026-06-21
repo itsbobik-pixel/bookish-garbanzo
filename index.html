@@ -1289,7 +1289,7 @@ function showNoteTooltip(e, key){
   const list=gn(key);
   if(!list.length) return;
   const tip=document.getElementById('note-tooltip');
-  tip.textContent=list.join('\n');
+  tip.textContent=list.map(n=>n.text||(typeof n==='string'?n:'')).join('\n');
   tip.style.opacity='1';
   positionTooltip(e, tip);
 }
