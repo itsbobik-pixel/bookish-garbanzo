@@ -1639,10 +1639,12 @@ function buildCollage(){
   // remove old photos
   bg.querySelectorAll('.collage-photo').forEach(el=>el.remove());
   picked.forEach((src,i)=>{
-    const rot=(Math.random()-.5)*18;        // -9° to +9°
-    const ph=Math.round(h*(.75+Math.random()*.45)); // 75%–120% of header height
-    const topPct=(Math.random()-.5)*35;     // vertical scatter
-    const leftPct=5+(i/(picked.length-1))*90; // spread across width
+    const rot=(Math.random()-.5)*18;
+    const ph=Math.round(h*(.75+Math.random()*.45));
+    const topPct=(Math.random()-.5)*35;
+    // split into left half (0–6) and right half (7–12), skip center 35–65%
+    const half=i<picked.length/2;
+    const leftPct=half ? 3+(i/(picked.length/2-1))*32 : 65+((i-picked.length/2)/(picked.length/2-1))*30;
     const img=document.createElement('img');
     img.src=src;
     img.className='collage-photo';
