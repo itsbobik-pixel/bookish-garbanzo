@@ -209,6 +209,7 @@ thead .col-sticky{z-index:11}
 .slot-cell:hover{filter:brightness(.95)}
 .slot-cell.dragging{opacity:.35}
 .slot-td.drag-over{outline:2px dashed var(--accent);outline-offset:-2px;background:rgba(37,150,214,.08)}
+.slot-td.drag-preview{background:rgba(37,150,214,.15);outline:2px solid rgba(37,150,214,.4);outline-offset:-2px}
 .note-tooltip{
   position:fixed;z-index:999;background:#333;color:#fff;
   font-size:12px;line-height:1.5;padding:7px 10px;border-radius:7px;
@@ -820,7 +821,7 @@ function renderWeek(){
       h+=`<tr><td class="col-sticky bed-label-th${isLast?' last-bed':''}">Bed ${s+1}</td>`;
       days.forEach(d=>{
         const dstr=ds(d),key=ck(r.id,s,dstr);
-        h+=`<td class="slot-td${isLast?' last-bed':''}" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dragDrop(event,'${key}')">${cellHtml(key,dstr)}</td>`;
+        h+=`<td class="slot-td${isLast?' last-bed':''}" data-key="${key}" ondragover="dragOver(event,'${key}')" ondragleave="dragLeave(event)" ondrop="dragDrop(event,'${key}')">${cellHtml(key,dstr)}</td>`;
       });
       h+=`</tr>`;
     }
@@ -1233,10 +1234,31 @@ function dragStart(e,key){
 }
 function dragEnd(e){
   e.currentTarget.classList.remove('dragging');
+  clearDragPreviews();
 }
-function dragOver(e){
+function clearDragPreviews(){
+  document.querySelectorAll('.drag-preview,.drag-over').forEach(el=>el.classList.remove('drag-preview','drag-over'));
+}
+
+function dragOver(e, hoverKey){
   e.preventDefault();
   e.dataTransfer.dropEffect=e.ctrlKey?'copy':'move';
+  clearDragPreviews();
+  if(e.ctrlKey && dragKey && hoverKey){
+    const src=parseKey(dragKey), tgt=parseKey(hoverKey);
+    if(src.rid===tgt.rid && src.slot===tgt.slot){
+      const d1=new Date(src.dateStr), d2=new Date(tgt.dateStr);
+      const start=d1<d2?d1:d2, end=d1<d2?d2:d1;
+      const cur=new Date(start);
+      while(cur<=end){
+        const k=ck(src.rid,src.slot,ds(cur));
+        const td=document.querySelector(`[data-key="${k}"]`);
+        if(td) td.classList.add('drag-preview');
+        cur.setDate(cur.getDate()+1);
+      }
+      return;
+    }
+  }
   e.currentTarget.classList.add('drag-over');
 }
 function dragLeave(e){
