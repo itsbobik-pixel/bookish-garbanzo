@@ -344,8 +344,7 @@ thead .col-sticky{z-index:11}
 .arr-hour:hover{opacity:.9}
 .arr-hour.selected{background:var(--accent);color:#fff;border-color:rgba(0,0,0,.15);opacity:1}
 .arr-special{display:flex;gap:4px}
-.arr-special-btn{padding:4px 10px;font-size:11px;border-radius:14px;border:1.5px solid var(--border);cursor:pointer;background:#f5f5f5;color:var(--muted);font-weight:500;transition:all .12s}
-.arr-special-btn.active{background:#166534;color:#fff;border-color:#166534}
+.arr-ampm-row{display:flex;gap:4px;margin-bottom:2px}
 
 /* NAT PICKER */
 .nat-picker{display:flex;flex-wrap:wrap;gap:5px}
@@ -982,56 +981,50 @@ function toggleStatusChip(s){
   renderStatusPicker(pickerSelected.join(','));
 }
 /* ---- ARRIVAL PICKER STATE ---- */
-let arrState={hour:null,ampm:'pm',half:false,arrived:false};
+let arrState={hour:null,ampm:null,other:false};
 
 function parseArrivalToState(val){
-  if(!val) return {hour:null,ampm:'pm',half:false,arrived:false};
-  if(val==='arrived') return {hour:null,ampm:'pm',half:false,arrived:true};
+  if(!val) return{hour:null,ampm:null,other:false};
   const m=val.match(/^(\d{1,2}):(\d{2})$/);
-  if(!m) return {hour:null,ampm:'pm',half:false,arrived:false};
-  let h=parseInt(m[1]);const min=parseInt(m[2]);
+  if(!m) return{hour:null,ampm:null,other:true};
+  let h=parseInt(m[1]);
   const ampm=h>=12?'pm':'am';
   if(h>12)h-=12; if(h===0)h=12;
-  return{hour:h,ampm,half:min>=30,arrived:false};
+  return{hour:h,ampm,other:false};
 }
 function getArrivalValue(){
-  if(arrState.arrived) return 'arrived';
-  if(!arrState.hour) return '';
+  if(arrState.other){
+    const v=document.getElementById('arr-other-inp');
+    return v?v.value.trim():'';
+  }
+  if(!arrState.hour||!arrState.ampm) return '';
   let h=arrState.hour;
   if(arrState.ampm==='pm'&&h!==12)h+=12;
   if(arrState.ampm==='am'&&h===12)h=0;
-  return `${String(h).padStart(2,'0')}:${arrState.half?'30':'00'}`;
+  return `${String(h).padStart(2,'0')}:00`;
 }
 function renderArrivalPicker(){
   const s=arrState;
   const hours=[1,2,3,4,5,6,7,8,9,10,11,12];
-  const leftCol=hours.slice(0,6).map(h=>`<div class="arr-hour${s.hour===h&&!s.arrived?' selected':''}" onclick="toggleArrHour(${h})">${h}</div>`).join('');
-  const rightCol=hours.slice(6).map(h=>`<div class="arr-hour${s.hour===h&&!s.arrived?' selected':''}" onclick="toggleArrHour(${h})">${h}</div>`).join('');
+  const left=hours.slice(0,6).map(h=>`<div class="arr-hour${s.hour===h?' selected':''}" onclick="toggleArrHour(${h})">${h}:00</div>`).join('');
+  const right=hours.slice(6).map(h=>`<div class="arr-hour${s.hour===h?' selected':''}" onclick="toggleArrHour(${h})">${h}:00</div>`).join('');
   document.getElementById('arrival-picker').innerHTML=`
-    <div class="arr-controls">
-      <div class="arr-toggle">
-        <button class="arr-toggle-btn${s.ampm==='am'?' active':''}" onclick="setAmPm('am')">AM</button>
-        <button class="arr-toggle-btn${s.ampm==='pm'?' active':''}" onclick="setAmPm('pm')">PM</button>
-      </div>
-      <div class="arr-toggle">
-        <button class="arr-toggle-btn${!s.half?' active':''}" onclick="setHalf(false)">:00</button>
-        <button class="arr-toggle-btn${s.half?' active':''}" onclick="setHalf(true)">:30</button>
-      </div>
-      <button class="arr-special-btn${s.arrived?' active':''}" onclick="toggleArrived()">Arrived ✓</button>
+    <div class="arr-ampm-row">
+      <div class="arr-hour${s.ampm==='am'?' selected':''}" onclick="setAmPm('am')">AM</div>
+      <div class="arr-hour${s.ampm==='pm'?' selected':''}" onclick="setAmPm('pm')">PM</div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">${leftCol}</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">${rightCol}</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">${left}</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">${right}</div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;margin-top:2px">
+      <div class="arr-hour${s.other?' selected':''}" style="flex:none" onclick="toggleArrOther()">Other</div>
+      <input id="arr-other-inp" class="nat-other-inp" placeholder="e.g. 15:30" style="display:${s.other?'block':'none'};margin-top:0;flex:1">
     </div>`;
 }
-function toggleArrHour(h){
-  arrState.arrived=false;
-  arrState.hour=arrState.hour===h?null:h;
-  renderArrivalPicker();
-}
-function setAmPm(v){arrState.ampm=v;renderArrivalPicker();}
-function setHalf(v){arrState.half=v;renderArrivalPicker();}
-function toggleArrived(){arrState.arrived=!arrState.arrived;if(arrState.arrived)arrState.hour=null;renderArrivalPicker();}
+function toggleArrHour(h){arrState.hour=arrState.hour===h?null:h;arrState.other=false;renderArrivalPicker();}
+function setAmPm(v){arrState.ampm=arrState.ampm===v?null:v;arrState.other=false;renderArrivalPicker();}
+function toggleArrOther(){arrState.other=!arrState.other;if(arrState.other){arrState.hour=null;arrState.ampm=null;}renderArrivalPicker();if(arrState.other)setTimeout(()=>document.getElementById('arr-other-inp').focus(),30);}
 
 /* ---- NAT PICKER STATE ---- */
 const NAT_CHIPS=[
