@@ -157,7 +157,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .arr-divider{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:6px 2px 3px;border-top:1px solid var(--border);margin-top:6px;margin-bottom:4px}
 
 /* WEEK TABLE */
-.week-wrap{padding:0;overflow-x:visible;border-top:1px solid var(--border)}
+.week-wrap{padding:0;overflow-x:auto;border-top:1px solid var(--border);scrollbar-width:none}
+.week-wrap::-webkit-scrollbar{display:none}
 .week-table{border-collapse:collapse;width:auto}
 
 .week-table th,.week-table td{border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
