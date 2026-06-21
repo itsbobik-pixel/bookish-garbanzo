@@ -1299,7 +1299,8 @@ function showQuote(){
   document.getElementById('quote-text').innerHTML=`"${q.q}" <span class="quote-author">— ${q.a}</span>`;
 }
 
-load();render();buildCollage();showQuote();
+load();render();showQuote();
+window.addEventListener('load', buildCollage);
 
 /* ── DRAG & DROP ── */
 let dragKey=null;
