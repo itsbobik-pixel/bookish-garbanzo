@@ -1236,7 +1236,7 @@ function dragEnd(e){
 }
 function dragOver(e){
   e.preventDefault();
-  e.dataTransfer.dropEffect=e.shiftKey?'copy':'move';
+  e.dataTransfer.dropEffect=e.ctrlKey?'copy':'move';
   e.currentTarget.classList.add('drag-over');
 }
 function dragLeave(e){
@@ -1250,7 +1250,7 @@ function dragDrop(e,targetKey){
   const src=parseKey(dragKey);
   const tgt=parseKey(targetKey);
 
-  if(e.shiftKey && src.rid===tgt.rid && src.slot===tgt.slot){
+  if(e.ctrlKey && src.rid===tgt.rid && src.slot===tgt.slot){
     // span mode: fill all days between source and target
     const d1=new Date(src.dateStr), d2=new Date(tgt.dateStr);
     const start=d1<d2?d1:d2, end=d1<d2?d2:d1;
