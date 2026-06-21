@@ -209,7 +209,8 @@ thead .col-sticky{z-index:11}
 .slot-cell:hover{filter:brightness(.95)}
 .slot-cell.dragging{opacity:.35}
 .slot-td.drag-over{outline:2px dashed var(--accent);outline-offset:-2px;background:rgba(37,150,214,.08)}
-.slot-td.drag-preview{background:rgba(37,150,214,.15);outline:2px solid rgba(37,150,214,.4);outline-offset:-2px}
+.slot-td.drag-preview>.drag-ghost{position:absolute;inset:0;opacity:.45;pointer-events:none;z-index:5}
+.slot-td.drag-preview{position:relative;outline:2px dashed rgba(37,150,214,.5);outline-offset:-2px}
 .note-tooltip{
   position:fixed;z-index:999;background:#333;color:#fff;
   font-size:12px;line-height:1.5;padding:7px 10px;border-radius:7px;
@@ -1237,7 +1238,12 @@ function dragEnd(e){
   clearDragPreviews();
 }
 function clearDragPreviews(){
-  document.querySelectorAll('.drag-preview,.drag-over').forEach(el=>el.classList.remove('drag-preview','drag-over'));
+  document.querySelectorAll('.drag-preview').forEach(td=>{
+    td.classList.remove('drag-preview');
+    const ghost=td.querySelector('.drag-ghost');
+    if(ghost) ghost.remove();
+  });
+  document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));
 }
 
 function dragOver(e, hoverKey){
@@ -1247,13 +1253,21 @@ function dragOver(e, hoverKey){
   if(e.ctrlKey && dragKey && hoverKey){
     const src=parseKey(dragKey), tgt=parseKey(hoverKey);
     if(src.rid===tgt.rid && src.slot===tgt.slot){
+      const srcData=gc(dragKey);
+      const ghostHtml=cellHtml(dragKey, src.dateStr);
       const d1=new Date(src.dateStr), d2=new Date(tgt.dateStr);
       const start=d1<d2?d1:d2, end=d1<d2?d2:d1;
       const cur=new Date(start);
       while(cur<=end){
         const k=ck(src.rid,src.slot,ds(cur));
         const td=document.querySelector(`[data-key="${k}"]`);
-        if(td) td.classList.add('drag-preview');
+        if(td){
+          td.classList.add('drag-preview');
+          const wrapper=document.createElement('div');
+          wrapper.className='drag-ghost';
+          wrapper.innerHTML=ghostHtml;
+          td.appendChild(wrapper);
+        }
         cur.setDate(cur.getDate()+1);
       }
       return;
