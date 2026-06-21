@@ -55,7 +55,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 
 /* LEGEND */
 .legend-bar{display:flex;gap:10px;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--border);align-items:center;justify-content:center;min-height:38px}
-.quote-text{font-size:12px;color:var(--muted);font-style:italic;text-align:center;letter-spacing:.01em}
+.quote-text{font-size:14px;color:var(--muted);font-style:italic;text-align:center;letter-spacing:.01em}
 .quote-author{font-size:11px;color:var(--border);margin-left:6px;font-style:normal}
 .leg{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
 .leg-dot{width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.1);flex-shrink:0}
@@ -384,9 +384,6 @@ thead .col-sticky{z-index:11}
 <div class="hero-header">
   <div class="hero-bg" id="hero-collage">
     <div class="hero-overlay"></div>
-  </div>
-  <div class="hero-content">
-    <img src="logo.png" alt="Costello" style="height:90px;filter:brightness(0) invert(1);drop-shadow(0 2px 8px rgba(0,0,0,0.4))">
   </div>
   <div class="hero-nav">
     <div class="hero-tabs">
@@ -1288,12 +1285,82 @@ const QUOTES=[
   {q:"To love oneself is the beginning of a lifelong romance.",a:"Oscar Wilde"},
   {q:"Wherever you go, there you are.",a:"Jon Kabat-Zinn"},
   {q:"What you think, you become. What you feel, you attract. What you imagine, you create.",a:"Buddha"},
-  {q:"The rhythm of the body, the melody of the mind, and the harmony of the soul create the symphony of life.",a:"B.K.S. Iyengar"},
   {q:"You are the sky. Everything else is just the weather.",a:"Pema Chödrön"},
   {q:"Respond; don't react. Listen; don't talk. Think; don't assume.",a:"Raji Lukkoor"},
   {q:"Each morning we are born again. What we do today is what matters most.",a:"Buddha"},
   {q:"If you get tired, learn to rest, not to quit.",a:"Banksy"},
   {q:"The goal is not to be better than the other man, but your previous self.",a:"Dalai Lama"},
+  {q:"Knowing yourself is the beginning of all wisdom.",a:"Aristotle"},
+  {q:"Nothing can dim the light that shines from within.",a:"Maya Angelou"},
+  {q:"The soul that sees beauty may sometimes walk alone.",a:"Goethe"},
+  {q:"You have been criticising yourself for years and it hasn't worked. Try approving of yourself and see what happens.",a:"Louise Hay"},
+  {q:"There is nothing outside of yourself that can ever enable you to get better, stronger, richer, quicker or smarter.",a:"Miyamoto Musashi"},
+  {q:"Simplicity is the ultimate sophistication.",a:"Leonardo da Vinci"},
+  {q:"Be the change you wish to see in the world.",a:"Mahatma Gandhi"},
+  {q:"Not all those who wander are lost.",a:"J.R.R. Tolkien"},
+  {q:"The cave you fear to enter holds the treasure you seek.",a:"Joseph Campbell"},
+  {q:"Life shrinks or expands in proportion to one's courage.",a:"Anaïs Nin"},
+  {q:"In the end, just three things matter: how well we have lived, how well we have loved, how well we have learned to let go.",a:"Jack Kornfield"},
+  {q:"Rest and self-care are so important. When you take time to replenish your spirit, it allows you to serve others from the overflow.",a:"Eleanor Brownn"},
+  {q:"Be present above all else.",a:"Naval Ravikant"},
+  {q:"A quiet mind is able to hear intuition over fear.",a:"Yvan Byeajee"},
+  {q:"Talk to yourself like you would to someone you love.",a:"Brené Brown"},
+  {q:"The most important relationship you can have is with yourself.",a:"Diane von Furstenberg"},
+  {q:"You can't pour from an empty cup. Take care of yourself first.",a:"Unknown"},
+  {q:"Act without expectation.",a:"Lao Tzu"},
+  {q:"Within you there is a stillness and a sanctuary to which you can retreat at any time.",a:"Hermann Hesse"},
+  {q:"Don't believe everything you think.",a:"Byron Katie"},
+  {q:"This too shall pass.",a:"Persian proverb"},
+  {q:"Be yourself; everyone else is already taken.",a:"Oscar Wilde"},
+  {q:"He who lives in harmony with himself lives in harmony with the universe.",a:"Marcus Aurelius"},
+  {q:"It is not the mountain we conquer, but ourselves.",a:"Sir Edmund Hillary"},
+  {q:"The greatest glory in living lies not in never falling, but in rising every time we fall.",a:"Nelson Mandela"},
+  {q:"We are what we repeatedly do. Excellence, then, is not an act, but a habit.",a:"Aristotle"},
+  {q:"The things you own end up owning you.",a:"Chuck Palahniuk"},
+  {q:"Dwell on the beauty of life. Watch the stars, and see yourself running with them.",a:"Marcus Aurelius"},
+  {q:"Very little is needed to make a happy life; it is all within yourself.",a:"Marcus Aurelius"},
+  {q:"When I let go of what I am, I become what I might be.",a:"Lao Tzu"},
+  {q:"You are not a drop in the ocean. You are the entire ocean in a drop.",a:"Rumi"},
+  {q:"Let yourself be silently drawn by the strange pull of what you really love.",a:"Rumi"},
+  {q:"Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.",a:"Rumi"},
+  {q:"Stop acting so small. You are the universe in ecstatic motion.",a:"Rumi"},
+  {q:"Out beyond ideas of wrongdoing and rightdoing, there is a field. I'll meet you there.",a:"Rumi"},
+  {q:"Wear gratitude like a cloak and it will feed every corner of your life.",a:"Rumi"},
+  {q:"Everything you need, you already have.",a:"Byron Katie"},
+  {q:"Your task is not to seek for love, but merely to seek and find all the barriers within yourself that you have built against it.",a:"Rumi"},
+  {q:"The privilege of a lifetime is to become who you truly are.",a:"Carl Jung"},
+  {q:"Until you make the unconscious conscious, it will direct your life and you will call it fate.",a:"Carl Jung"},
+  {q:"Who looks outside, dreams; who looks inside, awakes.",a:"Carl Jung"},
+  {q:"To be nobody but yourself in a world which is doing its best to make you everybody else means to fight the hardest battle which any human being can fight.",a:"e.e. cummings"},
+  {q:"The most common form of despair is not being who you are.",a:"Søren Kierkegaard"},
+  {q:"There is only one way to happiness and that is to cease worrying about things which are beyond the power of our will.",a:"Epictetus"},
+  {q:"Make the most of yourself, for that is all there is of you.",a:"Ralph Waldo Emerson"},
+  {q:"To be great, be whole; exclude nothing, exaggerate nothing that is you.",a:"Fernando Pessoa"},
+  {q:"We don't see things as they are. We see them as we are.",a:"Anaïs Nin"},
+  {q:"Happiness depends upon ourselves.",a:"Aristotle"},
+  {q:"The flower that blooms in adversity is the rarest and most beautiful of all.",a:"Walt Disney"},
+  {q:"Keep your face always toward the sunshine, and shadows will fall behind you.",a:"Walt Whitman"},
+  {q:"Love yourself first and everything else falls into line.",a:"Lucille Ball"},
+  {q:"With the new day comes new strength and new thoughts.",a:"Eleanor Roosevelt"},
+  {q:"Believe you can and you're halfway there.",a:"Theodore Roosevelt"},
+  {q:"It does not matter how slowly you go as long as you do not stop.",a:"Confucius"},
+  {q:"Everything has beauty, but not everyone sees it.",a:"Confucius"},
+  {q:"Life is really simple, but we insist on making it complicated.",a:"Confucius"},
+  {q:"The best time to plant a tree was 20 years ago. The second best time is now.",a:"Chinese proverb"},
+  {q:"Fall seven times, stand up eight.",a:"Japanese proverb"},
+  {q:"After the rain, the earth hardens.",a:"Japanese proverb"},
+  {q:"One kind word can warm three winter months.",a:"Japanese proverb"},
+  {q:"The bamboo that bends is stronger than the oak that resists.",a:"Japanese proverb"},
+  {q:"What lies behind us and what lies before us are tiny matters compared to what lies within us.",a:"Ralph Waldo Emerson"},
+  {q:"Do not go where the path may lead; go instead where there is no path and leave a trail.",a:"Ralph Waldo Emerson"},
+  {q:"To live is the rarest thing in the world. Most people exist, that is all.",a:"Oscar Wilde"},
+  {q:"We are all broken — that's how the light gets in.",a:"Ernest Hemingway"},
+  {q:"In three words I can sum up everything I've learned about life: it goes on.",a:"Robert Frost"},
+  {q:"Two roads diverged in a wood, and I — I took the one less traveled by.",a:"Robert Frost"},
+  {q:"It's a helluva start, being able to recognize what makes you happy.",a:"Lucille Ball"},
+  {q:"Do one thing every day that scares you.",a:"Eleanor Roosevelt"},
+  {q:"You only live once, but if you do it right, once is enough.",a:"Mae West"},
+  {q:"In the depth of winter, I finally learned that within me there lay an invincible summer.",a:"Albert Camus"},
 ];
 function showQuote(){
   const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
