@@ -353,7 +353,7 @@ thead .col-sticky{z-index:11}
 .arr-hour:hover{opacity:.9}
 .arr-hour.selected{background:var(--accent);color:#fff;border-color:rgba(0,0,0,.15);opacity:1}
 .arr-special{display:flex;gap:4px}
-.arr-ampm-row{display:flex;gap:4px;margin-bottom:2px}
+.arr-ampm-row{display:flex;gap:4px;margin-bottom:2px;justify-content:center}
 
 /* NAT PICKER */
 .nat-picker{display:flex;flex-wrap:wrap;gap:5px}
@@ -1026,7 +1026,7 @@ function renderArrivalPicker(){
       <div style="display:grid;grid-template-columns:1fr;gap:4px">${left}</div>
       <div style="display:grid;grid-template-columns:1fr;gap:4px">${right}</div>
     </div>
-    <div style="display:flex;gap:6px;align-items:center;margin-top:2px">
+    <div style="display:flex;gap:6px;align-items:center;margin-top:2px;justify-content:center">
       <div class="arr-hour${s.other?' selected':''}" style="flex:none" onclick="toggleArrOther()">Other</div>
       <input id="arr-other-inp" class="nat-other-inp" placeholder="e.g. 15:30" style="display:${s.other?'block':'none'};margin-top:0;flex:1">
     </div>`;
