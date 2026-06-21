@@ -964,6 +964,14 @@ function saveSlot(){
   const natSel=document.getElementById('slot-nat');
   c.nat=natSel.value==='custom'?document.getElementById('slot-nat-text').value.trim().toUpperCase()||'':natSel.value;
   cells[currentSlotKey]=c;
+  // propagate to all linked cells in same group
+  if(c.groupId){
+    Object.keys(cells).forEach(k=>{
+      if(k!==currentSlotKey && cells[k].groupId===c.groupId){
+        cells[k]={...cells[k], name:c.name, status:c.status, nat:c.nat, arrival:c.arrival};
+      }
+    });
+  }
   save();
   closeSlotModal();
 }
@@ -1211,7 +1219,14 @@ load();render();
 /* ── DRAG & DROP ── */
 let dragKey=null;
 
-function dragStart(e, key){
+function parseKey(key){
+  const dateStr=key.slice(-10);
+  const rest=key.slice(0,-11);
+  const lastDash=rest.lastIndexOf('-');
+  return{rid:rest.slice(0,lastDash), slot:parseInt(rest.slice(lastDash+1)), dateStr};
+}
+
+function dragStart(e,key){
   dragKey=key;
   e.dataTransfer.effectAllowed='copyMove';
   e.currentTarget.classList.add('dragging');
@@ -1221,26 +1236,49 @@ function dragEnd(e){
 }
 function dragOver(e){
   e.preventDefault();
-  e.dataTransfer.dropEffect=e.ctrlKey?'move':'copy';
+  e.dataTransfer.dropEffect=e.shiftKey?'copy':'move';
   e.currentTarget.classList.add('drag-over');
 }
 function dragLeave(e){
   e.currentTarget.classList.remove('drag-over');
 }
-function dragDrop(e, targetKey){
+function dragDrop(e,targetKey){
   e.preventDefault();
   e.currentTarget.classList.remove('drag-over');
-  if(!dragKey||dragKey===targetKey) return;
-  const src={...gc(dragKey)};
-  // copy notes too
-  const srcNotes=[...gn(dragKey)];
-  cells[targetKey]={...src};
-  notes[targetKey]=[...srcNotes];
-  if(e.ctrlKey){
-    // move: clear source
+  if(!dragKey||dragKey===targetKey){dragKey=null;return;}
+
+  const src=parseKey(dragKey);
+  const tgt=parseKey(targetKey);
+
+  if(e.shiftKey && src.rid===tgt.rid && src.slot===tgt.slot){
+    // span mode: fill all days between source and target
+    const d1=new Date(src.dateStr), d2=new Date(tgt.dateStr);
+    const start=d1<d2?d1:d2, end=d1<d2?d2:d1;
+    const srcData={...gc(dragKey)};
+    // assign or reuse groupId
+    const gid=srcData.groupId||('g'+Date.now());
+    srcData.groupId=gid;
+    // update existing linked cells in same group with same base data
+    cells[dragKey]={...srcData};
+    const cur=new Date(start);
+    while(cur<=end){
+      const dstr=ds(cur);
+      const k=ck(src.rid,src.slot,dstr);
+      cells[k]={...srcData};
+      cur.setDate(cur.getDate()+1);
+    }
+  } else {
+    // move mode
+    const srcData={...gc(dragKey)};
+    const srcNotes=[...gn(dragKey)];
+    // break group link on individual move
+    delete srcData.groupId;
+    cells[targetKey]={...srcData};
+    notes[targetKey]=[...srcNotes];
     delete cells[dragKey];
     delete notes[dragKey];
   }
+
   dragKey=null;
   save();
   render();
