@@ -404,7 +404,7 @@ thead .col-sticky{z-index:11}
 .extra-inp{width:100%;margin-top:5px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--bg);color:var(--text);outline:none}
 .extra-inp:focus{border-color:#3a6fd4}
 .slot-notes-section{padding:0 16px 12px}
-.slot-notes-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;padding-top:4px;border-top:1px solid var(--border)}
+.slot-notes-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;padding-top:4px;border-top:1px solid var(--border);text-align:center}
 .slot-notes-list{max-height:120px;overflow-y:auto;margin-bottom:7px}
 .slot-note-item{background:var(--bg);border-radius:7px;padding:7px 10px;margin-bottom:5px;position:relative;padding-right:26px}
 .slot-note-text{font-size:12px;line-height:1.45;color:var(--text);white-space:pre-wrap}
@@ -1561,16 +1561,19 @@ function dragDrop(e,targetKey){
     const d1=new Date(src.dateStr), d2=new Date(tgt.dateStr);
     const start=d1<d2?d1:d2, end=d1<d2?d2:d1;
     const srcData={...gc(dragKey)};
+    const srcNotes=[...gn(dragKey)];
     // assign or reuse groupId
     const gid=srcData.groupId||('g'+Date.now());
     srcData.groupId=gid;
     // update existing linked cells in same group with same base data
     cells[dragKey]={...srcData};
+    notes[dragKey]=[...srcNotes];
     const cur=new Date(start);
     while(cur<=end){
       const dstr=ds(cur);
       const k=ck(src.rid,src.slot,dstr);
       cells[k]={...srcData};
+      notes[k]=[...srcNotes];
       cur.setDate(cur.getDate()+1);
     }
   } else {
