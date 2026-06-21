@@ -511,7 +511,6 @@ thead .col-sticky{z-index:11}
       <div class="field">
         <label>Nationality</label>
         <div class="nat-picker" id="nat-picker"></div>
-        <input class="nat-other-inp" id="nat-other-inp" placeholder="e.g. POL, NZL, KOR" oninput="natOtherChanged()">
       </div>
     </div>
     <div class="slot-notes-section">
@@ -1046,12 +1045,13 @@ let natSelected='';
 function renderNatPicker(){
   const knownVals=NAT_CHIPS.map(n=>n.v);
   const isOther=natSelected&&!knownVals.includes(natSelected);
+  const showInp=isOther||natSelected==='other';
   document.getElementById('nat-picker').innerHTML=
     NAT_CHIPS.map(n=>`<div class="nat-chip${natSelected===n.v?' selected':''}" onclick="toggleNat('${n.v}')">${n.l}</div>`).join('')+
-    `<div class="nat-chip${isOther?' selected':''}" onclick="toggleNat('other')">+ Other</div>`;
-  const inp=document.getElementById('nat-other-inp');
-  inp.style.display=isOther||natSelected==='other'?'block':'none';
-  if(isOther) inp.value=natSelected;
+    `<div style="display:grid;grid-template-columns:1fr 2fr;gap:5px;align-items:center;grid-column:1/-1">
+      <div class="nat-chip${isOther?' selected':''}" style="margin:0" onclick="toggleNat('other')">+ Other</div>
+      <input id="nat-other-inp" class="nat-other-inp" placeholder="e.g. POL, NZL" style="display:${showInp?'block':'none'};margin:0" oninput="natOtherChanged()" value="${isOther?natSelected:''}">
+    </div>`;
 }
 function toggleNat(v){
   if(v==='other'){natSelected=natSelected&&!NAT_CHIPS.find(n=>n.v===natSelected)?natSelected:'other';}
