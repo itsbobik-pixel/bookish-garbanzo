@@ -12,6 +12,7 @@
   --border:#e5e3de;
   --text:#181816;
   --muted:#9a9891;
+  --accent:#3a6fd4;
   --radius:10px;
   --s-checkin:#f0d800;
   --s-unpaid:#e63c3c;
@@ -23,7 +24,14 @@
   --sticky-w:110px;
   --header-h:208px;
 }
-body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body.dark{
+  --bg:#111110;
+  --surface:#1c1c1a;
+  --border:#2e2d2a;
+  --text:#e8e6e0;
+  --muted:#6b6961;
+}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .2s,color .2s}
 
 /* HEADER */
 .hero-header{position:sticky;top:0;z-index:50;height:170px;overflow:hidden;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
@@ -53,6 +61,10 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .period-nav span{font-size:12px;color:rgba(255,255,255,.9);min-width:150px;text-align:center}
 .nav-btn{padding:6px 13px;font-size:12px;font-weight:500;border:1px solid rgba(255,255,255,.4);border-radius:7px;cursor:pointer;background:rgba(255,255,255,.15);color:white}
 .nav-btn:hover{background:rgba(255,255,255,.25)}
+.nav-btn-today{background:rgba(255,255,255,.28);font-weight:700}
+.occupancy-badge{padding:5px 12px;font-size:12px;font-weight:600;border-radius:7px;background:rgba(0,0,0,.3);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.15);letter-spacing:.3px}
+.dark-toggle{padding:6px 10px;font-size:14px;line-height:1;border:1px solid rgba(255,255,255,.4);border-radius:7px;cursor:pointer;background:rgba(255,255,255,.15);color:white}
+.dark-toggle:hover{background:rgba(255,255,255,.25)}
 
 /* LEGEND */
 .legend-bar{display:flex;gap:10px;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--border);align-items:center;justify-content:center;min-height:38px}
@@ -418,6 +430,9 @@ thead .col-sticky{z-index:11}
       <span id="period-label"></span>
       <button onclick="navNext()">›</button>
     </div>
+    <button class="nav-btn nav-btn-today" onclick="goToday()">Today</button>
+    <span class="occupancy-badge" id="occupancy-badge"></span>
+    <button class="dark-toggle" onclick="toggleDark()" id="dark-toggle-btn">🌙</button>
     <button class="nav-btn" onclick="openAddRoom()">+ Room</button>
   </div>
 </div>
@@ -1179,6 +1194,46 @@ function switchView(v){
 }
 function navPrev(){if(view==='week')weekOff--;else monthOff--;render();}
 function navNext(){if(view==='week')weekOff++;else monthOff++;render();}
+function goToday(){weekOff=0;monthOff=0;render();}
+
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  const dark=document.body.classList.contains('dark');
+  localStorage.setItem('hb7_dark',dark?'1':'');
+  document.getElementById('dark-toggle-btn').textContent=dark?'☀️':'🌙';
+}
+function applyDark(){
+  const dark=localStorage.getItem('hb7_dark')==='1';
+  if(dark){document.body.classList.add('dark');document.getElementById('dark-toggle-btn').textContent='☀️';}
+}
+
+function updateOccupancy(){
+  const today=ds(new Date());
+  const totalBeds=rooms.reduce((s,r)=>s+(r.beds||0),0);
+  let occupied=0;
+  rooms.forEach(r=>{
+    for(let slot=0;slot<(r.beds||0);slot++){
+      const key=`${r.id}-${slot}-${today}`;
+      const c=cells[key];
+      if(c&&(c.name||c.status)) occupied++;
+    }
+  });
+  const el=document.getElementById('occupancy-badge');
+  if(el) el.textContent=`${occupied}/${totalBeds}`;
+}
+
+function checkGlReset(){
+  const lastReset=localStorage.getItem('hb7_gl_reset')||'';
+  const now=new Date();
+  const todayStr=ds(now);
+  const yesterday=ds(new Date(now-864e5));
+  // reset at 1am: if stored date is yesterday (or older) and hour >= 1, or stored date not today
+  if(lastReset!==todayStr && (now.getHours()>=1 || lastReset<yesterday)){
+    glDone={};
+    save();
+    localStorage.setItem('hb7_gl_reset',todayStr);
+  }
+}
 
 function openAddRoom(){
   document.getElementById('rm-name').value='';document.getElementById('rm-beds').value='';
@@ -1305,6 +1360,7 @@ function render(){
   if(view==='week') renderWeek(); else renderMonth();
   renderArrivals();
   renderGuidelines();
+  updateOccupancy();
 }
 
 document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{
@@ -1427,7 +1483,7 @@ function showQuote(){
   document.getElementById('quote-text').innerHTML=`"${q.q}" <span class="quote-author">— ${q.a}</span>`;
 }
 
-load();render();showQuote();
+load();checkGlReset();render();showQuote();applyDark();
 window.addEventListener('load', buildCollage);
 
 /* ── DRAG & DROP ── */
