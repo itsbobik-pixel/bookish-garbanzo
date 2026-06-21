@@ -1126,12 +1126,24 @@ function renderSlotNotes(){
     </div>
   `).join('');
 }
+function syncNotesToGroup(){
+  const gid=cells[currentSlotKey]&&cells[currentSlotKey].groupId;
+  if(!gid)return;
+  const synced=notes[currentSlotKey]||[];
+  Object.keys(cells).forEach(k=>{
+    if(k!==currentSlotKey&&cells[k].groupId===gid){
+      if(synced.length) notes[k]=[...synced];
+      else delete notes[k];
+    }
+  });
+}
 function addSlotNote(){
   const text=document.getElementById('slot-note-input').value.trim();
   if(!text||!currentSlotKey)return;
   if(!notes[currentSlotKey])notes[currentSlotKey]=[];
   const now=new Date();
   notes[currentSlotKey].push({text,time:`${p2(now.getDate())}/${p2(now.getMonth()+1)} ${p2(now.getHours())}:${p2(now.getMinutes())}`});
+  syncNotesToGroup();
   save();
   document.getElementById('slot-note-input').value='';
   renderSlotNotes();
@@ -1139,6 +1151,7 @@ function addSlotNote(){
 function deleteSlotNote(idx){
   notes[currentSlotKey].splice(idx,1);
   if(!notes[currentSlotKey].length)delete notes[currentSlotKey];
+  syncNotesToGroup();
   save();
   renderSlotNotes();
 }
