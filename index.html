@@ -54,7 +54,9 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .nav-btn:hover{background:rgba(255,255,255,.25)}
 
 /* LEGEND */
-.legend-bar{display:flex;gap:10px;padding:7px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center;justify-content:center}
+.legend-bar{display:flex;gap:10px;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--border);align-items:center;justify-content:center;min-height:38px}
+.quote-text{font-size:12px;color:var(--muted);font-style:italic;text-align:center;letter-spacing:.01em}
+.quote-author{font-size:11px;color:var(--border);margin-left:6px;font-style:normal}
 .leg{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
 .leg-dot{width:12px;height:12px;border-radius:3px;border:1px solid rgba(0,0,0,.1);flex-shrink:0}
 
@@ -399,13 +401,8 @@ thead .col-sticky{z-index:11}
   </div>
 </div>
 
-<div class="legend-bar">
-  <span class="leg"><span class="leg-dot" style="background:#f0d800"></span>Check-in (not paid)</span>
-  <span class="leg"><span class="leg-dot" style="background:#e63c3c"></span>Not paid</span>
-  <span class="leg"><span class="leg-dot" style="background:#17c4aa"></span>Change room</span>
-  <span class="leg"><span class="leg-dot" style="background:#3a6fd4"></span>Paid, not checked in</span>
-  <span class="leg"><span class="leg-dot" style="background:#d0cfc9"></span>Cancellation / leaving sooner</span>
-  <span class="leg"><span class="leg-dot" style="background:#e8f9ee;border:1px solid #86efac"></span>All good ✓</span>
+<div class="legend-bar" id="quote-bar">
+  <span class="quote-text" id="quote-text"></span>
 </div>
 
 <!-- 2-column layout -->
@@ -1265,7 +1262,44 @@ document.addEventListener('keydown',e=>{
   }
 });
 
-load();render();buildCollage();
+const QUOTES=[
+  {q:"The present moment is the only moment available to us, and it is the door to all moments.",a:"Thich Nhat Hanh"},
+  {q:"You yourself, as much as anybody in the entire universe, deserve your love and affection.",a:"Buddha"},
+  {q:"Almost everything will work again if you unplug it for a few minutes — including you.",a:"Anne Lamott"},
+  {q:"Peace is the result of retraining your mind to process life as it is, rather than as you think it should be.",a:"Wayne Dyer"},
+  {q:"The best way to take care of the future is to take care of the present moment.",a:"Thich Nhat Hanh"},
+  {q:"You are enough just as you are.",a:"Meghan Markle"},
+  {q:"In the middle of difficulty lies opportunity.",a:"Albert Einstein"},
+  {q:"Be happy for this moment. This moment is your life.",a:"Omar Khayyam"},
+  {q:"Happiness is not something ready-made. It comes from your own actions.",a:"Dalai Lama"},
+  {q:"Do what you can, with what you have, where you are.",a:"Theodore Roosevelt"},
+  {q:"It's not about perfect. It's about effort.",a:"Jillian Michaels"},
+  {q:"One small positive thought in the morning can change your whole day.",a:"Dalai Lama"},
+  {q:"Life is available only in the present moment.",a:"Thich Nhat Hanh"},
+  {q:"Breathe. Let go. And remind yourself that this very moment is the only one you know you have for sure.",a:"Oprah Winfrey"},
+  {q:"The only way to do great work is to love what you do.",a:"Steve Jobs"},
+  {q:"Start where you are. Use what you have. Do what you can.",a:"Arthur Ashe"},
+  {q:"Yesterday is history, tomorrow is a mystery, today is a gift — that's why we call it the present.",a:"Eleanor Roosevelt"},
+  {q:"You don't have to be great to start, but you have to start to be great.",a:"Zig Ziglar"},
+  {q:"The quieter you become, the more you can hear.",a:"Ram Dass"},
+  {q:"Joy is not in things; it is in us.",a:"Richard Wagner"},
+  {q:"When you realize there is nothing lacking, the whole world belongs to you.",a:"Lao Tzu"},
+  {q:"To love oneself is the beginning of a lifelong romance.",a:"Oscar Wilde"},
+  {q:"Wherever you go, there you are.",a:"Jon Kabat-Zinn"},
+  {q:"What you think, you become. What you feel, you attract. What you imagine, you create.",a:"Buddha"},
+  {q:"The rhythm of the body, the melody of the mind, and the harmony of the soul create the symphony of life.",a:"B.K.S. Iyengar"},
+  {q:"You are the sky. Everything else is just the weather.",a:"Pema Chödrön"},
+  {q:"Respond; don't react. Listen; don't talk. Think; don't assume.",a:"Raji Lukkoor"},
+  {q:"Each morning we are born again. What we do today is what matters most.",a:"Buddha"},
+  {q:"If you get tired, learn to rest, not to quit.",a:"Banksy"},
+  {q:"The goal is not to be better than the other man, but your previous self.",a:"Dalai Lama"},
+];
+function showQuote(){
+  const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  document.getElementById('quote-text').innerHTML=`"${q.q}" <span class="quote-author">— ${q.a}</span>`;
+}
+
+load();render();buildCollage();showQuote();
 
 /* ── DRAG & DROP ── */
 let dragKey=null;
