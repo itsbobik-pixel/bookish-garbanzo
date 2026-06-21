@@ -204,9 +204,18 @@ thead .col-sticky{z-index:11}
   width:100%;height:76px;position:relative;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   padding:4px 8px;
-  transition:filter .12s;
+  transition:filter .12s, opacity .12s;
 }
 .slot-cell:hover{filter:brightness(.95)}
+.slot-cell.dragging{opacity:.35}
+.slot-td.drag-over{outline:2px dashed var(--accent);outline-offset:-2px;background:rgba(37,150,214,.08)}
+.note-tooltip{
+  position:fixed;z-index:999;background:#333;color:#fff;
+  font-size:12px;line-height:1.5;padding:7px 10px;border-radius:7px;
+  max-width:220px;white-space:pre-wrap;pointer-events:none;
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+  opacity:0;transition:opacity .15s;
+}
 .slot-cell.s-empty{background:#fff;align-items:center}
 .slot-cell.s-checkin{background:var(--s-checkin)}
 .slot-cell.s-unpaid{background:var(--s-unpaid)}
@@ -374,6 +383,7 @@ thead .col-sticky{z-index:11}
 </div>
 
 <!-- 2-column layout -->
+<div id="note-tooltip" class="note-tooltip"></div>
 <div class="app-layout">
 
   <!-- MAIN: table -->
@@ -757,8 +767,16 @@ function cellHtml(key, dateStr){
   const customNat=(c.nat&&!FLAG_MAP[c.nat]&&c.nat!=='')? c.nat:'';
   const showArrival=shouldShowArrival(dateStr, c.arrival);
 
-  return`<div class="slot-cell ${statusClass(c.status)}" onclick="openSlotModal('${key}')">
-    <button class="cell-note-btn${hasNotes?' has-notes':''}" onclick="event.stopPropagation();openSlotModal('${key}')" title="Notes">
+  const notesText=gn(key).join('\n');
+  return`<div class="slot-cell ${statusClass(c.status)}"
+      draggable="true"
+      ondragstart="dragStart(event,'${key}')"
+      ondragend="dragEnd(event)"
+      onclick="openSlotModal('${key}')">
+    <button class="cell-note-btn${hasNotes?' has-notes':''}"
+      onclick="event.stopPropagation();openSlotModal('${key}')"
+      onmouseenter="showNoteTooltip(event,'${key}')"
+      onmouseleave="hideNoteTooltip()">
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block">
         <rect x="1" y="1" width="14" height="10" rx="3" fill="#f5c800" stroke="#555" stroke-width="1.5"/>
         <polygon points="3,11 7,11 5,14" fill="#f5c800" stroke="#555" stroke-width="1.5" stroke-linejoin="round"/>
@@ -802,7 +820,7 @@ function renderWeek(){
       h+=`<tr><td class="col-sticky bed-label-th${isLast?' last-bed':''}">Bed ${s+1}</td>`;
       days.forEach(d=>{
         const dstr=ds(d),key=ck(r.id,s,dstr);
-        h+=`<td class="slot-td${isLast?' last-bed':''}">${cellHtml(key,dstr)}</td>`;
+        h+=`<td class="slot-td${isLast?' last-bed':''}" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dragDrop(event,'${key}')">${cellHtml(key,dstr)}</td>`;
       });
       h+=`</tr>`;
     }
@@ -1189,6 +1207,63 @@ document.addEventListener('keydown',e=>{
 });
 
 load();render();
+
+/* ── DRAG & DROP ── */
+let dragKey=null;
+
+function dragStart(e, key){
+  dragKey=key;
+  e.dataTransfer.effectAllowed='copyMove';
+  e.currentTarget.classList.add('dragging');
+}
+function dragEnd(e){
+  e.currentTarget.classList.remove('dragging');
+}
+function dragOver(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect=e.ctrlKey?'move':'copy';
+  e.currentTarget.classList.add('drag-over');
+}
+function dragLeave(e){
+  e.currentTarget.classList.remove('drag-over');
+}
+function dragDrop(e, targetKey){
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if(!dragKey||dragKey===targetKey) return;
+  const src={...gc(dragKey)};
+  // copy notes too
+  const srcNotes=[...gn(dragKey)];
+  cells[targetKey]={...src};
+  notes[targetKey]=[...srcNotes];
+  if(e.ctrlKey){
+    // move: clear source
+    delete cells[dragKey];
+    delete notes[dragKey];
+  }
+  dragKey=null;
+  save();
+  render();
+}
+
+/* ── NOTE TOOLTIP ── */
+function showNoteTooltip(e, key){
+  const list=gn(key);
+  if(!list.length) return;
+  const tip=document.getElementById('note-tooltip');
+  tip.textContent=list.join('\n');
+  tip.style.opacity='1';
+  positionTooltip(e, tip);
+}
+function hideNoteTooltip(){
+  const tip=document.getElementById('note-tooltip');
+  tip.style.opacity='0';
+}
+function positionTooltip(e, tip){
+  const x=e.clientX+14, y=e.clientY-10;
+  tip.style.left=Math.min(x, window.innerWidth-230)+'px';
+  tip.style.top=y+'px';
+}
 
 function applyScale(){
   const DESIGN_W=2080;
