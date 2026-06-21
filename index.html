@@ -504,7 +504,8 @@ const CHECKOUT_STEPS = [
   'Put dirty sheets in juta sack → plastic box outside',
 ];
 
-const GL_BLOCKS = [
+/* ORIGINAL GL_BLOCKS — kept for reference, do not delete
+const GL_BLOCKS_ORIG = [
   { from:  8*60, to:  9*60, label: '8:00 – 9:00 · Opening',
     tasks: ['Open the terrace', 'Switch on phone volume for calls', 'Switch on door bell', 'Open curtain/big tent in terrace (arrow ↓ on remote)', 'Sweep bathroom + kitchen follow-up', 'Check & fold dry laundry/towels from terrace', 'Wash & refill water jar (lemon, cucumber/mint/ice)', 'Prepare labels for today\'s new arrivals', 'Write post-it of guests checking out (room by room)', 'Switch off kitchen light (& terrace if forgotten)', 'Check coffee quantity, make new if needed'] },
   { from:  9*60, to:  9*60+30, label: '9:00 · Jazz & Laundry',
@@ -543,6 +544,157 @@ const GL_BLOCKS = [
     tasks: ['Arrange milk for next day (2L cow + 1L soya)', 'Check all breakfast items on trailer (biscuits, cornflakes, oat…)', 'BATHROOM: floor + tappetini + toilet + sink + hand towels — mop or vacuum if needed', 'Leave 1 toilet paper on blue wooden stool', 'KITCHEN: check coffee machine timers, empty & clean dishes/sink filter/stove', 'Unload dishwasher'] },
   { from: 22*60+59, to: 23*60+15, label: '23:00 · Closing',
     tasks: ['Put eggs on shelf with "FREE EGGS" paper', 'Biscuits back up on wagon', 'Bring clothes inside from terrace (get wet even without rain)', 'Green shades OPEN, glass doors CLOSED', 'CLOSE TERRACE with bike lock (no music/guitar/loud talking after 22:00)', 'Switch off terrace lights', 'Close curtain outside (arrow ↑ on remote)', 'Switch off door bell + mute iPhone'] },
+];
+*/
+
+const GL_BLOCKS = [
+  { from:  8*60, to:  9*60, label: '8:00 · Opening',
+    tasks: [
+      'Open terrace + curtain (arrow ↓ on remote)',
+      'Switch on doorbell & phone volume',
+      'Wash & refill water jar (lemon / cucumber / mint + ice)',
+      'Fold & store dry laundry from terrace',
+      'Check coffee quantity — brew fresh if needed',
+      'Sweep bathroom + kitchen',
+      'Prepare arrival labels for today\'s new guests',
+      'Write post-it of guests checking out (room by room)',
+      'Switch off kitchen light (& terrace if still on)',
+    ] },
+  { from:  9*60, to:  9*60+30, label: '9:00 · Jazz & Laundry',
+    tasks: [
+      'Play jazz / instrumental on Spotify',
+      'Mon & Thu: collect blue juta sacks, store new clean sheets from laundry guy',
+    ] },
+  { from:  9*60+30, to: 11*60, label: '9:30 · Mid-morning',
+    tasks: [
+      'Run dishwasher if full (38 min: ON → last watch icon)',
+      'Open room windows for ventilation',
+      'Switch off lights in rooms & kitchen',
+      'Check all ACs are OFF',
+    ] },
+  { from: 11*60, to: 13*60, label: '11:00 · Cleaning',
+    tasks: [
+      'Store breakfast items: eggs → staff drawer, milk → fridge staff drawer, biscuits → underneath',
+      'Run washing machine: dirty towels + tappetini + kitchen rugs',
+      'Beds — strip checkout beds: remove sheets & labels, put in juta sacks → plastic box outside',
+      'Put used towels in hostel laundry bag (next to big metal closet)',
+      'Make checkout beds: 2 sheets + 1 pillow cover, fold mattress cover',
+      'Set pillow & blanket, place arrival label below bed number',
+      'Bathroom — Sanikal all surfaces, CIF mirrors/glass, WC Gel in toilet, Alchofloor floors',
+      'Bathroom — set tappetini + 4 small towels + toilet paper',
+      'Kitchen — Mastrolindo all surfaces & appliances',
+      'Rooms — Red Roll on mattresses, Keradet on staircases, clean boxes',
+      'Unload dishwasher — check cleanliness',
+      'Hang towels on terrace (dryer if rainy)',
+      'End check: tappetini ✓  toilet paper ✓  dorm doors closed both sides ✓',
+    ] },
+  { from: 12*60+30, to: 13*60, label: '12:30 · AC remotes',
+    tasks: [
+      'Collect AC remotes from all rooms (no AC during the day unless very hot)',
+    ] },
+  { from: 13*60, to: 14*60, label: '13:00 · Post-cleaning',
+    tasks: [
+      'Empty terrace ashtrays → general waste, wipe tables',
+      'Add ice to plastic tupperware in freezer',
+      'Run washing machine if not done yet',
+    ] },
+  { from: 13*60+45, to: 14*60, label: '13:45 · Pre-2pm check',
+    tasks: [
+      'Bathroom: toilet paper + tappetini ✓',
+      'Kitchen: dish rag/trapito — min 2 at sink & hanging from fridge ✓',
+      'Rooms: doors closed both sides ✓  sheets on every bed ✓  boxes clean ✓',
+    ] },
+  { from: 14*60, to: 15*60, label: '14:00 · Arrivals',
+    tasks: [
+      'Check Excel — all arrival times filled for today?',
+      'No response? → contact Andrea',
+      'Charge batteries of small lights by doors',
+    ] },
+  { from: 15*60, to: 16*60, label: '15:00 · Afternoon round',
+    tasks: [
+      'Empty or run dishwasher if full',
+      'Refill water jar / add ice',
+      'Fold & store terrace laundry if dry',
+      'Take out coffee grounds → plants or organic bin',
+      'Bathroom: vacuum floor if needed, change toilet paper',
+      'Rooms: sheets on all arrival beds, towel stock ≥ 2 in storage',
+    ] },
+  { from: 16*60, to: 17*60, label: '16:00 · Fridge check',
+    tasks: [
+      'Remove rotten items or left-behinds from departed guests',
+      'Clean & organise fridge',
+    ] },
+  { from: 16*60+30, to: 18*60, label: '16:30 · Emails',
+    tasks: [
+      'Send arrival-time request emails for tomorrow\'s guests',
+      'Booking.com: use extranet template (right language) + entrance photo',
+      'Airbnb: auto-scheduled — just add entrance photo',
+      'Others: send from info@costellolaspezia.com using template + signature',
+    ] },
+  { from: 17*60, to: 18*60, label: '17:00 · Trash & setup',
+    tasks: [
+      'Take out trash (card for street bin): paper + organic + plastic daily; waste 2–3×/week',
+      'Change bin bags',
+      'Switch music on',
+      'Stock reception fridge (beers, cokes, water) + add ice to water jar',
+      'Check tomorrow\'s arrivals in Cloudbeds — matches Excel & availability matrix?',
+      'Fill Excel for next 7 days',
+      'Register guests on Alloggiati',
+      'Register guests in ISTAT (Gaia & Amanda)',
+    ] },
+  { from: 19*60, to: 20*60, label: '19:00 · Terrace lights',
+    tasks: [
+      'Switch on all terrace lights (table, fence, overhead)',
+      'Switch on small lights around doors',
+      'Bathroom: check tappetini, hand towels, floor & toilet paper (every 30 min)',
+      'Kitchen: tidy glasses & plates, keep worktops clean',
+    ] },
+  { from: 20*60, to: 21*60, label: '20:00 · Evening round',
+    tasks: [
+      'Plug in mosquito repellents in all dorms',
+      'Check & bring in laundry from terrace if dry',
+      'Change tappetini if wet',
+      'Check towel stock for tomorrow — start wash if running low',
+    ] },
+  { from: 21*60, to: 21*60+30, label: '21:00 · Night prep',
+    tasks: [
+      'Switch on AC in all rooms: 20°C automatic mode (press OFF twice → auto-off at 7am)',
+      'Water plants (if no rain today)',
+      'Set up coffee machine: fill filter, correct water level, press timer',
+      'Empty all coffee pots',
+      'Change tappetini if wet',
+    ] },
+  { from: 21*60+30, to: 22*60, label: '21:30 · Dishwasher',
+    tasks: [
+      'Run dishwasher once guests finish dinner (must finish by 22:20 to unload before end of shift)',
+      'Close dorm windows',
+    ] },
+  { from: 22*60, to: 22*60+30, label: '22:00 · Wind down',
+    tasks: [
+      'Switch off music',
+      'Close kitchen door (rooms 3/4 guests may already be sleeping)',
+      'Check: dorm doors closed ✓  corridor doors (L & R) ✓  kitchen door ✓',
+    ] },
+  { from: 22*60+30, to: 23*60, label: '22:30 · Before closing',
+    tasks: [
+      'Arrange milk for next day (2L cow + 1L soya)',
+      'Check breakfast trailer: biscuits, cornflakes, oats…',
+      'Bathroom: mop/vacuum floor + tappetini + toilet + sink + hand towels',
+      'Leave 1 toilet paper on blue wooden stool',
+      'Kitchen: check coffee machine timers, wash dishes, clean sink filter & stove',
+      'Unload dishwasher',
+    ] },
+  { from: 22*60+59, to: 23*60+15, label: '23:00 · Closing',
+    tasks: [
+      'Put eggs on shelf with "FREE EGGS" paper',
+      'Biscuits back on wagon',
+      'Bring clothes inside from terrace (get wet even without rain)',
+      'Green shades OPEN, glass doors CLOSED',
+      'Lock terrace with bike lock — no noise after 22:00',
+      'Switch off terrace lights',
+      'Close curtain outside (arrow ↑ on remote)',
+      'Switch off doorbell + mute iPhone',
+    ] },
 ];
 
 let rooms=[], cells={}, notes={}, glDone={}, weekOff=0, monthOff=0, view='week', currentSlotKey=null, glOffset=0;
