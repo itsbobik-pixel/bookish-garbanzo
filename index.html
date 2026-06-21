@@ -1637,16 +1637,19 @@ function buildCollage(){
   const bg=document.getElementById('hero-collage');
   const h=bg.offsetHeight||170;
   const w=bg.offsetWidth||window.innerWidth;
-  const picked=[...PHOTOS].sort(()=>Math.random()-.5).slice(0,13);
-  // remove old photos
+  const picked=[...PHOTOS].sort(()=>Math.random()-.5).slice(0,16);
   bg.querySelectorAll('.collage-photo').forEach(el=>el.remove());
+  // positions: 13 spread left/right + 1 near-logo-left + 2 near-logo-right
+  const positions=[
+    ...Array.from({length:6},(_,i)=>3+(i/5)*29),        // left zone 3–32%
+    ...Array.from({length:6},(_,i)=>68+(i/5)*27),        // right zone 68–95%
+    38, 62, 66,                                           // near-logo: 1 left, 2 right
+  ];
   picked.forEach((src,i)=>{
     const rot=(Math.random()-.5)*18;
     const ph=Math.round(h*(.75+Math.random()*.45));
     const topPct=(Math.random()-.5)*35;
-    // split into left half (0–6) and right half (7–12), skip center 35–65%
-    const half=i<picked.length/2;
-    const leftPct=half ? 3+(i/(picked.length/2-1))*32 : 65+((i-picked.length/2)/(picked.length/2-1))*30;
+    const leftPct=positions[i]||50;
     const img=document.createElement('img');
     img.src=src;
     img.className='collage-photo';
