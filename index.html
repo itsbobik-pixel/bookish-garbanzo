@@ -516,7 +516,6 @@ thead .col-sticky{z-index:11}
     </div>
     <div class="slot-notes-section">
       <div class="slot-notes-label">Notes</div>
-      <div id="slot-notes-list" class="slot-notes-list"></div>
       <div class="slot-notes-add">
         <textarea id="slot-note-input" placeholder="Add a note…"></textarea>
       </div>
@@ -828,7 +827,7 @@ function shouldShowArrival(dateStr, arrival){
 /* CELL HTML */
 function cellHtml(key, dateStr){
   const c=gc(key);
-  const hasNotes=gn(key).length>0;
+  const hasNotes=!!(c.note);
   const isEmpty=!c.name&&!c.status;
 
   if(isEmpty){
@@ -1027,7 +1026,7 @@ function renderArrivalPicker(){
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:2px;align-items:center">
       <div class="arr-hour${s.other?' selected':''}" onclick="toggleArrOther()">Other</div>
-      <input id="arr-other-inp" class="nat-other-inp" placeholder="e.g. 15:30" style="display:${s.other?'block':'none'};margin:0">
+      <input id="arr-other-inp" class="nat-other-inp" placeholder="e.g. 15:30" style="visibility:${s.other?'visible':'hidden'};margin:0">
     </div>`;
 }
 function toggleArrHour(h){arrState.hour=arrState.hour===h?null:h;arrState.other=false;renderArrivalPicker();}
@@ -1072,8 +1071,7 @@ function openSlotModal(key){
   renderNatPicker();
 
   document.getElementById('slot-delete-btn').style.display=(c.name||c.status)?'inline-block':'none';
-  document.getElementById('slot-note-input').value='';
-  renderSlotNotes();
+  document.getElementById('slot-note-input').value=c.note||'';
   document.getElementById('slot-modal').classList.add('open');
   setTimeout(()=>document.getElementById('slot-name').focus(),50);
 }
@@ -1087,19 +1085,12 @@ function saveSlot(){
   c.arrival=getArrivalValue();
   c.nat=natSelected==='other'?document.getElementById('nat-other-inp').value.trim().toUpperCase()||'':natSelected;
   cells[currentSlotKey]=c;
-  // save textarea as note if not empty
-  const noteText=document.getElementById('slot-note-input').value.trim();
-  if(noteText){
-    if(!notes[currentSlotKey])notes[currentSlotKey]=[];
-    const now=new Date();
-    notes[currentSlotKey].push({text:noteText,time:`${p2(now.getDate())}/${p2(now.getMonth()+1)} ${p2(now.getHours())}:${p2(now.getMinutes())}`});
-    syncNotesToGroup();
-  }
+  c.note=document.getElementById('slot-note-input').value.trim();
   // propagate to all linked cells in same group
   if(c.groupId){
     Object.keys(cells).forEach(k=>{
       if(k!==currentSlotKey && cells[k].groupId===c.groupId){
-        cells[k]={...cells[k], name:c.name, status:c.status, nat:c.nat, arrival:c.arrival};
+        cells[k]={...cells[k], name:c.name, status:c.status, nat:c.nat, arrival:c.arrival, note:c.note};
       }
     });
   }
@@ -1121,48 +1112,6 @@ function closeSlotModal(){
   render();
 }
 
-/* NOTES IN MODAL */
-function renderSlotNotes(){
-  const list=gn(currentSlotKey);
-  const el=document.getElementById('slot-notes-list');
-  if(!list.length){el.innerHTML=`<div class="slot-notes-empty">No notes yet</div>`;return;}
-  el.innerHTML=list.map((n,i)=>`
-    <div class="slot-note-item">
-      <div class="slot-note-text">${esc(n.text)}</div>
-      <div class="slot-note-time">${n.time}</div>
-      <button class="slot-note-del" onclick="deleteSlotNote(${i})">×</button>
-    </div>
-  `).join('');
-}
-function syncNotesToGroup(){
-  const gid=cells[currentSlotKey]&&cells[currentSlotKey].groupId;
-  if(!gid)return;
-  const synced=notes[currentSlotKey]||[];
-  Object.keys(cells).forEach(k=>{
-    if(k!==currentSlotKey&&cells[k].groupId===gid){
-      if(synced.length) notes[k]=[...synced];
-      else delete notes[k];
-    }
-  });
-}
-function addSlotNote(){
-  const text=document.getElementById('slot-note-input').value.trim();
-  if(!text||!currentSlotKey)return;
-  if(!notes[currentSlotKey])notes[currentSlotKey]=[];
-  const now=new Date();
-  notes[currentSlotKey].push({text,time:`${p2(now.getDate())}/${p2(now.getMonth()+1)} ${p2(now.getHours())}:${p2(now.getMinutes())}`});
-  syncNotesToGroup();
-  save();
-  document.getElementById('slot-note-input').value='';
-  renderSlotNotes();
-}
-function deleteSlotNote(idx){
-  notes[currentSlotKey].splice(idx,1);
-  if(!notes[currentSlotKey].length)delete notes[currentSlotKey];
-  syncNotesToGroup();
-  save();
-  renderSlotNotes();
-}
 
 /* MONTH */
 function monthDays(){
@@ -1582,31 +1531,22 @@ function dragDrop(e,targetKey){
     const d1=new Date(src.dateStr), d2=new Date(tgt.dateStr);
     const start=d1<d2?d1:d2, end=d1<d2?d2:d1;
     const srcData={...gc(dragKey)};
-    const srcNotes=[...gn(dragKey)];
-    // assign or reuse groupId
     const gid=srcData.groupId||('g'+Date.now());
     srcData.groupId=gid;
-    // update existing linked cells in same group with same base data
     cells[dragKey]={...srcData};
-    notes[dragKey]=[...srcNotes];
     const cur=new Date(start);
     while(cur<=end){
       const dstr=ds(cur);
       const k=ck(src.rid,src.slot,dstr);
       cells[k]={...srcData};
-      notes[k]=[...srcNotes];
       cur.setDate(cur.getDate()+1);
     }
   } else {
     // move mode
     const srcData={...gc(dragKey)};
-    const srcNotes=[...gn(dragKey)];
-    // break group link on individual move
     delete srcData.groupId;
     cells[targetKey]={...srcData};
-    notes[targetKey]=[...srcNotes];
     delete cells[dragKey];
-    delete notes[dragKey];
   }
 
   dragKey=null;
@@ -1616,10 +1556,10 @@ function dragDrop(e,targetKey){
 
 /* ── NOTE TOOLTIP ── */
 function showNoteTooltip(e, key){
-  const list=gn(key);
-  if(!list.length) return;
+  const note=gc(key).note;
+  if(!note) return;
   const tip=document.getElementById('note-tooltip');
-  tip.textContent=list.map(n=>n.text||(typeof n==='string'?n:'')).join('\n');
+  tip.textContent=note;
   tip.style.opacity='1';
   positionTooltip(e, tip);
 }
