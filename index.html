@@ -938,9 +938,7 @@ function renderWeek(){
     const rparts=r.name.match(/^(Room\s*\d+)\s*(.*)$/i);
     const rline1=rparts?rparts[1]:r.name;
     const rline2=rparts&&rparts[2]?rparts[2].replace(/[()]/g,'').trim():'';
-    const roomColors=['#3a6fd4','#c0392b','#7ab648','#e67e22'];
-    const rc=roomColors[rooms.indexOf(r)%roomColors.length];
-    h+=`<tr><td class="col-sticky room-row-th" style="line-height:1.2;border-left:3px solid ${rc}"><span style="display:block;font-weight:700;font-size:12px">${esc(rline1)}</span>${rline2?`<span style="display:block;font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">${esc(rline2)}</span>`:''}</td><td colspan="14" class="room-row-sep" style="border-left:3px solid ${rc}"></td></tr>`;
+    h+=`<tr><td class="col-sticky room-row-th" style="line-height:1.2"><span style="display:block;font-weight:700;font-size:12px">${esc(rline1)}</span>${rline2?`<span style="display:block;font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">${esc(rline2)}</span>`:''}</td><td colspan="14" class="room-row-sep"></td></tr>`;
     for(let s=0;s<r.beds;s++){
       const isLast=s===r.beds-1;
       h+=`<tr><td class="col-sticky bed-label-th${isLast?' last-bed':''}">Bed ${s+1}</td>`;
