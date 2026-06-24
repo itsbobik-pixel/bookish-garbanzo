@@ -887,10 +887,10 @@ function cellHtml(key, dateStr, isDupe){
       </svg>
       <div class="note-red-dot"></div>
     </button>
-    ${flag?`<span class="cell-flag">${flag}</span>`:''}
-    ${customNat?`<span class="cell-nat-text">${esc(customNat)}</span>`:''}
-    ${isDupe?`<span class="cell-guest-name" style="opacity:.35">↳ ${esc(c.name)}</span>`:`<span class="cell-guest-name">${esc(c.name)||'—'}</span>`}
-    ${showArrival?`<span class="cell-arrival">✈ ${esc(c.arrival)}</span>`:''}
+    ${isDupe?'':(flag?`<span class="cell-flag">${flag}</span>`:'')}
+    ${isDupe?'':(customNat?`<span class="cell-nat-text">${esc(customNat)}</span>`:'')}
+    ${isDupe?'':`<span class="cell-guest-name">${esc(c.name)||'—'}</span>`}
+    ${isDupe?'':(showArrival?`<span class="cell-arrival">✈ ${esc(c.arrival)}</span>`:'')}
   </div>`;
 }
 
