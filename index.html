@@ -434,16 +434,6 @@ thead .col-sticky{z-index:11}
   </div>
   <img src="logo.png" class="hero-logo-img" alt="Costello">
   <div class="hero-nav">
-    <div class="hero-tabs">
-      <button class="hero-tab active" onclick="switchView('week')">Week</button>
-      <button class="hero-tab" onclick="switchView('month')">Month</button>
-    </div>
-    <div class="period-nav">
-      <button onclick="navPrev()">‹</button>
-      <span id="period-label"></span>
-      <button onclick="navNext()">›</button>
-    </div>
-    <button class="nav-btn nav-btn-today" onclick="goToday()">Today</button>
     <button class="dark-toggle" onclick="toggleDark()" id="dark-toggle-btn">🌙</button>
   </div>
 </div>
@@ -888,7 +878,17 @@ function renderWeek(){
     else h+=`<th style="border:none;background:transparent"></th>`;
   });
   h+=`</tr><tr>`;
-  h+=`<th class="col-sticky th-corner" style="text-align:center;padding:0"><button onclick="navPrev()" style="background:none;border:none;cursor:pointer;font-size:22px;color:var(--muted);padding:2px 8px;line-height:1">‹</button><button onclick="navNext()" style="background:none;border:none;cursor:pointer;font-size:22px;color:var(--muted);padding:2px 8px;line-height:1">›</button></th>`;
+  h+=`<th class="col-sticky th-corner" style="padding:4px 6px;vertical-align:middle">
+    <div style="display:flex;gap:3px;margin-bottom:4px">
+      <button onclick="switchView('week')" style="flex:1;padding:2px 0;font-size:10px;font-weight:600;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:${view==='week'?'var(--text)':'transparent'};color:${view==='week'?'#fff':'var(--muted)'}">Week</button>
+      <button onclick="switchView('month')" style="flex:1;padding:2px 0;font-size:10px;font-weight:600;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:${view==='month'?'var(--text)':'transparent'};color:${view==='month'?'#fff':'var(--muted)'}">Month</button>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <button onclick="navPrev()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);padding:0;line-height:1">‹</button>
+      <button onclick="goToday()" style="font-size:9px;font-weight:700;background:none;border:1px solid var(--border);border-radius:5px;cursor:pointer;color:var(--muted);padding:2px 5px">Today</button>
+      <button onclick="navNext()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);padding:0;line-height:1">›</button>
+    </div>
+  </th>`;
   days.forEach(d=>{
     h+=`<th class="th-day${isToday(d)?' today':''}"><span class="th-weekday">${DAYS[d.getDay()]}</span><span class="th-date">${fmt(d)}</span></th>`;
   });
