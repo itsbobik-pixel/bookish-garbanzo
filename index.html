@@ -44,7 +44,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 
 /* HEADER */
 .hero-header{position:sticky;top:0;z-index:50;height:170px;overflow:hidden;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
-.hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden;background:#111 url('newbg.jpeg') center 40%/cover no-repeat}
+.hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden;background:#111 url('newbg.jpeg') center 60%/cover no-repeat}
 .hero-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.42);z-index:2}
 .collage-photo{
   position:absolute;
@@ -883,15 +883,15 @@ function renderWeek(){
   let h=`<table class="week-table"><thead><tr>`;
   h+=`<th class="col-sticky th-corner"></th>`;
   days.forEach(d=>{
-    h+=`<th class="th-day${isToday(d)?' today':''}"><span class="th-weekday">${DAYS[d.getDay()]}</span><span class="th-date">${fmt(d)}</span></th>`;
+    const dow=d.getDay();
+    if(dow===2||dow===5) h+=`<th class="event-cell pasta">Pasta al Pesto</th>`;
+    else if(dow===0) h+=`<th class="event-cell aperitivo">Aperitivo</th>`;
+    else h+=`<th></th>`;
   });
   h+=`</tr><tr>`;
-  h+=`<td class="col-sticky" style="border-bottom:2px solid var(--border)"></td>`;
+  h+=`<th class="col-sticky th-corner"></th>`;
   days.forEach(d=>{
-    const dow=d.getDay();
-    if(dow===2||dow===5) h+=`<td class="event-cell pasta">🍝 Pasta al Pesto</td>`;
-    else if(dow===0) h+=`<td class="event-cell aperitivo">🍹 Aperitivo</td>`;
-    else h+=`<td style="border-bottom:2px solid var(--border)"></td>`;
+    h+=`<th class="th-day${isToday(d)?' today':''}"><span class="th-weekday">${DAYS[d.getDay()]}</span><span class="th-date">${fmt(d)}</span></th>`;
   });
   h+=`</tr></thead><tbody>`;
 
