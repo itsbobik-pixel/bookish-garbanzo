@@ -107,7 +107,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
   box-shadow:0 2px 12px rgba(0,0,0,.06);
   min-height:0;
 }
-.panel-arrivals{flex:0 0 auto;max-height:240px}
+.panel-arrivals{flex:0 0 auto;max-height:320px}
 .panel-guidelines{flex:1;min-height:0}
 .panel-title{
   padding:8px 12px;
@@ -1625,7 +1625,9 @@ function dragLeave(e){
 function dragDrop(e,targetKey){
   e.preventDefault();
   e.currentTarget.classList.remove('drag-over');
-  if(!dragKey||dragKey===targetKey){dragKey=null;return;}
+  const key=dragKey||e.dataTransfer.getData('text/plain');
+  if(!key||key===targetKey){dragKey=null;return;}
+  dragKey=key;
 
   const src=parseKey(dragKey);
   const tgt=parseKey(targetKey);
