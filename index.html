@@ -440,7 +440,7 @@ thead .col-sticky{z-index:11}
   </div>
   <button class="dark-toggle" onclick="toggleDark()" id="dark-toggle-btn" style="position:fixed;top:12px;right:14px;z-index:9999">🌙</button>
   <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="handleImport(event)">
-  <button onclick="document.getElementById('import-file-input').click()" style="position:fixed;top:12px;right:54px;z-index:9999;background:rgba(0,0,0,.35);border:none;border-radius:6px;color:#fff;font-size:11px;font-weight:600;padding:5px 9px;cursor:pointer">⬆ Import</button>
+  <button id="import-btn" onclick="document.getElementById('import-file-input').click()" style="position:fixed;top:12px;right:54px;z-index:9999;background:rgba(0,0,0,.35);border:none;border-radius:6px;color:#fff;font-size:11px;font-weight:600;padding:5px 9px;cursor:pointer">⬆ Import</button>
 </div>
 
 <div class="legend-bar" id="quote-bar">
@@ -1212,17 +1212,24 @@ function goToday(){weekOff=0;monthOff=0;render();}
 
 function handleImport(e){
   const file=e.target.files[0];if(!file)return;
+  const btn=document.getElementById('import-btn');
+  btn.textContent='⏳ Načítám...';
   const reader=new FileReader();
   reader.onload=function(ev){
     try{
       const data=JSON.parse(ev.target.result);
       if(data.rooms) localStorage.setItem('hb7_rooms',JSON.stringify(data.rooms));
       if(data.cells) localStorage.setItem('hb7_cells',JSON.stringify(data.cells));
-      alert('Import OK! '+Object.keys(data.cells||{}).length+' hostů načteno.');
-      location.reload();
-    }catch(err){alert('Chyba: '+err.message);}
+      btn.textContent='✅ '+Object.keys(data.cells||{}).length+' hostů';
+      btn.style.background='rgba(0,150,0,.7)';
+      setTimeout(()=>location.reload(),1000);
+    }catch(err){
+      btn.textContent='❌ Chyba';
+      btn.style.background='rgba(200,0,0,.7)';
+      console.error(err);
+    }
   };
-  reader.readAsText(file);
+  reader.readAsText(file,'utf-8');
   e.target.value='';
 }
 function toggleDark(){
