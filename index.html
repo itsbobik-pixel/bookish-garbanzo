@@ -870,7 +870,7 @@ function cellHtml(key, dateStr, isDupe){
   const isEmpty=!c.name&&!c.status;
 
   if(isEmpty){
-    return`<div class="slot-cell s-empty" onclick="openSlotModal('${key}')"><div class="cell-plus">+</div></div>`;
+    return`<div class="slot-cell s-empty" onclick="openSlotModal('${key}')" ondragover="event.preventDefault();event.dataTransfer.dropEffect='move'" ondrop="dragDrop(event,'${key}')"><div class="cell-plus" style="pointer-events:none">+</div></div>`;
   }
 
   const flag=flagFor(c.nat||'');
