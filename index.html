@@ -190,10 +190,9 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .arr-divider{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:6px 2px 3px;border-top:1px solid var(--border);margin-top:6px;margin-bottom:4px}
 
 /* WEEK TABLE */
-.events-bar{display:flex;gap:10px;padding:8px 16px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap;justify-content:center}
-.event-chip{padding:5px 14px;border-radius:20px;font-size:13px;font-weight:600;color:#fff}
-.event-chip.pasta{background:#2d8a4e}
-.event-chip.aperitivo{background:#c0392b}
+.event-cell{padding:5px 8px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;text-align:center;color:#fff}
+.event-cell.pasta{background:#7ab648}
+.event-cell.aperitivo{background:#c0392b}
 .week-wrap{padding:0;overflow-x:auto;border-top:1px solid var(--border);scrollbar-width:none}
 .week-wrap::-webkit-scrollbar{display:none}
 .week-table{border-collapse:collapse;width:auto}
@@ -461,7 +460,6 @@ thead .col-sticky{z-index:11}
   <!-- MAIN: table -->
   <main class="main-content">
     <div id="view-week">
-      <div id="events-bar" class="events-bar"></div>
       <div class="week-wrap"><div id="week-table"></div></div>
     </div>
     <div id="view-month" style="display:none">
@@ -886,6 +884,14 @@ function renderWeek(){
   h+=`<th class="col-sticky th-corner"></th>`;
   days.forEach(d=>{
     h+=`<th class="th-day${isToday(d)?' today':''}"><span class="th-weekday">${DAYS[d.getDay()]}</span><span class="th-date">${fmt(d)}</span></th>`;
+  });
+  h+=`</tr><tr>`;
+  h+=`<td class="col-sticky" style="border-bottom:2px solid var(--border)"></td>`;
+  days.forEach(d=>{
+    const dow=d.getDay();
+    if(dow===2||dow===5) h+=`<td class="event-cell pasta">🍝 Pasta al Pesto</td>`;
+    else if(dow===0) h+=`<td class="event-cell aperitivo">🍹 Aperitivo</td>`;
+    else h+=`<td style="border-bottom:2px solid var(--border)"></td>`;
   });
   h+=`</tr></thead><tbody>`;
 
@@ -1333,20 +1339,8 @@ function openFullGuidelines(){
   document.getElementById('full-gl-modal').classList.add('open');
 }
 
-function renderEventsBar(){
-  const days=weekDays();
-  const chips=[];
-  days.forEach(d=>{
-    const dow=d.getDay();
-    if(dow===2||dow===5) chips.push(`<span class="event-chip pasta">🍝 Pasta al pesto · ${fmt(d)}</span>`);
-    if(dow===0) chips.push(`<span class="event-chip aperitivo">🍹 Aperitivo · ${fmt(d)}</span>`);
-  });
-  const bar=document.getElementById('events-bar');
-  if(bar) bar.innerHTML=chips.join('');
-}
-
 function render(){
-  if(view==='week'){renderWeek();renderEventsBar();} else renderMonth();
+  if(view==='week') renderWeek(); else renderMonth();
   renderArrivals();
   renderGuidelines();
   updateOccupancy();
