@@ -892,7 +892,7 @@ function renderWeek(){
       <button onclick="switchView('week')" style="flex:1;padding:2px 0;font-size:10px;font-weight:600;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:${view==='week'?'var(--text)':'transparent'};color:${view==='week'?'#fff':'var(--muted)'}">Week</button>
       <button onclick="switchView('month')" style="flex:1;padding:2px 0;font-size:10px;font-weight:600;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:${view==='month'?'var(--text)':'transparent'};color:${view==='month'?'#fff':'var(--muted)'}">Month</button>
     </div>
-    <button onclick="goToday()" id="today-btn-week" style="width:100%;font-size:9px;font-weight:700;background:none;border:1px solid var(--border);border-radius:5px;cursor:pointer;color:var(--muted);padding:2px 0">${weekOff===0?'Today':fmt(days[0])+' – '+fmt(days[13])}</button>
+    <button onclick="goToday()" id="today-btn-week" style="width:100%;font-size:9px;font-weight:700;border:1px solid var(--border);border-radius:5px;cursor:pointer;padding:2px 0;background:${weekOff===0?'var(--text)':'none'};color:${weekOff===0?'#fff':'var(--muted)'}">Today</button>
   </th>`;
   days.forEach(d=>{
     const dow=d.getDay();
@@ -1150,8 +1150,10 @@ function renderMonth(){
   const days=monthDays(),first=days[0];
   document.getElementById('period-label').textContent=`${MONTHS_LONG[first.getMonth()]} ${first.getFullYear()}`;
   document.getElementById('month-period-label').textContent=`${MONTHS_LONG[first.getMonth()]} ${first.getFullYear()}`;
-  const todayLabelM=monthOff===0?'Today':`${MONTHS_LONG[first.getMonth()]} ${first.getFullYear()}`;
-  document.getElementById('today-btn-month').textContent=todayLabelM;
+  const tbm=document.getElementById('today-btn-month');
+  tbm.textContent='Today';
+  tbm.style.background=monthOff===0?'var(--text)':'none';
+  tbm.style.color=monthOff===0?'#fff':'var(--muted)';
   if(!rooms.length){document.getElementById('month-wrap').innerHTML=`<div style="text-align:center;padding:60px 20px;color:var(--muted)"><p style="font-size:15px;color:var(--text);margin-bottom:6px">No rooms yet</p>Click "+ Room" to get started</div>`;return;}
   let h='';
   rooms.forEach(r=>{
@@ -1161,8 +1163,8 @@ function renderMonth(){
     <th style="position:sticky;left:0;z-index:7;background:var(--surface);min-width:55px;border:none"></th>`;
     days.forEach(d=>{
       const dow=d.getDay();
-      if(dow===2||dow===5) h+=`<th class="event-cell pasta" style="font-size:9px;padding:3px 2px">Pasta al Pesto Night</th>`;
-      else if(dow===0) h+=`<th class="event-cell aperitivo" style="font-size:9px;padding:3px 2px">Aperitivo Night</th>`;
+      if(dow===2||dow===5) h+=`<th title="Pasta al Pesto Night" style="background:#7ab648;border:none;padding:2px 0"></th>`;
+      else if(dow===0) h+=`<th title="Aperitivo Night" style="background:#c0392b;border:none;padding:2px 0"></th>`;
       else h+=`<th style="border:none;background:transparent"></th>`;
     });
     h+=`</tr><tr>
