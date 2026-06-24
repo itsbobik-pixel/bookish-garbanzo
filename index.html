@@ -881,7 +881,13 @@ function renderWeek(){
   }
 
   let h=`<table class="week-table"><thead><tr>`;
-  h+=`<th style="border:none!important;background:transparent"></th>`;
+  h+=`<th class="col-sticky" style="border:none!important;background:var(--surface);text-align:center;padding:4px 6px;vertical-align:middle">
+    <div style="display:flex;gap:3px;margin-bottom:3px">
+      <button onclick="switchView('week')" style="flex:1;padding:2px 0;font-size:10px;font-weight:600;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:${view==='week'?'var(--text)':'transparent'};color:${view==='week'?'#fff':'var(--muted)'}">Week</button>
+      <button onclick="switchView('month')" style="flex:1;padding:2px 0;font-size:10px;font-weight:600;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:${view==='month'?'var(--text)':'transparent'};color:${view==='month'?'#fff':'var(--muted)'}">Month</button>
+    </div>
+    <button onclick="goToday()" style="width:100%;font-size:9px;font-weight:700;background:none;border:1px solid var(--border);border-radius:5px;cursor:pointer;color:var(--muted);padding:2px 0">Today</button>
+  </th>`;
   days.forEach(d=>{
     const dow=d.getDay();
     if(dow===2||dow===5) h+=`<th class="event-cell pasta">Pasta al Pesto Night</th>`;
@@ -889,16 +895,9 @@ function renderWeek(){
     else h+=`<th style="border:none;background:transparent"></th>`;
   });
   h+=`</tr><tr>`;
-  h+=`<th class="col-sticky th-corner" style="padding:4px 6px;vertical-align:middle">
-    <div style="display:flex;gap:3px;margin-bottom:4px">
-      <button onclick="switchView('week')" style="flex:1;padding:2px 0;font-size:10px;font-weight:600;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:${view==='week'?'var(--text)':'transparent'};color:${view==='week'?'#fff':'var(--muted)'}">Week</button>
-      <button onclick="switchView('month')" style="flex:1;padding:2px 0;font-size:10px;font-weight:600;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:${view==='month'?'var(--text)':'transparent'};color:${view==='month'?'#fff':'var(--muted)'}">Month</button>
-    </div>
-    <div style="display:flex;align-items:center;justify-content:space-between">
-      <button onclick="navPrev()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);padding:0;line-height:1">‹</button>
-      <button onclick="goToday()" style="font-size:9px;font-weight:700;background:none;border:1px solid var(--border);border-radius:5px;cursor:pointer;color:var(--muted);padding:2px 5px">Today</button>
-      <button onclick="navNext()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);padding:0;line-height:1">›</button>
-    </div>
+  h+=`<th class="col-sticky th-corner" style="text-align:center;padding:0">
+    <button onclick="navPrev()" style="background:none;border:none;cursor:pointer;font-size:22px;color:var(--muted);padding:2px 8px;line-height:1">‹</button>
+    <button onclick="navNext()" style="background:none;border:none;cursor:pointer;font-size:22px;color:var(--muted);padding:2px 8px;line-height:1">›</button>
   </th>`;
   days.forEach(d=>{
     h+=`<th class="th-day${isToday(d)?' today':''}"><span class="th-weekday">${DAYS[d.getDay()]}</span><span class="th-date">${fmt(d)}</span></th>`;
