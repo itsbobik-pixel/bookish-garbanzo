@@ -1220,6 +1220,7 @@ function handleImport(e){
       const data=JSON.parse(ev.target.result);
       if(data.rooms) localStorage.setItem('hb7_rooms',JSON.stringify(data.rooms));
       if(data.cells) localStorage.setItem('hb7_cells',JSON.stringify(data.cells));
+      localStorage.removeItem('hb7_notes');
       btn.textContent='✅ '+Object.keys(data.cells||{}).length+' hostů';
       btn.style.background='rgba(0,150,0,.7)';
       setTimeout(()=>location.reload(),1000);
