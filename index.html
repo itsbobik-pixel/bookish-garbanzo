@@ -892,7 +892,7 @@ function renderWeek(){
       <button onclick="switchView('week')" style="flex:1;padding:2px 0;font-size:10px;font-weight:600;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:${view==='week'?'var(--text)':'transparent'};color:${view==='week'?'#fff':'var(--muted)'}">Week</button>
       <button onclick="switchView('month')" style="flex:1;padding:2px 0;font-size:10px;font-weight:600;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:${view==='month'?'var(--text)':'transparent'};color:${view==='month'?'#fff':'var(--muted)'}">Month</button>
     </div>
-    <button onclick="goToday()" id="today-btn-week" style="width:100%;font-size:9px;font-weight:700;border:1px solid var(--border);border-radius:5px;cursor:pointer;padding:2px 0;background:${weekOff===0?'var(--text)':'none'};color:${weekOff===0?'#fff':'var(--muted)'}">Today</button>
+    <div style="display:flex;justify-content:center"><button onclick="goToday()" id="today-btn-week" style="font-size:9px;font-weight:700;border:1px solid var(--border);border-radius:5px;cursor:pointer;padding:2px 8px;background:${weekOff===0?'var(--text)':'none'};color:${weekOff===0?'#fff':'var(--muted)'}">Today</button></div>
   </th>`;
   days.forEach(d=>{
     const dow=d.getDay();
