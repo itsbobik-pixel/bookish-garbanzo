@@ -877,7 +877,7 @@ function cellHtml(key, dateStr, isDupe){
       ondragstart="dragStart(event,'${key}')"
       ondragend="dragEnd(event)"
       onclick="openSlotModal('${key}')">
-    <button class="cell-note-btn${hasNotes?' has-notes':''}"
+    <button class="cell-note-btn${hasNotes?' has-notes':''}" style="${hasNotes?'':'visibility:hidden'}"
       onclick="event.stopPropagation();openSlotModal('${key}')"
       onmouseenter="showNoteTooltip(event,'${key}')"
       onmouseleave="hideNoteTooltip()">
@@ -887,10 +887,10 @@ function cellHtml(key, dateStr, isDupe){
       </svg>
       <div class="note-red-dot"></div>
     </button>
-    ${isDupe?'':(flag?`<span class="cell-flag">${flag}</span>`:'')}
-    ${isDupe?'':(customNat?`<span class="cell-nat-text">${esc(customNat)}</span>`:'')}
-    ${isDupe?'':`<span class="cell-guest-name">${esc(c.name)||'—'}</span>`}
-    ${isDupe?'':(showArrival?`<span class="cell-arrival">✈ ${esc(c.arrival)}</span>`:'')}
+    ${flag?`<span class="cell-flag">${flag}</span>`:''}
+    ${customNat?`<span class="cell-nat-text">${esc(customNat)}</span>`:''}
+    <span class="cell-guest-name">${esc(c.name)||'—'}</span>
+    ${showArrival?`<span class="cell-arrival">✈ ${esc(c.arrival)}</span>`:''}
   </div>`;
 }
 
