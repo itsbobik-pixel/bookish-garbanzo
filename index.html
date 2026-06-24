@@ -257,7 +257,7 @@ thead .col-sticky{z-index:11}
   box-shadow:0 4px 16px rgba(0,0,0,.25);
   opacity:0;transition:opacity .15s;
 }
-.slot-cell.s-empty{background:#fff;align-items:center}
+.slot-cell.s-empty{background:#faf8f4;align-items:center}
 .slot-cell.s-checkin{background:var(--s-checkin)}
 .slot-cell.s-unpaid{background:var(--s-unpaid)}
 .slot-cell.s-change{background:var(--s-change)}
@@ -836,6 +836,26 @@ function shouldShowArrival(dateStr, arrival){
 }
 
 /* CELL HTML */
+function guestColor(name){
+  if(!name) return '';
+  let h=0;for(let i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))&0xffff;
+  const hue=(h%360);
+  return`hsl(${hue},35%,88%)`;
+}
+function isFirstDayOfStay(key, dateStr){
+  const parts=key.split('-');
+  const prev=new Date(dateStr);prev.setDate(prev.getDate()-1);
+  const prevDs=`${prev.getFullYear()}-${String(prev.getMonth()+1).padStart(2,'0')}-${String(prev.getDate()).padStart(2,'0')}`;
+  const prevKey=parts.slice(0,-3).join('-')+'-'+parts.slice(-3,-1).join('-')+'-'+prevDs;
+  // rebuild prev key: replace date portion
+  const keyParts=key.split('-');
+  const datePart=keyParts.slice(-3).join('-');
+  const prefix=key.slice(0,key.length-datePart.length);
+  const prevKey2=prefix+prevDs;
+  const prevCell=cells[prevKey2];
+  const c=gc(key);
+  return!prevCell||!prevCell.name||prevCell.name!==c.name;
+}
 function cellHtml(key, dateStr){
   const c=gc(key);
   const hasNotes=!!(c.note);
@@ -847,10 +867,12 @@ function cellHtml(key, dateStr){
 
   const flag=flagFor(c.nat||'');
   const customNat=(c.nat&&!FLAG_MAP[c.nat]&&c.nat!=='')? c.nat:'';
-  const showArrival=shouldShowArrival(dateStr, c.arrival);
+  const isFirst=isFirstDayOfStay(key,dateStr);
+  const showArrival=isFirst&&shouldShowArrival(dateStr, c.arrival);
 
   const bg=statusBg(c.status);
-  return`<div class="slot-cell ${statusClass(c.status)}"${bg?` style="background:${bg}"`:''}
+  const cellBg=bg||guestColor(c.name);
+  return`<div class="slot-cell ${statusClass(c.status)}" style="background:${cellBg}"
       draggable="true"
       ondragstart="dragStart(event,'${key}')"
       ondragend="dragEnd(event)"
@@ -913,7 +935,12 @@ function renderWeek(){
   h+=`</tr></thead><tbody>`;
 
   rooms.forEach(r=>{
-    h+=`<tr><td class="col-sticky room-row-th">${esc(r.name)}<button class="room-del-btn" onclick="deleteRoom('${r.id}')">×</button></td><td colspan="14" class="room-row-sep"></td></tr>`;
+    const rparts=r.name.match(/^(Room\s*\d+)\s*(.*)$/i);
+    const rline1=rparts?rparts[1]:r.name;
+    const rline2=rparts&&rparts[2]?rparts[2].replace(/[()]/g,'').trim():'';
+    const roomColors=['#3a6fd4','#c0392b','#7ab648','#e67e22'];
+    const rc=roomColors[rooms.indexOf(r)%roomColors.length];
+    h+=`<tr><td class="col-sticky room-row-th" style="line-height:1.2;border-left:3px solid ${rc}"><span style="display:block;font-weight:700;font-size:12px">${esc(rline1)}</span>${rline2?`<span style="display:block;font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">${esc(rline2)}</span>`:''}</td><td colspan="14" class="room-row-sep" style="border-left:3px solid ${rc}"></td></tr>`;
     for(let s=0;s<r.beds;s++){
       const isLast=s===r.beds-1;
       h+=`<tr><td class="col-sticky bed-label-th${isLast?' last-bed':''}">Bed ${s+1}</td>`;
