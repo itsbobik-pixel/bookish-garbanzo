@@ -33,7 +33,7 @@ body.dark{
 }
 body.dark .slot-cell.s-empty{background:#1a1a18}
 body.dark .md-empty{background:#1a1a18}
-body.dark .today-bg{background:#1f1e1b}
+body.dark .today-bg{background:#2a2820}
 body.dark .arr-hour{background:#2a2a27;color:#e8e6e0}
 body.dark .nat-chip{background:#2a2a27;color:#e8e6e0}
 body.dark .arr-hour.selected{background:var(--accent);color:#fff}
@@ -230,13 +230,13 @@ thead .col-sticky{z-index:11}
 .bed-label-th.last-bed{border-bottom:2px solid var(--border) !important}
 
 /* slot cells */
-.slot-td{padding:0;vertical-align:top;height:76px;min-width:120px}
+.slot-td{padding:0;vertical-align:top;height:76px;min-width:120px;max-width:160px}
 .slot-td.last-bed{border-bottom:2px solid var(--border) !important}
 
 .slot-cell{
   width:100%;height:76px;position:relative;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  padding:4px 8px;
+  padding:4px 8px;overflow:hidden;
   transition:filter .12s, opacity .12s;
 }
 .slot-cell:hover{filter:brightness(.95)}
@@ -343,7 +343,7 @@ thead .col-sticky{z-index:11}
 .md-empty{background:#fff}.today-bg{background:#f0ede8}
 
 /* ARRIVAL PICKER */
-.arrival-picker{display:flex;flex-direction:column;gap:6px}
+.arrival-picker{display:flex;flex-direction:column;gap:6px;min-height:220px}
 .arr-controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .arr-toggle{display:flex;border-radius:20px;overflow:hidden;border:1.5px solid var(--border)}
 .arr-toggle-btn{padding:4px 12px;font-size:11px;font-weight:600;border:none;cursor:pointer;background:#f5f5f5;color:var(--muted);transition:background .12s,color .12s}
@@ -356,7 +356,7 @@ thead .col-sticky{z-index:11}
 .arr-ampm-row{display:flex;gap:4px;margin-bottom:2px;justify-content:center}
 
 /* NAT PICKER */
-.nat-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.nat-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;min-height:180px;align-content:start}
 .nat-chip{padding:5px 8px;border-radius:16px;border:2px solid transparent;cursor:pointer;font-size:12px;background:#f0f0f0;transition:border-color .12s,opacity .12s;opacity:.82;text-align:center}
 .nat-chip:hover{opacity:1}
 .nat-chip.selected{border-color:rgba(0,0,0,.15);opacity:1;background:#1a1a1a;color:#fff}
@@ -518,8 +518,7 @@ thead .col-sticky{z-index:11}
       <div class="slot-notes-label">Notes</div>
       <div id="slot-notes-list" class="slot-notes-list"></div>
       <div class="slot-notes-add">
-        <textarea id="slot-note-input" placeholder="Add a note… (Ctrl+Enter)" onkeydown="if(event.key==='Enter'&&event.ctrlKey)addSlotNote()"></textarea>
-        <button onclick="addSlotNote()">Add</button>
+        <textarea id="slot-note-input" placeholder="Add a note…"></textarea>
       </div>
     </div>
     <div class="slot-modal-footer">
@@ -1088,6 +1087,14 @@ function saveSlot(){
   c.arrival=getArrivalValue();
   c.nat=natSelected==='other'?document.getElementById('nat-other-inp').value.trim().toUpperCase()||'':natSelected;
   cells[currentSlotKey]=c;
+  // save textarea as note if not empty
+  const noteText=document.getElementById('slot-note-input').value.trim();
+  if(noteText){
+    if(!notes[currentSlotKey])notes[currentSlotKey]=[];
+    const now=new Date();
+    notes[currentSlotKey].push({text:noteText,time:`${p2(now.getDate())}/${p2(now.getMonth()+1)} ${p2(now.getHours())}:${p2(now.getMinutes())}`});
+    syncNotesToGroup();
+  }
   // propagate to all linked cells in same group
   if(c.groupId){
     Object.keys(cells).forEach(k=>{
@@ -1532,9 +1539,9 @@ function clearDragPreviews(){
 
 function dragOver(e, hoverKey){
   e.preventDefault();
-  e.dataTransfer.dropEffect=e.ctrlKey?'copy':'move';
+  e.dataTransfer.dropEffect=(e.ctrlKey||e.metaKey)?'copy':'move';
   clearDragPreviews();
-  if(e.ctrlKey && dragKey && hoverKey){
+  if((e.ctrlKey||e.metaKey) && dragKey && hoverKey){
     const src=parseKey(dragKey), tgt=parseKey(hoverKey);
     if(src.rid===tgt.rid && src.slot===tgt.slot){
       const srcData=gc(dragKey);
@@ -1570,7 +1577,7 @@ function dragDrop(e,targetKey){
   const src=parseKey(dragKey);
   const tgt=parseKey(targetKey);
 
-  if(e.ctrlKey && src.rid===tgt.rid && src.slot===tgt.slot){
+  if((e.ctrlKey||e.metaKey) && src.rid===tgt.rid && src.slot===tgt.slot){
     // span mode: fill all days between source and target
     const d1=new Date(src.dateStr), d2=new Date(tgt.dateStr);
     const start=d1<d2?d1:d2, end=d1<d2?d2:d1;
@@ -1682,7 +1689,7 @@ function buildCollage(){
 }
 
 function applyScale(){
-  const DESIGN_W=2080;
+  const DESIGN_W=1600;
   const scale=Math.min(1,window.innerWidth/DESIGN_W);
   document.body.style.zoom=scale;
 }
