@@ -788,6 +788,7 @@ const GL_BLOCKS = [
 let rooms=[], cells={}, notes={}, glDone={}, weekOff=0, monthOff=0, view='week', currentSlotKey=null, glOffset=0;
 
 function load(){
+  if(location.search.includes('reset')){localStorage.clear();location.href=location.pathname;return;}
   try{const r=localStorage.getItem('hb7_rooms');if(r)rooms=JSON.parse(r);}catch{}
   try{const r=localStorage.getItem('hb7_cells');if(r)cells=JSON.parse(r);}catch{}
   try{const r=localStorage.getItem('hb7_notes');if(r)notes=JSON.parse(r);}catch{}
