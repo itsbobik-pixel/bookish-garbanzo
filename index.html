@@ -880,11 +880,12 @@ function cellHtml(key, dateStr, isDupe){
 
   const bg=statusBg(c.status);
   return`<div class="slot-cell ${statusClass(c.status)}"${bg?` style="background:${bg}"`:''}
-
       draggable="true"
       ondragstart="dragStart(event,'${key}')"
       ondragend="dragEnd(event)"
-      onclick="openSlotModal('${key}')">
+      ondragover="event.preventDefault();event.dataTransfer.dropEffect='move'"
+      ondrop="dragDrop(event,'${key}')"
+      onclick="openSlotModal('${key}')">`+`
     <button class="cell-note-btn${hasNotes?' has-notes':''}" style="${hasNotes?'':'visibility:hidden'}"
       onclick="event.stopPropagation();openSlotModal('${key}')"
       onmouseenter="showNoteTooltip(event,'${key}')"
