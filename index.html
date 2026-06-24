@@ -194,7 +194,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:v
 .event-cell{padding:5px 8px;font-size:13px;font-weight:600;font-style:normal;font-family:'Cormorant Garamond',Georgia,serif;text-transform:uppercase;letter-spacing:.06em;text-align:center;color:#fff;white-space:normal;word-break:break-word;max-width:0;overflow:hidden}
 .event-cell.pasta{background:#7ab648}
 .event-cell.aperitivo{background:#c0392b}
-.week-wrap{padding:0;overflow-x:auto;border-top:1px solid var(--border);scrollbar-width:none}
+.week-wrap{padding:0;overflow-x:auto;scrollbar-width:none}
 .week-wrap::-webkit-scrollbar{display:none}
 .week-table{border-collapse:collapse;width:auto}
 
@@ -882,7 +882,7 @@ function renderWeek(){
   }
 
   let h=`<table class="week-table"><thead><tr>`;
-  h+=`<th class="col-sticky" style="border:none;background:var(--surface);opacity:0;pointer-events:none"></th>`;
+  h+=`<th class="col-sticky" style="border:none!important;background:transparent;opacity:0;pointer-events:none"></th>`;
   days.forEach(d=>{
     const dow=d.getDay();
     if(dow===2||dow===5) h+=`<th class="event-cell pasta">Pasta al Pesto Night</th>`;
