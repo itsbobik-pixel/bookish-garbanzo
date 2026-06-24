@@ -840,7 +840,7 @@ function guestColor(name){
   if(!name) return '';
   let h=0;for(let i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))&0xffff;
   const hue=(h%360);
-  return`hsl(${hue},35%,88%)`;
+  return`hsl(${hue},20%,93%)`;
 }
 function isFirstDayOfStay(key, dateStr){
   const parts=key.split('-');
@@ -856,7 +856,7 @@ function isFirstDayOfStay(key, dateStr){
   const c=gc(key);
   return!prevCell||!prevCell.name||prevCell.name!==c.name;
 }
-function cellHtml(key, dateStr){
+function cellHtml(key, dateStr, isDupe){
   const c=gc(key);
   const hasNotes=!!(c.note);
   const isEmpty=!c.name&&!c.status;
@@ -889,7 +889,7 @@ function cellHtml(key, dateStr){
     </button>
     ${flag?`<span class="cell-flag">${flag}</span>`:''}
     ${customNat?`<span class="cell-nat-text">${esc(customNat)}</span>`:''}
-    <span class="cell-guest-name">${esc(c.name)||'—'}</span>
+    ${isDupe?`<span class="cell-guest-name" style="opacity:.35">↳ ${esc(c.name)}</span>`:`<span class="cell-guest-name">${esc(c.name)||'—'}</span>`}
     ${showArrival?`<span class="cell-arrival">✈ ${esc(c.arrival)}</span>`:''}
   </div>`;
 }
@@ -946,7 +946,9 @@ function renderWeek(){
       h+=`<tr><td class="col-sticky bed-label-th${isLast?' last-bed':''}">Bed ${s+1}</td>`;
       days.forEach(d=>{
         const dstr=ds(d),key=ck(r.id,s,dstr);
-        h+=`<td class="slot-td${isLast?' last-bed':''}" data-key="${key}" ondragover="dragOver(event,'${key}')" ondragleave="dragLeave(event)" ondrop="dragDrop(event,'${key}')">${cellHtml(key,dstr)}</td>`;
+        const prevKey=s>0?ck(r.id,s-1,dstr):null;
+        const isDupe=prevKey&&gc(key).name&&gc(key).name===gc(prevKey).name;
+        h+=`<td class="slot-td${isLast?' last-bed':''}" data-key="${key}" ondragover="dragOver(event,'${key}')" ondragleave="dragLeave(event)" ondrop="dragDrop(event,'${key}')">${cellHtml(key,dstr,isDupe)}</td>`;
       });
       h+=`</tr>`;
     }
@@ -1081,7 +1083,7 @@ function renderArrivalPicker(){
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:2px;align-items:center">
       <div class="arr-hour${s.other?' selected':''}" onclick="toggleArrOther()">Other</div>
-      <input id="arr-other-inp" class="nat-other-inp" placeholder="e.g. 15:30" style="visibility:${s.other?'visible':'hidden'};margin:0">
+      <input id="arr-other-inp" class="nat-other-inp" placeholder="e.g. 15:30" style="display:${s.other?'block':'none'};margin:0">
     </div>`;
 }
 function toggleArrHour(h){arrState.hour=arrState.hour===h?null:h;arrState.other=false;renderArrivalPicker();}
