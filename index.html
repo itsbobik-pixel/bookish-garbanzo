@@ -880,11 +880,7 @@ function cellHtml(key, dateStr, isDupe){
 
   const bg=statusBg(c.status);
   return`<div class="slot-cell ${statusClass(c.status)}"${bg?` style="background:${bg}"`:''}
-      draggable="true"
-      ondragstart="dragStart(event,'${key}')"
-      ondragend="dragEnd(event)"
-      ondragover="event.preventDefault();event.dataTransfer.dropEffect='move'"
-      ondrop="dragDrop(event,'${key}')"
+      onmousedown="startDrag(event,'${key}')"
       onclick="openSlotModal('${key}')">`+`
     <button class="cell-note-btn${hasNotes?' has-notes':''}" style="${hasNotes?'':'visibility:hidden'}"
       onclick="event.stopPropagation();openSlotModal('${key}')"
@@ -1563,8 +1559,8 @@ function showQuote(){
 load();checkGlReset();render();showQuote();applyDark();
 window.addEventListener('load', buildCollage);
 
-/* ── DRAG & DROP ── */
-let dragKey=null;
+/* ── DRAG & DROP (mouse-based, works on Mac Chrome) ── */
+let dragKey=null, dragGhost=null, dragActive=false, dragSpan=false;
 
 function parseKey(key){
   const dateStr=key.slice(-10);
@@ -1573,16 +1569,14 @@ function parseKey(key){
   return{rid:rest.slice(0,lastDash), slot:parseInt(rest.slice(lastDash+1)), dateStr};
 }
 
-function dragStart(e,key){
-  dragKey=key;
-  e.dataTransfer.effectAllowed='copyMove';
-  e.dataTransfer.setData('text/plain',key);
-  e.currentTarget.classList.add('dragging');
+function getTdKey(el){
+  while(el&&el!==document.body){
+    if(el.dataset&&el.dataset.key) return el.dataset.key;
+    el=el.parentElement;
+  }
+  return null;
 }
-function dragEnd(e){
-  e.currentTarget.classList.remove('dragging');
-  clearDragPreviews();
-}
+
 function clearDragPreviews(){
   document.querySelectorAll('.drag-preview').forEach(td=>{
     td.classList.remove('drag-preview');
@@ -1592,75 +1586,82 @@ function clearDragPreviews(){
   document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));
 }
 
-function dragOver(e, hoverKey){
-  e.preventDefault();
-  e.dataTransfer.dropEffect=(e.ctrlKey||e.metaKey)?'copy':'move';
-  clearDragPreviews();
-  if((e.ctrlKey||e.metaKey) && dragKey && hoverKey){
-    const src=parseKey(dragKey), tgt=parseKey(hoverKey);
-    if(src.rid===tgt.rid && src.slot===tgt.slot){
-      const srcData=gc(dragKey);
-      const ghostHtml=cellHtml(dragKey, src.dateStr);
-      const d1=new Date(src.dateStr), d2=new Date(tgt.dateStr);
-      const start=d1<d2?d1:d2, end=d1<d2?d2:d1;
-      const cur=new Date(start);
-      while(cur<=end){
-        const k=ck(src.rid,src.slot,ds(cur));
-        const td=document.querySelector(`[data-key="${k}"]`);
-        if(td){
-          td.classList.add('drag-preview');
-          const wrapper=document.createElement('div');
-          wrapper.className='drag-ghost';
-          wrapper.innerHTML=ghostHtml;
-          td.appendChild(wrapper);
+function startDrag(e, key){
+  if(e.button!==0) return;
+  dragKey=key; dragActive=false; dragSpan=(e.ctrlKey||e.metaKey);
+  const onMove=function(ev){
+    if(!dragActive){
+      if(Math.abs(ev.clientX-e.clientX)+Math.abs(ev.clientY-e.clientY)<5) return;
+      dragActive=true;
+      document.querySelector(`[data-key="${key}"]`)?.classList.add('dragging');
+      dragGhost=document.createElement('div');
+      dragGhost.className='drag-ghost-cursor';
+      dragGhost.innerHTML=cellHtml(key, parseKey(key).dateStr);
+      dragGhost.style.cssText='position:fixed;pointer-events:none;z-index:9999;opacity:.75;width:120px;transform:rotate(2deg)';
+      document.body.appendChild(dragGhost);
+    }
+    if(dragGhost){dragGhost.style.left=(ev.clientX+10)+'px';dragGhost.style.top=(ev.clientY-20)+'px';}
+    clearDragPreviews();
+    const target=document.elementFromPoint(ev.clientX,ev.clientY);
+    const hoverKey=getTdKey(target);
+    if(hoverKey&&hoverKey!==key){
+      if(dragSpan){
+        const src=parseKey(key),tgt=parseKey(hoverKey);
+        if(src.rid===tgt.rid&&src.slot===tgt.slot){
+          const d1=new Date(src.dateStr),d2=new Date(tgt.dateStr);
+          const start=d1<d2?d1:d2,end=d1<d2?d2:d1;
+          const cur=new Date(start);
+          while(cur<=end){
+            const k=ck(src.rid,src.slot,ds(cur));
+            const td=document.querySelector(`[data-key="${k}"]`);
+            if(td){td.classList.add('drag-preview');const w=document.createElement('div');w.className='drag-ghost';w.innerHTML=cellHtml(key,src.dateStr);td.appendChild(w);}
+            cur.setDate(cur.getDate()+1);
+          }
+          return;
         }
-        cur.setDate(cur.getDate()+1);
       }
-      return;
+      document.querySelector(`[data-key="${hoverKey}"]`)?.classList.add('drag-over');
     }
-  }
-  e.currentTarget.classList.add('drag-over');
-}
-function dragLeave(e){
-  e.currentTarget.classList.remove('drag-over');
-}
-function dragDrop(e,targetKey){
-  e.preventDefault();
-  e.currentTarget.classList.remove('drag-over');
-  const key=dragKey||e.dataTransfer.getData('text/plain');
-  if(!key||key===targetKey){dragKey=null;return;}
-  dragKey=key;
-
-  const src=parseKey(dragKey);
-  const tgt=parseKey(targetKey);
-
-  if((e.ctrlKey||e.metaKey) && src.rid===tgt.rid && src.slot===tgt.slot){
-    // span mode: fill all days between source and target
-    const d1=new Date(src.dateStr), d2=new Date(tgt.dateStr);
-    const start=d1<d2?d1:d2, end=d1<d2?d2:d1;
-    const srcData={...gc(dragKey)};
-    const gid=srcData.groupId||('g'+Date.now());
-    srcData.groupId=gid;
-    cells[dragKey]={...srcData};
-    const cur=new Date(start);
-    while(cur<=end){
-      const dstr=ds(cur);
-      const k=ck(src.rid,src.slot,dstr);
-      cells[k]={...srcData};
-      cur.setDate(cur.getDate()+1);
+  };
+  const onUp=function(ev){
+    document.removeEventListener('mousemove',onMove);
+    document.removeEventListener('mouseup',onUp);
+    document.querySelector(`[data-key="${key}"]`)?.classList.remove('dragging');
+    if(dragGhost){dragGhost.remove();dragGhost=null;}
+    if(!dragActive){dragKey=null;dragActive=false;return;}
+    const target=document.elementFromPoint(ev.clientX,ev.clientY);
+    const targetKey=getTdKey(target);
+    clearDragPreviews();
+    if(targetKey&&targetKey!==key){
+      const src=parseKey(key),tgt=parseKey(targetKey);
+      if(dragSpan&&src.rid===tgt.rid&&src.slot===tgt.slot){
+        const d1=new Date(src.dateStr),d2=new Date(tgt.dateStr);
+        const start=d1<d2?d1:d2,end=d1<d2?d2:d1;
+        const srcData={...gc(key)};
+        const gid=srcData.groupId||('g'+Date.now());
+        srcData.groupId=gid;
+        const cur=new Date(start);
+        while(cur<=end){const k=ck(src.rid,src.slot,ds(cur));cells[k]={...srcData};cur.setDate(cur.getDate()+1);}
+      } else {
+        const srcData={...gc(key)};
+        delete srcData.groupId;
+        cells[targetKey]={...srcData};
+        delete cells[key];
+      }
+      save();render();
     }
-  } else {
-    // move mode
-    const srcData={...gc(dragKey)};
-    delete srcData.groupId;
-    cells[targetKey]={...srcData};
-    delete cells[dragKey];
-  }
-
-  dragKey=null;
-  save();
-  render();
+    dragKey=null;dragActive=false;
+  };
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('mouseup',onUp);
 }
+
+// keep these stubs so old ondragover/ondrop attrs don't error
+function dragStart(){}
+function dragEnd(){}
+function dragOver(e){e.preventDefault();}
+function dragLeave(){}
+function dragDrop(){}
 
 /* ── NOTE TOOLTIP ── */
 function showNoteTooltip(e, key){
