@@ -439,6 +439,8 @@ thead .col-sticky{z-index:11}
     <span id="period-label" style="display:none"></span>
   </div>
   <button class="dark-toggle" onclick="toggleDark()" id="dark-toggle-btn" style="position:fixed;top:12px;right:14px;z-index:9999">🌙</button>
+  <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="handleImport(event)">
+  <button onclick="document.getElementById('import-file-input').click()" style="position:fixed;top:12px;right:54px;z-index:9999;background:rgba(0,0,0,.35);border:none;border-radius:6px;color:#fff;font-size:11px;font-weight:600;padding:5px 9px;cursor:pointer">⬆ Import</button>
 </div>
 
 <div class="legend-bar" id="quote-bar">
@@ -1208,6 +1210,21 @@ function navPrev(){if(view==='week')weekOff--;else monthOff--;render();}
 function navNext(){if(view==='week')weekOff++;else monthOff++;render();}
 function goToday(){weekOff=0;monthOff=0;render();}
 
+function handleImport(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(data.rooms) localStorage.setItem('hb7_rooms',JSON.stringify(data.rooms));
+      if(data.cells) localStorage.setItem('hb7_cells',JSON.stringify(data.cells));
+      alert('Import OK! '+Object.keys(data.cells||{}).length+' hostů načteno.');
+      location.reload();
+    }catch(err){alert('Chyba: '+err.message);}
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
 function toggleDark(){
   document.body.classList.toggle('dark');
   const dark=document.body.classList.contains('dark');
