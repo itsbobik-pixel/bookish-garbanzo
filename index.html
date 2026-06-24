@@ -236,11 +236,11 @@ thead .col-sticky{z-index:11}
 .bed-label-th.last-bed{border-bottom:2px solid var(--border) !important}
 
 /* slot cells */
-.slot-td{padding:0;vertical-align:top;height:76px;min-width:120px;max-width:160px}
+.slot-td{padding:0;vertical-align:top;height:86px;min-width:120px;max-width:160px;overflow:hidden}
 .slot-td.last-bed{border-bottom:2px solid var(--border) !important}
 
 .slot-cell{
-  width:100%;height:76px;position:relative;cursor:pointer;
+  width:100%;height:86px;position:relative;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   padding:4px 8px;overflow:hidden;
   background:#fff;
@@ -478,6 +478,7 @@ thead .col-sticky{z-index:11}
 
   <!-- RIGHT COL: Arrivals + Guidelines stacked -->
   <div class="right-col">
+    <div id="right-col-spacer" style="flex-shrink:0;height:0"></div>
     <aside class="side-panel panel-arrivals">
       <div class="panel-title"><span class="panel-title-text">Today's Arrivals</span></div>
       <div class="panel-body" id="arrivals-body"></div>
@@ -1425,6 +1426,11 @@ function render(){
   renderArrivals();
   renderGuidelines();
   updateOccupancy();
+  requestAnimationFrame(()=>{
+    const thead=document.querySelector('.week-table thead');
+    const spacer=document.getElementById('right-col-spacer');
+    if(thead&&spacer) spacer.style.height=thead.offsetHeight+'px';
+  });
 }
 
 document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click',e=>{
@@ -1563,6 +1569,7 @@ function parseKey(key){
 function dragStart(e,key){
   dragKey=key;
   e.dataTransfer.effectAllowed='copyMove';
+  e.dataTransfer.setData('text/plain',key);
   e.currentTarget.classList.add('dragging');
 }
 function dragEnd(e){
