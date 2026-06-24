@@ -871,8 +871,8 @@ function cellHtml(key, dateStr, isDupe){
   const showArrival=isFirst&&shouldShowArrival(dateStr, c.arrival);
 
   const bg=statusBg(c.status);
-  const cellBg=bg||guestColor(c.name);
-  return`<div class="slot-cell ${statusClass(c.status)}" style="background:${cellBg}"
+  return`<div class="slot-cell ${statusClass(c.status)}"${bg?` style="background:${bg}"`:''}
+
       draggable="true"
       ondragstart="dragStart(event,'${key}')"
       ondragend="dragEnd(event)"
