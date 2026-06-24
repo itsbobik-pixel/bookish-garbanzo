@@ -882,12 +882,12 @@ function renderWeek(){
   }
 
   let h=`<table class="week-table"><thead><tr>`;
-  h+=`<th class="col-sticky th-corner"></th>`;
+  h+=`<th class="col-sticky" style="border:none;background:var(--surface)"></th>`;
   days.forEach(d=>{
     const dow=d.getDay();
     if(dow===2||dow===5) h+=`<th class="event-cell pasta">Pasta al Pesto Night</th>`;
     else if(dow===0) h+=`<th class="event-cell aperitivo">Aperitivo Night</th>`;
-    else h+=`<th></th>`;
+    else h+=`<th style="border:none;background:transparent"></th>`;
   });
   h+=`</tr><tr>`;
   h+=`<th class="col-sticky th-corner"></th>`;
