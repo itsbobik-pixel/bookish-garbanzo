@@ -880,7 +880,7 @@ function renderWeek(){
   }
 
   let h=`<table class="week-table"><thead><tr>`;
-  h+=`<th class="col-sticky" style="border:none!important;background:var(--surface);text-align:center;padding:0"><button onclick="navPrev()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);padding:2px 6px">‹</button><button onclick="navNext()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);padding:2px 6px">›</button></th>`;
+  h+=`<th class="col-sticky" style="border:none!important;background:var(--surface);text-align:center;padding:0;width:var(--sticky-w);min-width:var(--sticky-w);max-width:var(--sticky-w)"><button onclick="navPrev()" style="background:none;border:none;cursor:pointer;font-size:22px;color:var(--muted);padding:2px 8px;line-height:1">‹</button><button onclick="navNext()" style="background:none;border:none;cursor:pointer;font-size:22px;color:var(--muted);padding:2px 8px;line-height:1">›</button></th>`;
   days.forEach(d=>{
     const dow=d.getDay();
     if(dow===2||dow===5) h+=`<th class="event-cell pasta">Pasta al Pesto Night</th>`;
