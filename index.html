@@ -444,9 +444,7 @@ thead .col-sticky{z-index:11}
       <button onclick="navNext()">›</button>
     </div>
     <button class="nav-btn nav-btn-today" onclick="goToday()">Today</button>
-    <span class="occupancy-badge" id="occupancy-badge"></span>
     <button class="dark-toggle" onclick="toggleDark()" id="dark-toggle-btn">🌙</button>
-    <button class="nav-btn" onclick="openAddRoom()">+ Room</button>
   </div>
 </div>
 
@@ -882,7 +880,7 @@ function renderWeek(){
   }
 
   let h=`<table class="week-table"><thead><tr>`;
-  h+=`<th class="col-sticky" style="border:none!important;background:transparent;opacity:0;pointer-events:none"></th>`;
+  h+=`<th class="col-sticky" style="border:none!important;background:var(--surface);text-align:center;padding:0"><button onclick="navPrev()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);padding:2px 6px">‹</button><button onclick="navNext()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);padding:2px 6px">›</button></th>`;
   days.forEach(d=>{
     const dow=d.getDay();
     if(dow===2||dow===5) h+=`<th class="event-cell pasta">Pasta al Pesto Night</th>`;
