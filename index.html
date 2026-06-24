@@ -236,7 +236,7 @@ thead .col-sticky{z-index:11}
 .bed-label-th.last-bed{border-bottom:2px solid var(--border) !important}
 
 /* slot cells */
-.slot-td{padding:0;vertical-align:top;height:86px;min-width:120px;max-width:160px;overflow:hidden}
+.slot-td{padding:0;vertical-align:top;height:86px;width:120px;min-width:120px;max-width:120px;overflow:hidden}
 .slot-td.last-bed{border-bottom:2px solid var(--border) !important}
 
 .slot-cell{
@@ -792,7 +792,12 @@ function load(){
   try{const r=localStorage.getItem('hb7_cells');if(r)cells=JSON.parse(r);}catch{}
   try{const r=localStorage.getItem('hb7_notes');if(r)notes=JSON.parse(r);}catch{}
   try{const r=localStorage.getItem('hb7_gl_done');if(r)glDone=JSON.parse(r);}catch{}
-  if(!rooms.length) rooms=[{id:'r1',name:'Room 1',beds:4},{id:'r2',name:'Room 2',beds:4}];
+  if(!rooms.length) rooms=[
+    {id:'r1',name:'Room 1 (Female 6)',beds:6},
+    {id:'r2',name:'Room 2 (Mixed 10)',beds:10},
+    {id:'r3',name:'Room 3 (Deluxe 4)',beds:4},
+    {id:'r4',name:'Room 4 (Mixed 4)',beds:4},
+  ];
 }
 function save(){
   try{localStorage.setItem('hb7_rooms',JSON.stringify(rooms));}catch{}
@@ -1427,9 +1432,9 @@ function render(){
   renderGuidelines();
   updateOccupancy();
   requestAnimationFrame(()=>{
-    const thead=document.querySelector('.week-table thead');
+    const eventRow=document.querySelector('.week-table thead tr:first-child');
     const spacer=document.getElementById('right-col-spacer');
-    if(thead&&spacer) spacer.style.height=thead.offsetHeight+'px';
+    if(eventRow&&spacer) spacer.style.height=eventRow.offsetHeight+'px';
   });
 }
 
