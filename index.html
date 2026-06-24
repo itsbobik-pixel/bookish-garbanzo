@@ -423,30 +423,6 @@ thead .col-sticky{z-index:11}
 </head>
 <body>
 
-<div id="auth-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center">
-  <div style="background:#fff;border-radius:16px;padding:36px 32px;width:320px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)">
-    <div style="font-size:28px;font-weight:800;letter-spacing:1px;margin-bottom:4px">Costello</div>
-    <div style="font-size:13px;color:#999;margin-bottom:24px">Reception Board</div>
-    <input id="auth-input" type="password" placeholder="Password" style="width:100%;padding:10px 14px;border:1.5px solid #ddd;border-radius:10px;font-size:15px;outline:none;box-sizing:border-box;margin-bottom:12px" onkeydown="if(event.key==='Enter')submitAuth()">
-    <div id="auth-error" style="color:#e63c3c;font-size:12px;margin-bottom:10px;display:none">Wrong password</div>
-    <button onclick="submitAuth()" style="width:100%;padding:11px;background:#1a1a1a;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Enter</button>
-  </div>
-</div>
-
-<script>
-const AUTH_HASH='aa4b0d224e2b4488c6e3c5692347a0e26322d86dcb6bf01ab937e15d76037ee4';
-async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}
-async function submitAuth(){
-  const val=document.getElementById('auth-input').value;
-  const hash=await sha256(val);
-  if(hash===AUTH_HASH){localStorage.setItem('hb7_auth','1');document.getElementById('auth-overlay').style.display='none';}
-  else{const e=document.getElementById('auth-error');e.style.display='block';document.getElementById('auth-input').value='';document.getElementById('auth-input').focus();}
-}
-if(localStorage.getItem('hb7_auth')!=='1'){
-  document.getElementById('auth-overlay').style.display='flex';
-  setTimeout(()=>document.getElementById('auth-input').focus(),100);
-}
-</script>
 
 <div class="hero-header">
   <div class="hero-bg" id="hero-collage">
