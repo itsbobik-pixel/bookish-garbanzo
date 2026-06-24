@@ -897,7 +897,7 @@ function renderWeek(){
   h+=`</tr></thead><tbody>`;
 
   rooms.forEach(r=>{
-    h+=`<tr><td class="col-sticky room-row-th">${esc(r.name)}<button class="room-del-btn" onclick="deleteRoom('${r.id}')">×</button></td><td colspan="7" class="room-row-sep"></td></tr>`;
+    h+=`<tr><td class="col-sticky room-row-th">${esc(r.name)}<button class="room-del-btn" onclick="deleteRoom('${r.id}')">×</button></td><td colspan="14" class="room-row-sep"></td></tr>`;
     for(let s=0;s<r.beds;s++){
       const isLast=s===r.beds-1;
       h+=`<tr><td class="col-sticky bed-label-th${isLast?' last-bed':''}">Bed ${s+1}</td>`;
