@@ -9,7 +9,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#f7f6f3;
-  --surface:#fffef9;
+  --surface:#fff;
   --border:#e5e3de;
   --text:#181816;
   --muted:#9a9891;
@@ -243,6 +243,7 @@ thead .col-sticky{z-index:11}
   width:100%;height:76px;position:relative;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   padding:4px 8px;overflow:hidden;
+  background:#f5f2eb;
   transition:filter .12s, opacity .12s;
 }
 .slot-cell:hover{filter:brightness(.95)}
@@ -257,7 +258,7 @@ thead .col-sticky{z-index:11}
   box-shadow:0 4px 16px rgba(0,0,0,.25);
   opacity:0;transition:opacity .15s;
 }
-.slot-cell.s-empty{background:#faf8f4;align-items:center}
+.slot-cell.s-empty{background:#f5f2eb;align-items:center}
 .slot-cell.s-checkin{background:var(--s-checkin)}
 .slot-cell.s-unpaid{background:var(--s-unpaid)}
 .slot-cell.s-change{background:var(--s-change)}
