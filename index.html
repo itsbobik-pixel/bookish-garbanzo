@@ -884,6 +884,19 @@ function renderWeek(){
   });
   h+=`</tr></thead><tbody>`;
 
+  // weekly events row
+  h+=`<tr><td class="col-sticky" style="font-size:10px;color:var(--muted);padding:0 8px;text-align:right;vertical-align:middle;border-bottom:1px solid var(--border)"></td>`;
+  days.forEach(d=>{
+    const dow=d.getDay(); // 0=Sun,2=Tue,5=Fri
+    let ev='';
+    if(dow===2||dow===5) ev='🍝 Pasta al pesto';
+    if(dow===0) ev='🍹 Aperitivo';
+    h+=`<td style="padding:3px 6px;border-bottom:1px solid var(--border);min-width:120px;max-width:160px">`;
+    if(ev) h+=`<div style="font-size:10px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${ev}</div>`;
+    h+=`</td>`;
+  });
+  h+=`</tr>`;
+
   rooms.forEach(r=>{
     h+=`<tr><td class="col-sticky room-row-th">${esc(r.name)}<button class="room-del-btn" onclick="deleteRoom('${r.id}')">×</button></td><td colspan="7" class="room-row-sep"></td></tr>`;
     for(let s=0;s<r.beds;s++){
