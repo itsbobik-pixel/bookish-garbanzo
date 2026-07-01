@@ -8,16 +8,16 @@
   :root{
     --font-display: -apple-system, 'Arial Narrow', 'Helvetica Neue', Roboto, Arial, sans-serif;
     --font-mono: ui-monospace, 'SF Mono', 'Menlo', 'Consolas', 'Roboto Mono', monospace;
-    --pine:#1F3323;
-    --pine-dark:#152318;
-    --petrol:#173B3A;
-    --canvas:#F3EEE2;
-    --ink:#2B2620;
-    --ink-soft:#847C6B;
-    --rust:#D9713C;
-    --rust-dark:#B85A29;
-    --line:#DDD4BF;
-    --white:#FFFDF8;
+    --pine:#3F6142;
+    --pine-dark:#2E2015;
+    --petrol:#5B6B45;
+    --canvas:#F1E7D2;
+    --ink:#3A2E22;
+    --ink-soft:#8B7960;
+    --rust:#B5651D;
+    --rust-dark:#8F4E16;
+    --line:#DBCBAF;
+    --white:#FBF6EA;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
   html,body{margin:0;padding:0;background:var(--pine-dark);}
@@ -220,22 +220,22 @@
 
   /* Program (day cards) */
   .day-block{
-    padding:12px 0;
-    border-bottom:1px solid var(--line);
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:13px 14px;
+    margin-bottom:10px;
   }
-  .day-block:last-child{border-bottom:none;}
+  .day-block:last-child{margin-bottom:0;}
   .day-block.today{
-    background:rgba(217,113,60,0.08);
-    margin:0 -10px;
-    padding:12px 10px;
-    border-radius:8px;
-    border-bottom:none;
+    background:rgba(181,101,29,0.08);
+    border-color:var(--rust);
   }
   .day-header{
     font-family:var(--font-display); font-weight:700;
     font-size:14px;
     color:var(--pine);
-    margin-bottom:6px;
+    margin-bottom:10px;
     display:flex;
     align-items:center;
     gap:8px;
@@ -257,6 +257,23 @@
   .arrow-sep{
     color:var(--line);
     margin:0 1px;
+  }
+  .day-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px 14px;
+  }
+  .day-cell .cl{
+    font-size:9.5px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--ink-soft);
+    margin-bottom:2px;
+  }
+  .day-cell .cv{
+    font-size:12px;
+    line-height:1.35;
+    color:var(--ink);
   }
 
   /* Klubovna note */
@@ -306,7 +323,7 @@
     margin-top:14px;
     font-size:11px;
     color:var(--rust-dark);
-    background:rgba(217,113,60,0.1);
+    background:rgba(181,101,29,0.1);
     padding:9px 11px;
     border-radius:7px;
     line-height:1.5;
@@ -708,11 +725,15 @@ function renderProgram(){
   const todayStr = `${d.getDate()}.${d.getMonth()+1}.`;
   document.getElementById('programList').innerHTML = framework.map(day => {
     const isToday = day.date === todayStr;
-    const parts = [day.st.dop, day.st.odp1, day.st.odp2, day.st.vecer].filter(Boolean);
     return `
     <div class="day-block ${isToday?'today':''}">
       <div class="day-header">${day.date} ${day.wd}${isToday?'<span class="today-flag">DNES</span>':''}</div>
-      <div class="day-flow">${parts.join(' <span class="arrow-sep">→</span> ')}</div>
+      <div class="day-grid">
+        <div class="day-cell"><div class="cl">🌄 Dopoledne</div><div class="cv">${day.st.dop}</div></div>
+        <div class="day-cell"><div class="cl">☀️ 1. odpoledne</div><div class="cv">${day.st.odp1}</div></div>
+        <div class="day-cell"><div class="cl">🌤 2. odpoledne</div><div class="cv">${day.st.odp2}</div></div>
+        <div class="day-cell"><div class="cl">🔥 Večer</div><div class="cv">${day.st.vecer}</div></div>
+      </div>
     </div>`;
   }).join('');
 }
