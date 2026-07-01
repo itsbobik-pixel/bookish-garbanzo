@@ -65,7 +65,7 @@
     background:none;
     color:#9FB09A;
     font-family:var(--font-mono);
-    font-size:12.5px;
+    font-size:11px;
     font-weight:600;
     padding:9px 0;
     border-radius:6px;
@@ -200,6 +200,76 @@
   }
   .contact-group-title:first-child{margin-top:0;}
 
+  /* Výuka */
+  .vyuka-row{
+    display:flex; align-items:baseline; gap:10px;
+    padding:8px 0;
+    border-bottom:1px solid var(--line);
+    font-size:12px;
+  }
+  .vyuka-row:last-child{border-bottom:none;}
+  .vyuka-code{
+    font-family:var(--font-display); font-weight:700;
+    font-size:13.5px;
+    color:var(--petrol);
+    min-width:34px;
+    flex-shrink:0;
+  }
+  .vyuka-details{color:var(--ink-soft); line-height:1.5;}
+  .vyuka-details b{color:var(--ink); font-weight:600;}
+
+  /* Program (day cards) */
+  .day-block{
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .day-block:last-child{border-bottom:none;}
+  .day-block.today{
+    background:rgba(217,113,60,0.08);
+    margin:0 -10px;
+    padding:12px 10px;
+    border-radius:8px;
+    border-bottom:none;
+  }
+  .day-header{
+    font-family:var(--font-display); font-weight:700;
+    font-size:14px;
+    color:var(--pine);
+    margin-bottom:6px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .today-flag{
+    background:var(--rust);
+    color:white;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:0.04em;
+    padding:2px 6px;
+    border-radius:3px;
+  }
+  .day-row{
+    display:flex; gap:10px;
+    font-size:12px;
+    padding:2px 0;
+  }
+  .day-row .dl{
+    min-width:66px; flex-shrink:0;
+    color:var(--ink-soft);
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    padding-top:1px;
+  }
+  .day-mt{
+    margin-top:6px;
+    font-size:10.5px;
+    color:var(--ink-soft);
+    opacity:0.75;
+    line-height:1.5;
+  }
+
   #toast{
     position:fixed; left:50%; bottom:24px;
     transform:translateX(-50%) translateY(10px);
@@ -226,6 +296,7 @@
   <div class="tabs">
     <button class="tab-btn active" data-screen="ted" onclick="switchScreen('ted')">Teď</button>
     <button class="tab-btn" data-screen="oddil" onclick="switchScreen('oddil')">Oddíl</button>
+    <button class="tab-btn" data-screen="program" onclick="switchScreen('program')">Program</button>
     <button class="tab-btn" data-screen="kontakty" onclick="switchScreen('kontakty')">Kontakty</button>
   </div>
 
@@ -256,6 +327,15 @@
     <section class="screen" id="screen-oddil">
       <div class="label">Děti · <span id="rosterCount">23</span></div>
       <div id="rosterList"></div>
+
+      <div class="label" style="margin-top:22px;">Výuka — kde co je</div>
+      <div id="vyukaList"></div>
+    </section>
+
+    <!-- SCREEN: PROGRAM -->
+    <section class="screen" id="screen-program">
+      <div class="label">Rámcový program · 1. turnus</div>
+      <div id="programList"></div>
     </section>
 
     <!-- SCREEN: KONTAKTY -->
@@ -378,6 +458,46 @@ const schedule = [
   ["22,15","Porada všech TP"],
 ];
 
+/* ================= DATA: VÝUKA — kde co je ================= */
+const vyukaMap = [
+  {kod:"Z1", klubovna:"B", sucha:"Ohniště, les", mokra:"B"},
+  {kod:"Z2", klubovna:"K", sucha:"Ohniště, les", mokra:"K"},
+  {kod:"S1", klubovna:"I", sucha:"Hřiště/-ata", mokra:"Party stan"},
+  {kod:"S2", klubovna:"A", sucha:"Louka", mokra:"A"},
+  {kod:"VV1", klubovna:"Jídelna", sucha:"I, areál, okolí", mokra:"I"},
+  {kod:"VV2", klubovna:"J", sucha:"J, areál, okolí", mokra:"J"},
+  {kod:"T", klubovna:"Bar", sucha:"Party stan", mokra:"T"},
+];
+
+/* ================= DATA: RÁMCOVÝ PROGRAM (1. turnus) ================= */
+/* MT = mladší tábor, ST = starší tábor (to se týká tebe) */
+const framework = [
+  {date:"1.7.", wd:"St", st:{dop:":-)", odp1:":-)", odp2:"Příjezd", vecer:"OP – příjezd"},
+             mt:{dop:":-)", odp1:":-)", odp2:"Příjezd", vecer:"OP – příjezd"}},
+  {date:"2.7.", wd:"Čt", st:{dop:"Zájmový kroužek", odp1:"OPV1", odp2:"OPP1", vecer:"Diskopártoška"},
+             mt:{dop:"Zájmový kroužek", odp1:"OPP1", odp2:"OPV1", vecer:"Diskopártoška"}},
+  {date:"3.7.", wd:"Pá", st:{dop:"Zájmový kroužek", odp1:"1. ETAPA – O náčelníku Bumbumovi", odp2:"Spolupracuj", vecer:"OPV2"},
+             mt:{dop:"Zájmový kroužek", odp1:"1. ETAPA – O náčelníku Bumbumovi", odp2:"Spolupracuj", vecer:"OPP2"}},
+  {date:"4.7.", wd:"So", st:{dop:"Zájmový kroužek", odp1:"Netradiční turnaje", odp2:"OPP2", vecer:"OPV3"},
+             mt:{dop:"Zájmový kroužek", odp1:"Netradiční turnaje", odp2:"OPV2", vecer:"Táborák"}},
+  {date:"5.7.", wd:"Ne", st:{dop:"OPV5", odp1:"2. ETAPA – O loupeživých opicích", odp2:"OPV3", vecer:"Táborák / Klíč"},
+             mt:{dop:"OPP4", odp1:"2. ETAPA – O loupeživých opicích", odp2:"OPP3", vecer:"OPV3"}},
+  {date:"6.7.", wd:"Po", st:{dop:"Zájmový kroužek", odp1:"OPV4", odp2:"Svorťan 2026", vecer:"OPP3"},
+             mt:{dop:"Zájmový kroužek", odp1:"OPP4", odp2:"Svorťan 2026", vecer:"OPV4"}},
+  {date:"7.7.", wd:"Út", st:{dop:"Zájmový kroužek", odp1:"OPV5 / Příprava živností", odp2:"Živnosti", vecer:"OPP4"},
+             mt:{dop:"Zájmový kroužek", odp1:"OPP5", odp2:"Živnosti", vecer:"OPV5"}},
+  {date:"8.7.", wd:"St", st:{dop:"Zájmový kroužek", odp1:"3. ETAPA – O masožravých škrtitrsech", odp2:"OPV6", vecer:"Českopeckoráda"},
+             mt:{dop:"Zájmový kroužek", odp1:"3. ETAPA – O masožravých škrtitrsech", odp2:"OPP6", vecer:"Českopeckoráda"}},
+  {date:"9.7.", wd:"Čt", st:{dop:"Celodenní výlet", odp1:"Celodenní výlet", odp2:"Celodenní výlet", vecer:"OPP5"},
+             mt:{dop:"Celodenní výlet", odp1:"Celodenní výlet", odp2:"Celodenní výlet", vecer:"OPV6"}},
+  {date:"10.7.", wd:"Pá", st:{dop:"Zájmový kroužek", odp1:"4. ETAPA – O krutých amazonkách", odp2:"OPV7", vecer:"Movie night"},
+             mt:{dop:"Zájmový kroužek", odp1:"4. ETAPA – O krutých amazonkách", odp2:"OPP7", vecer:"Movie night"}},
+  {date:"11.7.", wd:"So", st:{dop:"Zájmový kroužek", odp1:"OPP6", odp2:"Vyhodnocení ceteh a balení – starší", vecer:"Pártodiskoška"},
+             mt:{dop:"Zájmový kroužek", odp1:"Balení", odp2:"Vyhodnocení ceteh a balení – starší", vecer:"Pártodiskoška"}},
+  {date:"12.7.", wd:"Ne", st:{dop:"Odjezd", odp1:":-(", odp2:":-(", vecer:":-("},
+             mt:{dop:"Odjezd", odp1:":-(", odp2:":-(", vecer:":-("}},
+];
+
 /* ================= TIME HELPERS ================= */
 function timeToMinutes(str){
   const m = str.match(/(\d{1,2}),(\d{2})/);
@@ -454,6 +574,33 @@ function renderRoster(){
     </div>
   `).join('');
 }
+function renderVyuka(){
+  document.getElementById('vyukaList').innerHTML = vyukaMap.map(v => `
+    <div class="vyuka-row">
+      <span class="vyuka-code">${v.kod}</span>
+      <span class="vyuka-details"><b>${v.klubovna}</b> · sucho: ${v.sucha} · mokro: ${v.mokra}</span>
+    </div>
+  `).join('');
+}
+
+function renderProgram(){
+  const d = new Date();
+  const todayStr = `${d.getDate()}.${d.getMonth()+1}.`;
+  document.getElementById('programList').innerHTML = framework.map(day => {
+    const isToday = day.date === todayStr;
+    const sameAsMt = JSON.stringify(day.st) === JSON.stringify(day.mt);
+    return `
+    <div class="day-block ${isToday?'today':''}">
+      <div class="day-header">${day.date} ${day.wd}${isToday?'<span class="today-flag">DNES</span>':''}</div>
+      <div class="day-row"><span class="dl">Dopol.</span><span>${day.st.dop}</span></div>
+      <div class="day-row"><span class="dl">1. odp.</span><span>${day.st.odp1}</span></div>
+      <div class="day-row"><span class="dl">2. odp.</span><span>${day.st.odp2}</span></div>
+      <div class="day-row"><span class="dl">Večer</span><span>${day.st.vecer}</span></div>
+      ${!sameAsMt ? `<div class="day-mt">MT (netýká se): ${day.mt.dop} · ${day.mt.odp1} · ${day.mt.odp2} · ${day.mt.vecer}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
 function renderContacts(){
   document.getElementById('contactsPanel').innerHTML = contactGroups.map(g => `
     <div class="contact-group-title">${g.title}</div>
@@ -518,6 +665,8 @@ function switchScreen(name){
 /* ================= INIT ================= */
 renderNow();
 renderRoster();
+renderVyuka();
+renderProgram();
 renderContacts();
 setInterval(renderNow, 60000);
 </script>
