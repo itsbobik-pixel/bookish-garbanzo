@@ -395,10 +395,11 @@
     <!-- SCREEN: PROGRAM -->
     <section class="screen" id="screen-program">
       <div class="label">Rámcový program · 1. turnus</div>
+      <div class="program-legend">Aktivity u OPP1–OPP6 jsou dopočítané z rotační tabulky — zkontroluj podle papíru, ať sedí 🙏</div>
       <div id="programList"></div>
 
       <button class="more-toggle" id="oppToggle" onclick="toggleMore('opp')">
-        <span class="arrow">›</span> OPP — povinné programy (detaily)
+        <span class="arrow">›</span> Obecná pravidla k OPP
       </button>
       <div class="more-panel" id="oppPanel"></div>
     </section>
@@ -539,25 +540,25 @@ const vyukaMap = [
 const framework = [
   {date:"1.7.", wd:"St", st:{dop:":-)", odp1:":-)", odp2:"Příjezd", vecer:"OP – příjezd"},
              mt:{dop:":-)", odp1:":-)", odp2:"Příjezd", vecer:"OP – příjezd"}},
-  {date:"2.7.", wd:"Čt", st:{dop:"Zájmový kroužek", odp1:"OPV1", odp2:"OPP1", vecer:"Diskopártoška"},
+  {date:"2.7.", wd:"Čt", st:{dop:"Zájmový kroužek", odp1:"OPV1", odp2:"Zálesáctví (OPP1)", vecer:"Diskopártoška"},
              mt:{dop:"Zájmový kroužek", odp1:"OPP1", odp2:"OPV1", vecer:"Diskopártoška"}},
   {date:"3.7.", wd:"Pá", st:{dop:"Zájmový kroužek", odp1:"1. ETAPA – O náčelníku Bumbumovi", odp2:"Spolupracuj", vecer:"OPV2"},
              mt:{dop:"Zájmový kroužek", odp1:"1. ETAPA – O náčelníku Bumbumovi", odp2:"Spolupracuj", vecer:"OPP2"}},
-  {date:"4.7.", wd:"So", st:{dop:"Zájmový kroužek", odp1:"Netradiční turnaje", odp2:"OPP2", vecer:"OPV3"},
+  {date:"4.7.", wd:"So", st:{dop:"Zájmový kroužek", odp1:"Netradiční turnaje", odp2:"Louka — kinball, soft, flag, plachta (OPP2)", vecer:"OPV3"},
              mt:{dop:"Zájmový kroužek", odp1:"Netradiční turnaje", odp2:"OPV2", vecer:"Táborák"}},
   {date:"5.7.", wd:"Ne", st:{dop:"OPV5", odp1:"2. ETAPA – O loupeživých opicích", odp2:"OPV3", vecer:"Táborák / Klíč"},
              mt:{dop:"OPP4", odp1:"2. ETAPA – O loupeživých opicích", odp2:"OPP3", vecer:"OPV3"}},
-  {date:"6.7.", wd:"Po", st:{dop:"Zájmový kroužek", odp1:"OPV4", odp2:"Svorťan 2026", vecer:"OPP3"},
+  {date:"6.7.", wd:"Po", st:{dop:"Zájmový kroužek", odp1:"OPV4", odp2:"Svorťan 2026", vecer:"Les — hry v lese, luky (OPP3)"},
              mt:{dop:"Zájmový kroužek", odp1:"OPP4", odp2:"Svorťan 2026", vecer:"OPV4"}},
-  {date:"7.7.", wd:"Út", st:{dop:"Zájmový kroužek", odp1:"OPV5 / Příprava živností", odp2:"Živnosti", vecer:"OPP4"},
+  {date:"7.7.", wd:"Út", st:{dop:"Zájmový kroužek", odp1:"OPV5 / Příprava živností", odp2:"Živnosti", vecer:"Minigolf, trampolíny (OPP4)"},
              mt:{dop:"Zájmový kroužek", odp1:"OPP5", odp2:"Živnosti", vecer:"OPV5"}},
   {date:"8.7.", wd:"St", st:{dop:"Zájmový kroužek", odp1:"3. ETAPA – O masožravých škrtitrsech", odp2:"OPV6", vecer:"Českopeckoráda"},
              mt:{dop:"Zájmový kroužek", odp1:"3. ETAPA – O masožravých škrtitrsech", odp2:"OPP6", vecer:"Českopeckoráda"}},
-  {date:"9.7.", wd:"Čt", st:{dop:"Celodenní výlet", odp1:"Celodenní výlet", odp2:"Celodenní výlet", vecer:"OPP5"},
+  {date:"9.7.", wd:"Čt", st:{dop:"Celodenní výlet", odp1:"Celodenní výlet", odp2:"Celodenní výlet", vecer:"Horolezecká stěna, kára, koloběžky (OPP5)"},
              mt:{dop:"Celodenní výlet", odp1:"Celodenní výlet", odp2:"Celodenní výlet", vecer:"OPV6"}},
   {date:"10.7.", wd:"Pá", st:{dop:"Zájmový kroužek", odp1:"4. ETAPA – O krutých amazonkách", odp2:"OPV7", vecer:"Movie night"},
              mt:{dop:"Zájmový kroužek", odp1:"4. ETAPA – O krutých amazonkách", odp2:"OPP7", vecer:"Movie night"}},
-  {date:"11.7.", wd:"So", st:{dop:"Zájmový kroužek", odp1:"OPP6", odp2:"Vyhodnocení ceteh a balení – starší", vecer:"Pártodiskoška"},
+  {date:"11.7.", wd:"So", st:{dop:"Zájmový kroužek", odp1:"Horní a dolní hřiště (OPP6)", odp2:"Vyhodnocení ceteh a balení – starší", vecer:"Pártodiskoška"},
              mt:{dop:"Zájmový kroužek", odp1:"Balení", odp2:"Vyhodnocení ceteh a balení – starší", vecer:"Pártodiskoška"}},
   {date:"12.7.", wd:"Ne", st:{dop:"Odjezd", odp1:":-(", odp2:":-(", vecer:":-("},
              mt:{dop:"Odjezd", odp1:":-(", odp2:":-(", vecer:":-("}},
@@ -697,26 +698,10 @@ function renderRozpis(){
 }
 
 function renderOpp(){
-  const activities = oppActivities.map(a => `
-    <div class="vyuka-row">
-      <span class="vyuka-code">${a.n}.</span>
-      <span class="vyuka-details">${a.text}</span>
-    </div>
-  `).join('');
-  const dates = oppDates.map(d => `
-    <div class="rozpis-row">
-      <span class="t" style="min-width:56px;">${d.opp}</span><span>${d.kdy}</span>
-    </div>
-  `).join('');
   const notes = oppNotes.map(n => `<div class="opp-note">· ${n}</div>`).join('');
   document.getElementById('oppPanel').innerHTML = `
-    <div class="rozpis-subtitle">Aktivity — starší tábor</div>
-    ${activities}
-    <div class="rozpis-subtitle">Kdy je který OPP</div>
-    ${dates}
-    <div class="rozpis-subtitle">Poznámky</div>
+    <div class="rozpis-subtitle">Obecná pravidla k OPP</div>
     ${notes}
-    <div class="opp-todo">📌 Které číslo aktivity má oddíl 6 v který OPP, mi ještě pošli/potvrď — z fotky se to nedalo spolehlivě přečíst.</div>
   `;
 }
 
