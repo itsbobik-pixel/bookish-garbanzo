@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Tábor 2026 — Oddíl 6</title>
+<style>
+  :root{
+    --font-display: -apple-system, 'Arial Narrow', 'Helvetica Neue', Roboto, Arial, sans-serif;
+    --font-mono: ui-monospace, 'SF Mono', 'Menlo', 'Consolas', 'Roboto Mono', monospace;
+    --pine:#1F3323;
+    --pine-dark:#152318;
+    --petrol:#173B3A;
+    --canvas:#F3EEE2;
+    --ink:#2B2620;
+    --ink-soft:#847C6B;
+    --rust:#D9713C;
+    --rust-dark:#B85A29;
+    --line:#DDD4BF;
+    --white:#FFFDF8;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{margin:0;padding:0;background:var(--pine-dark);}
+  body{font-family:var(--font-mono); color:var(--ink); display:flex; justify-content:center;}
+  #app{
+    width:100%;
+    max-width:480px;
+    min-height:100vh;
+    background:var(--canvas);
+    display:flex;
+    flex-direction:column;
+  }
+
+  header{
+    background:var(--pine);
+    color:var(--white);
+    padding:18px 20px 14px;
+  }
+  .eyebrow{
+    font-size:10.5px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:#9FB09A;
+    font-weight:600;
+  }
+  h1{
+    font-family:var(--font-display); font-weight:700;
+    font-weight:600;
+    font-size:22px;
+    margin:2px 0 0;
+  }
+
+  .tabs{
+    display:flex;
+    background:var(--pine-dark);
+    padding:4px;
+    margin:0 16px;
+    border-radius:9px;
+    transform:translateY(-14px);
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+  }
+  .tab-btn{
+    flex:1;
+    border:none;
+    background:none;
+    color:#9FB09A;
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    font-weight:600;
+    padding:9px 0;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .tab-btn.active{background:var(--rust); color:white;}
+
+  main{flex:1; padding:0 18px 30px; margin-top:14px;}
+  .screen{display:none;}
+  .screen.active{display:block; animation:fadeIn .15s ease;}
+  @keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+
+  .label{
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    font-weight:700;
+    color:var(--rust-dark);
+    margin-bottom:5px;
+    text-align:center;
+  }
+  .label.soft{color:var(--ink-soft);}
+
+  .now-block{margin-top:6px; text-align:center;}
+  .now-time{
+    font-family:var(--font-display); font-weight:700;
+    font-size:26px;
+    font-weight:600;
+    color:var(--pine);
+  }
+  .now-text{
+    font-size:14.5px;
+    line-height:1.4;
+    color:var(--ink);
+    margin-top:2px;
+  }
+
+  .divider{height:1px; background:var(--line); margin:18px 0;}
+
+  .next-time{
+    font-family:var(--font-display); font-weight:700;
+    font-size:17px;
+    font-weight:600;
+    color:var(--ink);
+    text-align:center;
+  }
+  .next-text{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-top:1px;
+    text-align:center;
+  }
+  .countdown{
+    font-size:11px;
+    color:var(--rust-dark);
+    font-weight:600;
+    margin-top:4px;
+    text-align:center;
+  }
+
+  .more-toggle{
+    display:block;
+    width:100%;
+    background:none;
+    border:none;
+    border-top:1px solid var(--line);
+    color:var(--ink-soft);
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    font-weight:600;
+    padding:14px 0 4px;
+    margin-top:22px;
+    text-align:left;
+    cursor:pointer;
+  }
+  .more-toggle .arrow{display:inline-block; transition:transform .15s ease;}
+  .more-toggle.open .arrow{transform:rotate(90deg);}
+  .more-panel{display:none; padding-top:10px;}
+  .more-panel.open{display:block;}
+
+  .sched-row{
+    display:flex; gap:12px;
+    padding:7px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:12px;
+  }
+  .sched-row:last-child{border-bottom:none;}
+  .sched-row .t{font-family:var(--font-display); font-weight:700; font-weight:600; color:var(--petrol); min-width:64px; flex-shrink:0;}
+  .sched-row.now .t{color:var(--rust-dark);}
+  .sched-row.now{color:var(--ink); font-weight:500;}
+  .sched-row.mladsi{color:var(--ink-soft); opacity:0.65;}
+  .sched-row.mladsi .t{color:var(--ink-soft);}
+
+  /* Oddíl list */
+  .roster-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:8px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .roster-row:last-child{border-bottom:none;}
+  .roster-name{font-family:var(--font-display); font-weight:700; font-size:14.5px; font-weight:500;}
+  .roster-room{font-size:12px; font-weight:600; color:var(--petrol);}
+
+  .contact-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:8px 0;
+    border-bottom:1px solid var(--line);
+    gap:10px;
+  }
+  .contact-row:last-child{border-bottom:none;}
+  .contact-info{min-width:0;}
+  .contact-role{font-size:9.5px; text-transform:uppercase; letter-spacing:0.04em; color:var(--ink-soft); font-weight:700;}
+  .contact-name{font-family:var(--font-display); font-weight:700; font-size:13.5px; font-weight:500;}
+  .call-btn{
+    flex-shrink:0;
+    background:var(--pine);
+    color:var(--white);
+    border:none;
+    font-family:var(--font-mono);
+    font-size:11px;
+    font-weight:600;
+    padding:7px 10px;
+    border-radius:5px;
+    cursor:pointer;
+  }
+  .call-btn:active{background:var(--rust);}
+
+  .contact-group-title{
+    font-size:10px; text-transform:uppercase; letter-spacing:0.08em;
+    color:var(--ink-soft); font-weight:700;
+    margin:14px 0 4px;
+  }
+  .contact-group-title:first-child{margin-top:0;}
+
+  #toast{
+    position:fixed; left:50%; bottom:24px;
+    transform:translateX(-50%) translateY(10px);
+    background:var(--pine-dark); color:var(--white);
+    font-size:12px; font-weight:600;
+    padding:9px 15px; border-radius:8px;
+    z-index:100; opacity:0; pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease;
+    max-width:80%; text-align:center;
+  }
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  ::-webkit-scrollbar{width:0;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <header>
+    <div class="eyebrow">LDT 2026 · 1. turnus</div>
+    <h1>Oddíl 6</h1>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-screen="ted" onclick="switchScreen('ted')">Teď</button>
+    <button class="tab-btn" data-screen="oddil" onclick="switchScreen('oddil')">Oddíl</button>
+    <button class="tab-btn" data-screen="kontakty" onclick="switchScreen('kontakty')">Kontakty</button>
+  </div>
+
+  <main>
+
+    <!-- SCREEN: TEĎ -->
+    <section class="screen active" id="screen-ted">
+      <div class="label">Právě teď</div>
+      <div class="now-block">
+        <div class="now-time" id="nowTime">—</div>
+        <div class="now-text" id="nowText">Načítám…</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="label soft">Další v plánu</div>
+      <div class="next-time" id="nextTime">—</div>
+      <div class="next-text" id="nextText">Načítám…</div>
+      <div class="countdown" id="countdown"></div>
+
+      <button class="more-toggle" id="scheduleToggle" onclick="toggleMore('schedule')">
+        <span class="arrow">›</span> Celý program dne
+      </button>
+      <div class="more-panel" id="schedulePanel"></div>
+    </section>
+
+    <!-- SCREEN: ODDIL -->
+    <section class="screen" id="screen-oddil">
+      <div class="label">Děti · <span id="rosterCount">23</span></div>
+      <div id="rosterList"></div>
+    </section>
+
+    <!-- SCREEN: KONTAKTY -->
+    <section class="screen" id="screen-kontakty">
+      <div id="contactsPanel"></div>
+    </section>
+
+  </main>
+
+  <div id="toast"></div>
+</div>
+
+<script>
+/* ================= DATA: ODDÍL 6 ================= */
+const roster = [
+  {jmeno:"Bláhová Ester", pokoj:"611"},
+  {jmeno:"Bosová Sofie", pokoj:"614"},
+  {jmeno:"Broncová Běla", pokoj:"612"},
+  {jmeno:"Dvořák Jakub", pokoj:"34"},
+  {jmeno:"Hrejsová Lucie", pokoj:"614"},
+  {jmeno:"Janata Tobiáš", pokoj:"34"},
+  {jmeno:"Jungmannová Šárka", pokoj:"613"},
+  {jmeno:"Kabátníková Markéta", pokoj:"612"},
+  {jmeno:"Laštovičková Aneta", pokoj:"611"},
+  {jmeno:"Morawiecová Emma", pokoj:"613"},
+  {jmeno:"Novotný Miloš", pokoj:"34"},
+  {jmeno:"Richterová Isabel", pokoj:"613"},
+  {jmeno:"Sámelová Marie", pokoj:"613"},
+  {jmeno:"Sokolová Claudie", pokoj:"612"},
+  {jmeno:"Sokolová Nicole", pokoj:"612"},
+  {jmeno:"Svobodová Barbora", pokoj:"611"},
+  {jmeno:"Šilhánová Viktorie", pokoj:"614"},
+  {jmeno:"Šmídová Marie", pokoj:"613"},
+  {jmeno:"Šopíková Nikol Emma", pokoj:"614"},
+  {jmeno:"Vágnerová Viktorie", pokoj:"614"},
+  {jmeno:"Wessnitzer Vanessa", pokoj:"612"},
+  {jmeno:"Záveská Adéla", pokoj:"612"},
+  {jmeno:"Žbirka Michal", pokoj:"34"},
+];
+
+/* ================= DATA: KONTAKTY ================= */
+const contactGroups = [
+  {title:"Oddílový vedoucí", items:[
+    {role:"OV 1", jmeno:"Lukáš Múnzar", tel:"724921887"},
+    {role:"OV 2", jmeno:"Ondra Černý", tel:"607025787"},
+    {role:"OV 3", jmeno:"Janča Kabelíková", tel:"775636547"},
+    {role:"OV 4", jmeno:"Kačka Nedbalová", tel:"603580968"},
+    {role:"OV 5", jmeno:"Jolča Štěbetáková", tel:"774603969"},
+    {role:"OV 6", jmeno:"Robert Herman", tel:"705986921"},
+    {role:"OV 7", jmeno:"Terka Švarcová", tel:"731019022"},
+  ]},
+  {title:"Mladší tábor — lektoři", items:[
+    {role:"526", jmeno:"Tonička Machová", tel:""},
+    {role:"527 · Z1", jmeno:"Natka Urbánková", tel:"737388931"},
+    {role:"711 · VV2", jmeno:"Robert Pondrelli", tel:"727835856"},
+  ]},
+  {title:"Starší tábor — lektoři", items:[
+    {role:"521", jmeno:"Jaromír Vidlák", tel:""},
+    {role:"713 · S1", jmeno:"Vojta Janata", tel:"723511154"},
+    {role:"321 · Z2", jmeno:"Kačí Konopiková", tel:"608020949"},
+    {role:"712 · T/Z1", jmeno:"Anička Křapková", tel:"727856333"},
+  ]},
+  {title:"Vedení tábora", items:[
+    {role:"P1", jmeno:"Danča Procházková", tel:"773721256"},
+    {role:"P2", jmeno:"Honza Gavalec", tel:"605773732"},
+    {role:"Z", jmeno:"Hanča Kavalírová", tel:"608178808"},
+    {role:"NH", jmeno:"Jirka Kopa", tel:"704447783"},
+    {role:"Provozní", jmeno:"Luboš Nedvěd", tel:"602174618"},
+    {role:"Skladník", jmeno:"Zuzka Černá", tel:"602662100"},
+    {role:"HVT", jmeno:"Zú Šebelíková", tel:"721546349"},
+  ]},
+];
+
+/* ================= DATA: REŽIM DNE ================= */
+/* třetí hodnota `true` = týká se jen mladšího tábora → do "Teď"/"Další" se nepočítá,
+   ale v celém rozpisu dole zůstává vidět */
+const schedule = [
+  ["7,45","Budíček lektoři"],
+  ["8,00","Budíček — oddíl 1"],
+  ["8,10","Rozcvička — oddíl 1"],
+  ["8,20","Ranní hygiena, úklid — oddíl 1"],
+  ["8,10","Snídaně 1. směna — Castor, Havelka — 1. oddíl"],
+  ["8,30","Budíček — oddíly 2 až 7"],
+  ["8,40","Rozcvička — oddíly 2 až 7"],
+  ["8,50","Ranní hygiena, úklid — oddíly 2 až 7"],
+  ["9,00","Snídaně 2. směna — oddíly 2 až 7"],
+  ["9,30","Táborový sklad / doplnění pro lektory"],
+  ["9,50","Výuka — 1. hodina"],
+  ["10,35","Přestávka"],
+  ["10,45","Výuka — 2. hodina"],
+  ["11,40","Nástup všech dětí a TP"],
+  ["12,00","Táborový sklad pro lektory po výuce"],
+  ["12,05","Zkoušení služebního oddílu dalšího dne"],
+  ["12,00","Oběd 1. směna — Castor camp, Havelka — 1. oddíl"],
+  ["12,20","Oběd — pokrač. 1. směna"],
+  ["12,55","Oběd 2. směna — oddíly 2 až 7"],
+  ["12,00","Polední klid pro děti (do 14,15, kromě oběda)"],
+  ["13,45","Dokupy, přesuny · psychologická poradna"],
+  ["12,20","Kiosek"],
+  ["14,15","Oddílová rada + příprava na program"],
+  ["13,55","Táborový sklad pro OV, fas. pošty"],
+  ["14,40","Začátek 1. odpoledního programu"],
+  ["16,15","Konec 1. odpoledního programu"],
+  ["16,15","Odpolední svačina, pauza"],
+  ["16,30","Táborový sklad pro OV"],
+  ["16,45","Odpolední program, 2. část"],
+  ["18,10","Porada HVT"],
+  ["18,00","Večeře 1. směna — Castor Camp, Havelka — 1. oddíl"],
+  ["18,45","Večeře 2. směna — oddíly 2 až 7"],
+  ["19,10","Táborový sklad — OV vrací, lektor fasuje"],
+  ["18,25","Kiosek"],
+  ["19,30","Večerní program mladší tábor", true],
+  ["19,30","Večerní program starší tábor (lektor může prodloužit)"],
+  ["21,15","Táborový sklad pro lektory"],
+  ["20,45","Druhá večeře (u st. tábora, je-li prodloužen program)"],
+  ["21,00","Osobní volno starší tábor"],
+  ["21,00","Večerní hygiena — mladší tábor", true],
+  ["21,30","Večerní hygiena — starší tábor"],
+  ["21,30","Večerka mladší tábor", true],
+  ["22,00","Večerka starší tábor"],
+  ["22,15","Porada všech TP"],
+];
+
+/* ================= TIME HELPERS ================= */
+function timeToMinutes(str){
+  const m = str.match(/(\d{1,2}),(\d{2})/);
+  if(!m) return null;
+  return parseInt(m[1])*60 + parseInt(m[2]);
+}
+function currentMinutes(){
+  const d = new Date();
+  return d.getHours()*60 + d.getMinutes();
+}
+function getScheduleStatus(){
+  const nowMin = currentMinutes();
+  let currentIdx = -1, best = -1;
+  schedule.forEach((item, idx) => {
+    if(item[2]) return; // mladší tábor — netýká se, přeskočit
+    const t = timeToMinutes(item[0]);
+    if(t!==null && t<=nowMin && t>best){ best=t; currentIdx=idx; }
+  });
+  let nextIdx = -1;
+  if(currentIdx > -1){
+    for(let i=currentIdx+1; i<schedule.length; i++){
+      if(schedule[i][2]) continue;
+      const t = timeToMinutes(schedule[i][0]);
+      if(t!==null && t>best){ nextIdx = i; break; }
+    }
+  } else {
+    for(let i=0; i<schedule.length; i++){
+      if(!schedule[i][2]){ nextIdx = i; break; }
+    }
+  }
+  return {currentIdx, nextIdx, nowMin};
+}
+
+/* ================= RENDER: TEĎ ================= */
+function renderNow(){
+  const {currentIdx, nextIdx, nowMin} = getScheduleStatus();
+
+  if(currentIdx > -1){
+    document.getElementById('nowTime').textContent = schedule[currentIdx][0].replace(',', ':');
+    document.getElementById('nowText').textContent = schedule[currentIdx][1];
+  } else {
+    document.getElementById('nowTime').textContent = '🌙';
+    document.getElementById('nowText').textContent = 'Mimo program dne';
+  }
+
+  if(nextIdx > -1){
+    const nt = timeToMinutes(schedule[nextIdx][0]);
+    document.getElementById('nextTime').textContent = schedule[nextIdx][0].replace(',', ':');
+    document.getElementById('nextText').textContent = schedule[nextIdx][1];
+    let diff = nt - nowMin;
+    if(diff < 0) diff += 1440;
+    document.getElementById('countdown').textContent = diff===0 ? 'začíná teď' : `za ${diff} min`;
+  } else {
+    document.getElementById('nextTime').textContent = '—';
+    document.getElementById('nextText').textContent = 'Program dne skončil';
+    document.getElementById('countdown').textContent = '';
+  }
+
+  const panel = document.getElementById('schedulePanel');
+  panel.innerHTML = schedule.map((item, idx) => `
+    <div class="sched-row ${idx===currentIdx?'now':''} ${item[2]?'mladsi':''}">
+      <span class="t">${item[0].replace(',', ':')}</span><span>${item[1]}</span>
+    </div>
+  `).join('');
+}
+
+/* ================= RENDER: ODDÍL ================= */
+function renderRoster(){
+  document.getElementById('rosterCount').textContent = roster.length;
+  document.getElementById('rosterList').innerHTML = roster.map(k => `
+    <div class="roster-row">
+      <span class="roster-name">${k.jmeno}</span>
+      <span class="roster-room">${k.pokoj}</span>
+    </div>
+  `).join('');
+}
+function renderContacts(){
+  document.getElementById('contactsPanel').innerHTML = contactGroups.map(g => `
+    <div class="contact-group-title">${g.title}</div>
+    ${g.items.map(c => {
+      const tel = (c.tel||"").replace(/\s/g,'').trim();
+      return `
+      <div class="contact-row">
+        <div class="contact-info">
+          <div class="contact-role">${c.role}</div>
+          <div class="contact-name">${c.jmeno}</div>
+        </div>
+        ${tel ? `<button class="call-btn" onclick="callNumber('${tel}')">Volat</button>` : ''}
+      </div>`;
+    }).join('')}
+  `).join('');
+}
+
+/* ================= CALL / COPY ================= */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=> t.classList.remove('show'), 2000);
+}
+async function callNumber(tel){
+  let copied = false;
+  try{
+    await navigator.clipboard.writeText(tel);
+    copied = true;
+  }catch(e){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = tel;
+      ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      copied = true;
+    }catch(e2){}
+  }
+  showToast(copied ? `📋 ${tel} zkopírováno` : tel);
+  try{ window.top.location.href = 'tel:'+tel; }catch(e){
+    try{ window.location.href = 'tel:'+tel; }catch(e2){}
+  }
+}
+
+/* ================= TOGGLES / NAV ================= */
+function toggleMore(which){
+  const btn = document.getElementById(which+'Toggle');
+  const panel = document.getElementById(which+'Panel');
+  const open = panel.classList.toggle('open');
+  btn.classList.toggle('open', open);
+}
+function switchScreen(name){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.screen===name));
+}
+
+/* ================= INIT ================= */
+renderNow();
+renderRoster();
+renderContacts();
+setInterval(renderNow, 60000);
+</script>
+</body>
+</html>
