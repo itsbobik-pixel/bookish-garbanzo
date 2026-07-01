@@ -307,6 +307,21 @@
   .rozpis-row .t{font-family:var(--font-display); font-weight:700; color:var(--petrol); min-width:80px; flex-shrink:0;}
   .rozpis-row.volno{color:var(--ink-soft);}
   .rozpis-row.volno .t{color:#7A9B7E;}
+  .opp-note{
+    font-size:11.5px;
+    color:var(--ink-soft);
+    line-height:1.55;
+    padding:3px 0;
+  }
+  .opp-todo{
+    margin-top:14px;
+    font-size:11px;
+    color:var(--rust-dark);
+    background:rgba(217,113,60,0.1);
+    padding:9px 11px;
+    border-radius:7px;
+    line-height:1.5;
+  }
 
   #toast{
     position:fixed; left:50%; bottom:24px;
@@ -381,6 +396,11 @@
     <section class="screen" id="screen-program">
       <div class="label">Rámcový program · 1. turnus</div>
       <div id="programList"></div>
+
+      <button class="more-toggle" id="oppToggle" onclick="toggleMore('opp')">
+        <span class="arrow">›</span> OPP — povinné programy (detaily)
+      </button>
+      <div class="more-panel" id="oppPanel"></div>
     </section>
 
     <!-- SCREEN: KONTAKTY -->
@@ -561,6 +581,31 @@ const skladOV = [
   ["19,10–19,25","Vracení věcí do TS (nic nefasují) — v táboře hlídá P"],
 ];
 
+/* ================= DATA: OPP — povinné programy (starší tábor) ================= */
+const oppActivities = [
+  {n:1, text:"Minigolf, trampolíny"},
+  {n:2, text:"Les — hry v lese, luky"},
+  {n:3, text:"Louka — kinball, soft, flag, plachta"},
+  {n:4, text:"Zálesáctví (střelba, ohniště)"},
+  {n:5, text:"Horní a dolní hřiště"},
+  {n:6, text:"Horolezecká stěna, kára, koloběžky"},
+];
+const oppDates = [
+  {opp:"OPP1", kdy:"2.7. · 2. část dne"},
+  {opp:"OPP2", kdy:"4.7. · 2. část dne"},
+  {opp:"OPP3", kdy:"6.7. · večer"},
+  {opp:"OPP4", kdy:"7.7. · večer"},
+  {opp:"OPP5", kdy:"9.7. · 2. večer"},
+  {opp:"OPP6", kdy:"11.7. · 1. část dne"},
+];
+const oppNotes = [
+  "Je-li vedro a zrovna není OPP, po dohodě s HVT lze jít na půlku programu do bazénu.",
+  "Místo OPV lze 1–2× za pobyt dát dětem osobní volno.",
+  "Na louce lze hrát softbal, badminton, flagball, frisbee, kinball a jiné hry.",
+  "Prostor na OPV je třeba konzultovat s HVT-OP — pozor na křížení s jiným oddílem.",
+  "Místo OPV v 1. části odpoledne lze jít na procházku (např. na Klíč).",
+];
+
 /* ================= TIME HELPERS ================= */
 function timeToMinutes(str){
   const m = str.match(/(\d{1,2}),(\d{2})/);
@@ -648,6 +693,30 @@ function renderRozpis(){
     ${rows(oddilakSchedule)}
     <div class="rozpis-subtitle">Sklad — otevíračka pro OV</div>
     ${rows(skladOV)}
+  `;
+}
+
+function renderOpp(){
+  const activities = oppActivities.map(a => `
+    <div class="vyuka-row">
+      <span class="vyuka-code">${a.n}.</span>
+      <span class="vyuka-details">${a.text}</span>
+    </div>
+  `).join('');
+  const dates = oppDates.map(d => `
+    <div class="rozpis-row">
+      <span class="t" style="min-width:56px;">${d.opp}</span><span>${d.kdy}</span>
+    </div>
+  `).join('');
+  const notes = oppNotes.map(n => `<div class="opp-note">· ${n}</div>`).join('');
+  document.getElementById('oppPanel').innerHTML = `
+    <div class="rozpis-subtitle">Aktivity — starší tábor</div>
+    ${activities}
+    <div class="rozpis-subtitle">Kdy je který OPP</div>
+    ${dates}
+    <div class="rozpis-subtitle">Poznámky</div>
+    ${notes}
+    <div class="opp-todo">📌 Které číslo aktivity má oddíl 6 v který OPP, mi ještě pošli/potvrď — z fotky se to nedalo spolehlivě přečíst.</div>
   `;
 }
 
@@ -744,6 +813,7 @@ renderNow();
 renderRoster();
 renderVyuka();
 renderRozpis();
+renderOpp();
 renderProgram();
 renderContacts();
 setInterval(renderNow, 60000);
