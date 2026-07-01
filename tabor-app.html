@@ -258,21 +258,31 @@
     color:var(--line);
     margin:0 1px;
   }
-  .day-grid{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:10px 14px;
+  .day-item{
+    display:flex;
+    align-items:baseline;
+    gap:9px;
+    padding:5px 0;
   }
-  .day-cell .cl{
+  .day-item:not(:last-child){
+    border-bottom:1px solid var(--canvas);
+  }
+  .day-tag{
+    flex-shrink:0;
+    min-width:52px;
     font-size:9.5px;
     text-transform:uppercase;
-    letter-spacing:0.05em;
-    color:var(--ink-soft);
-    margin-bottom:2px;
+    letter-spacing:0.04em;
+    font-weight:700;
+    color:var(--pine);
+    background:rgba(63,97,66,0.1);
+    padding:3px 6px;
+    border-radius:4px;
+    text-align:center;
   }
-  .day-cell .cv{
-    font-size:12px;
-    line-height:1.35;
+  .day-text{
+    font-size:12.5px;
+    line-height:1.4;
     color:var(--ink);
   }
 
@@ -546,25 +556,25 @@ const vyukaMap = [
 const framework = [
   {date:"1.7.", wd:"St", st:{dop:":-)", odp1:":-)", odp2:"Příjezd", vecer:"OP – příjezd"},
              mt:{dop:":-)", odp1:":-)", odp2:"Příjezd", vecer:"OP – příjezd"}},
-  {date:"2.7.", wd:"Čt", st:{dop:"Zájmový kroužek", odp1:"OPV1", odp2:"Zálesáctví (OPP1)", vecer:"Diskopártoška"},
+  {date:"2.7.", wd:"Čt", st:{dop:"Zájmový kroužek", odp1:"OPV1", odp2:"Zálesáctví", vecer:"Diskopártoška"},
              mt:{dop:"Zájmový kroužek", odp1:"OPP1", odp2:"OPV1", vecer:"Diskopártoška"}},
   {date:"3.7.", wd:"Pá", st:{dop:"Zájmový kroužek", odp1:"1. ETAPA – O náčelníku Bumbumovi", odp2:"Spolupracuj", vecer:"OPV2"},
              mt:{dop:"Zájmový kroužek", odp1:"1. ETAPA – O náčelníku Bumbumovi", odp2:"Spolupracuj", vecer:"OPP2"}},
-  {date:"4.7.", wd:"So", st:{dop:"Zájmový kroužek", odp1:"Netradiční turnaje", odp2:"Louka — kinball, soft, flag, plachta (OPP2)", vecer:"OPV3"},
+  {date:"4.7.", wd:"So", st:{dop:"Zájmový kroužek", odp1:"Netradiční turnaje", odp2:"Louka — kinball, soft, flag, plachta", vecer:"OPV3"},
              mt:{dop:"Zájmový kroužek", odp1:"Netradiční turnaje", odp2:"OPV2", vecer:"Táborák"}},
   {date:"5.7.", wd:"Ne", st:{dop:"OPV5", odp1:"2. ETAPA – O loupeživých opicích", odp2:"OPV3", vecer:"Táborák / Klíč"},
              mt:{dop:"OPP4", odp1:"2. ETAPA – O loupeživých opicích", odp2:"OPP3", vecer:"OPV3"}},
-  {date:"6.7.", wd:"Po", st:{dop:"Zájmový kroužek", odp1:"OPV4", odp2:"Svorťan 2026", vecer:"Les — hry v lese, luky (OPP3)"},
+  {date:"6.7.", wd:"Po", st:{dop:"Zájmový kroužek", odp1:"OPV4", odp2:"Svorťan 2026", vecer:"Les — hry v lese, luky"},
              mt:{dop:"Zájmový kroužek", odp1:"OPP4", odp2:"Svorťan 2026", vecer:"OPV4"}},
-  {date:"7.7.", wd:"Út", st:{dop:"Zájmový kroužek", odp1:"OPV5 / Příprava živností", odp2:"Živnosti", vecer:"Minigolf, trampolíny (OPP4)"},
+  {date:"7.7.", wd:"Út", st:{dop:"Zájmový kroužek", odp1:"OPV5 / Příprava živností", odp2:"Živnosti", vecer:"Minigolf, trampolíny"},
              mt:{dop:"Zájmový kroužek", odp1:"OPP5", odp2:"Živnosti", vecer:"OPV5"}},
   {date:"8.7.", wd:"St", st:{dop:"Zájmový kroužek", odp1:"3. ETAPA – O masožravých škrtitrsech", odp2:"OPV6", vecer:"Českopeckoráda"},
              mt:{dop:"Zájmový kroužek", odp1:"3. ETAPA – O masožravých škrtitrsech", odp2:"OPP6", vecer:"Českopeckoráda"}},
-  {date:"9.7.", wd:"Čt", st:{dop:"Celodenní výlet", odp1:"Celodenní výlet", odp2:"Celodenní výlet", vecer:"Horolezecká stěna, kára, koloběžky (OPP5)"},
+  {date:"9.7.", wd:"Čt", st:{dop:"Celodenní výlet", odp1:"Celodenní výlet", odp2:"Celodenní výlet", vecer:"Horolezecká stěna, kára, koloběžky"},
              mt:{dop:"Celodenní výlet", odp1:"Celodenní výlet", odp2:"Celodenní výlet", vecer:"OPV6"}},
   {date:"10.7.", wd:"Pá", st:{dop:"Zájmový kroužek", odp1:"4. ETAPA – O krutých amazonkách", odp2:"OPV7", vecer:"Movie night"},
              mt:{dop:"Zájmový kroužek", odp1:"4. ETAPA – O krutých amazonkách", odp2:"OPP7", vecer:"Movie night"}},
-  {date:"11.7.", wd:"So", st:{dop:"Zájmový kroužek", odp1:"Horní a dolní hřiště (OPP6)", odp2:"Vyhodnocení ceteh a balení – starší", vecer:"Pártodiskoška"},
+  {date:"11.7.", wd:"So", st:{dop:"Zájmový kroužek", odp1:"Horní a dolní hřiště", odp2:"Vyhodnocení ceteh a balení – starší", vecer:"Pártodiskoška"},
              mt:{dop:"Zájmový kroužek", odp1:"Balení", odp2:"Vyhodnocení ceteh a balení – starší", vecer:"Pártodiskoška"}},
   {date:"12.7.", wd:"Ne", st:{dop:"Odjezd", odp1:":-(", odp2:":-(", vecer:":-("},
              mt:{dop:"Odjezd", odp1:":-(", odp2:":-(", vecer:":-("}},
@@ -723,17 +733,35 @@ function renderVyuka(){
 function renderProgram(){
   const d = new Date();
   const todayStr = `${d.getDate()}.${d.getMonth()+1}.`;
+  const tagLabels = ["dop.", "1.odp.", "2.odp.", "večer"];
   document.getElementById('programList').innerHTML = framework.map(day => {
     const isToday = day.date === todayStr;
+    const raw = [day.st.dop, day.st.odp1, day.st.odp2, day.st.vecer];
+
+    // sestav segmenty {tags:[...], text}, přeskoč rutinní "Zájmový kroužek",
+    // spoj sousední stejné texty do jednoho segmentu s víc tagy
+    const segments = [];
+    raw.forEach((text, i) => {
+      if(text === "Zájmový kroužek") return;
+      const last = segments[segments.length-1];
+      if(last && last.text === text){
+        last.tags.push(tagLabels[i]);
+      } else {
+        segments.push({tags:[tagLabels[i]], text});
+      }
+    });
+
+    const rows = segments.length ? segments.map(s => `
+      <div class="day-item">
+        <span class="day-tag">${s.tags.join('/')}</span>
+        <span class="day-text">${s.text}</span>
+      </div>
+    `).join('') : `<div class="day-item"><span class="day-text" style="color:var(--ink-soft);">Zájmový kroužek, jinak volno</span></div>`;
+
     return `
     <div class="day-block ${isToday?'today':''}">
       <div class="day-header">${day.date} ${day.wd}${isToday?'<span class="today-flag">DNES</span>':''}</div>
-      <div class="day-grid">
-        <div class="day-cell"><div class="cl">🌄 Dopoledne</div><div class="cv">${day.st.dop}</div></div>
-        <div class="day-cell"><div class="cl">☀️ 1. odpoledne</div><div class="cv">${day.st.odp1}</div></div>
-        <div class="day-cell"><div class="cl">🌤 2. odpoledne</div><div class="cv">${day.st.odp2}</div></div>
-        <div class="day-cell"><div class="cl">🔥 Večer</div><div class="cv">${day.st.vecer}</div></div>
-      </div>
+      ${rows}
     </div>`;
   }).join('');
 }
