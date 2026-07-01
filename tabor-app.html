@@ -249,25 +249,14 @@
     padding:2px 6px;
     border-radius:3px;
   }
-  .day-row{
-    display:flex; gap:10px;
-    font-size:12px;
-    padding:2px 0;
+  .day-flow{
+    font-size:12.5px;
+    line-height:1.7;
+    color:var(--ink);
   }
-  .day-row .dl{
-    min-width:66px; flex-shrink:0;
-    color:var(--ink-soft);
-    font-size:10.5px;
-    text-transform:uppercase;
-    letter-spacing:0.03em;
-    padding-top:1px;
-  }
-  .day-mt{
-    margin-top:6px;
-    font-size:10.5px;
-    color:var(--ink-soft);
-    opacity:0.75;
-    line-height:1.5;
+  .arrow-sep{
+    color:var(--line);
+    margin:0 1px;
   }
 
   /* Klubovna note */
@@ -719,15 +708,11 @@ function renderProgram(){
   const todayStr = `${d.getDate()}.${d.getMonth()+1}.`;
   document.getElementById('programList').innerHTML = framework.map(day => {
     const isToday = day.date === todayStr;
-    const sameAsMt = JSON.stringify(day.st) === JSON.stringify(day.mt);
+    const parts = [day.st.dop, day.st.odp1, day.st.odp2, day.st.vecer].filter(Boolean);
     return `
     <div class="day-block ${isToday?'today':''}">
       <div class="day-header">${day.date} ${day.wd}${isToday?'<span class="today-flag">DNES</span>':''}</div>
-      <div class="day-row"><span class="dl">Dopol.</span><span>${day.st.dop}</span></div>
-      <div class="day-row"><span class="dl">1. odp.</span><span>${day.st.odp1}</span></div>
-      <div class="day-row"><span class="dl">2. odp.</span><span>${day.st.odp2}</span></div>
-      <div class="day-row"><span class="dl">Večer</span><span>${day.st.vecer}</span></div>
-      ${!sameAsMt ? `<div class="day-mt">MT (netýká se): ${day.mt.dop} · ${day.mt.odp1} · ${day.mt.odp2} · ${day.mt.vecer}</div>` : ''}
+      <div class="day-flow">${parts.join(' <span class="arrow-sep">→</span> ')}</div>
     </div>`;
   }).join('');
 }
