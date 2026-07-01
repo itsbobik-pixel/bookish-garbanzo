@@ -270,6 +270,24 @@
     line-height:1.5;
   }
 
+  /* Rozpis oddíláka */
+  .rozpis-subtitle{
+    font-size:10px; text-transform:uppercase; letter-spacing:0.08em;
+    color:var(--ink-soft); font-weight:700;
+    margin:16px 0 4px;
+  }
+  .rozpis-subtitle:first-child{margin-top:0;}
+  .rozpis-row{
+    display:flex; gap:12px;
+    padding:7px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:12px;
+  }
+  .rozpis-row:last-child{border-bottom:none;}
+  .rozpis-row .t{font-family:var(--font-display); font-weight:700; color:var(--petrol); min-width:80px; flex-shrink:0;}
+  .rozpis-row.volno{color:var(--ink-soft);}
+  .rozpis-row.volno .t{color:#7A9B7E;}
+
   #toast{
     position:fixed; left:50%; bottom:24px;
     transform:translateX(-50%) translateY(10px);
@@ -321,6 +339,11 @@
         <span class="arrow">›</span> Celý program dne
       </button>
       <div class="more-panel" id="schedulePanel"></div>
+
+      <button class="more-toggle" id="rozpisToggle" onclick="toggleMore('rozpis')">
+        <span class="arrow">›</span> Můj rozpis (oddílák)
+      </button>
+      <div class="more-panel" id="rozpisPanel"></div>
     </section>
 
     <!-- SCREEN: ODDIL -->
@@ -498,6 +521,24 @@ const framework = [
              mt:{dop:"Odjezd", odp1:":-(", odp2:":-(", vecer:":-("}},
 ];
 
+/* ================= DATA: ROZPIS ODDÍLÁKA (denně, celý turnus) ================= */
+const oddilakSchedule = [
+  ["8,00–10,15","Volno (snídaně v jídelně u stolu TP v 10.00)", true],
+  ["10,30","Sraz oddíláků na baru s HVT — příprava na ceteh nebo odborná příprava OV"],
+  ["11,20","Konzultace s HVT ohledně oddílového programu na odpoledne"],
+  ["11,40","Nástup, hlídání dětí svého oddílu do 13:45"],
+  ["13,45–14,10","Fasování ve skladu na etapu a OP, fasování pošty"],
+  ["14,15–19,30","Má na starosti děti svého oddílu (nepřetržitě)"],
+  ["19,45–20,30","Sraz oddíláků na baru s HVT — odborná příprava OV (jen ze začátku pobytu, jinak volno)"],
+  ["20,30–22,15","Volno", true],
+  ["22,15","Porada"],
+];
+const skladOV = [
+  ["13,50–14,10","Fasování ve skladu na etapu a OP, fasování pošty, ev. svačiny"],
+  ["16,30–16,40","Fasování na druhé OP, je-li OP i v první části odpoledne"],
+  ["19,10–19,25","Vracení věcí do TS (nic nefasují) — v táboře hlídá P"],
+];
+
 /* ================= TIME HELPERS ================= */
 function timeToMinutes(str){
   const m = str.match(/(\d{1,2}),(\d{2})/);
@@ -574,6 +615,20 @@ function renderRoster(){
     </div>
   `).join('');
 }
+function renderRozpis(){
+  const rows = arr => arr.map(item => `
+    <div class="rozpis-row ${item[2]?'volno':''}">
+      <span class="t">${item[0].replace(/,/g,':')}</span><span>${item[1]}</span>
+    </div>
+  `).join('');
+  document.getElementById('rozpisPanel').innerHTML = `
+    <div class="rozpis-subtitle">Oddílák — denní rozpis</div>
+    ${rows(oddilakSchedule)}
+    <div class="rozpis-subtitle">Sklad — otevíračka pro OV</div>
+    ${rows(skladOV)}
+  `;
+}
+
 function renderVyuka(){
   document.getElementById('vyukaList').innerHTML = vyukaMap.map(v => `
     <div class="vyuka-row">
@@ -666,6 +721,7 @@ function switchScreen(name){
 renderNow();
 renderRoster();
 renderVyuka();
+renderRozpis();
 renderProgram();
 renderContacts();
 setInterval(renderNow, 60000);
