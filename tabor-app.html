@@ -270,6 +270,26 @@
     line-height:1.5;
   }
 
+  /* Klubovna note */
+  .klubovna-note{
+    background:var(--pine);
+    color:var(--white);
+    font-size:12px;
+    text-align:center;
+    padding:9px 12px;
+    border-radius:7px;
+    margin-bottom:16px;
+  }
+  .klubovna-note b{color:var(--rust);}
+
+  /* Program legend */
+  .program-legend{
+    font-size:10.5px;
+    color:var(--ink-soft);
+    line-height:1.5;
+    margin:-2px 0 14px;
+  }
+
   /* Rozpis oddíláka */
   .rozpis-subtitle{
     font-size:10px; text-transform:uppercase; letter-spacing:0.08em;
@@ -348,6 +368,8 @@
 
     <!-- SCREEN: ODDIL -->
     <section class="screen" id="screen-oddil">
+      <div class="klubovna-note">Klubovna oddílu 6: <b>Bar</b></div>
+
       <div class="label">Děti · <span id="rosterCount">23</span></div>
       <div id="rosterList"></div>
 
@@ -358,6 +380,7 @@
     <!-- SCREEN: PROGRAM -->
     <section class="screen" id="screen-program">
       <div class="label">Rámcový program · 1. turnus</div>
+      <div class="program-legend">ST = starší tábor (to jste vy) · MT = mladší tábor, jen pro přehled — netýká se vás</div>
       <div id="programList"></div>
     </section>
 
